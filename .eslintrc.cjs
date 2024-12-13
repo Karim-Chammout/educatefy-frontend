@@ -25,6 +25,20 @@ module.exports = {
     'react/function-component-definition': 0,
     'import/extensions': 0,
     'newline-before-return': 'error',
+    'react/require-default-props': 0,
+    'react/destructuring-assignment': 0,
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        args: 'all',
+        argsIgnorePattern: '^_',
+        caughtErrors: 'all',
+        caughtErrorsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+      },
+    ],
     'prettier/prettier': [
       'error',
       {

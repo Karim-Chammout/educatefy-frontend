@@ -29,9 +29,13 @@ module.exports = {
     'react/destructuring-assignment': 0,
     'no-return-assign': 0,
     'react/no-unescaped-entities': 0,
+    '@typescript-eslint/no-explicit-any': 0,
     'react-hooks/exhaustive-deps': 'warn',
     'import/prefer-default-export': 0,
     'jsx-a11y/anchor-is-valid': 0,
+    'no-useless-catch': 0,
+    'dot-notation': 0,
+    '@typescript-eslint/dot-notation': 0,
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
@@ -42,6 +46,12 @@ module.exports = {
         destructuredArrayIgnorePattern: '^_',
         varsIgnorePattern: '^_',
         ignoreRestSiblings: true,
+      },
+    ],
+    'no-param-reassign': [
+      2,
+      {
+        props: false,
       },
     ],
     'prettier/prettier': [

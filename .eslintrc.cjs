@@ -28,6 +28,7 @@ module.exports = {
     'react/require-default-props': 0,
     'react/destructuring-assignment': 0,
     'no-return-assign': 0,
+    'import/prefer-default-export': 0,
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

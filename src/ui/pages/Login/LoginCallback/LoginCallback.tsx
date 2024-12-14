@@ -2,9 +2,9 @@ import { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 import api from '@/api';
-import { BASE_URL, isLoggedIn } from '@/layout/apolloClient';
 import { Loader } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
+import { BASE_URL, isLoggedIn } from '@/ui/layout/apolloClient';
 
 const LoginCallback = () => {
   const location = useLocation();

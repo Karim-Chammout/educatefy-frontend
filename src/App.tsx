@@ -3,7 +3,7 @@ import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider as MUIThemeProvider, createTheme } from '@mui/material/styles';
 
-import { client } from '@/layout/apolloClient';
+import { client } from '@/ui/layout/apolloClient';
 import muiCustomTheme from '@/ui/theme/muiTheme';
 import theme from '@/ui/theme/theme';
 

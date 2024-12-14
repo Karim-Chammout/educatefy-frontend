@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import { BASE_URL } from '@/layout/apolloClient';
+import { BASE_URL } from '@/ui/layout/apolloClient';
 import { terminatSession } from '@/utils/logout';
 
 // Define custom error type

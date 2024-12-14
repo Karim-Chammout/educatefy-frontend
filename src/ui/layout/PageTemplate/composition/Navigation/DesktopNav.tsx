@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router';
 import logo from '@/assets/logo.svg';
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
-import { isLoggedIn } from '@/layout/apolloClient';
+import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { AuthContext } from '@/ui/context';
 import { logout } from '@/utils/logout';
 

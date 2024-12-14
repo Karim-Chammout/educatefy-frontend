@@ -14,7 +14,7 @@ import { MouseEvent, SyntheticEvent, useContext, useEffect, useState } from 'rea
 import { useLocation, useNavigate } from 'react-router';
 
 import person from '@/assets/person.png';
-import { isLoggedIn } from '@/layout/apolloClient';
+import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
 import { AuthContext } from '@/ui/context';
 import { logout } from '@/utils/logout';

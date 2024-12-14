@@ -5,8 +5,8 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 
-import { BASE_URL } from '@/layout/apolloClient';
 import { Button } from '@/ui/components';
+import { BASE_URL } from '@/ui/layout/apolloClient';
 
 const LoginPopup = ({ handleRegisterSwitch }: { handleRegisterSwitch: () => void }) => {
   return (

@@ -3,8 +3,8 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { ReactNode } from 'react';
 
 import { OpenIdClientDocument, OpenIdClientQuery } from '@/generated/graphql';
-import { BASE_URL } from '@/layout/apolloClient';
 import { Button, Loader } from '@/ui/components';
+import { BASE_URL } from '@/ui/layout/apolloClient';
 
 type OIDCButtonsType = {
   isRegister?: boolean;

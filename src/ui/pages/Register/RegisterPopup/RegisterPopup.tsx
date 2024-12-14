@@ -10,8 +10,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
 import { ChangeEvent, useState } from 'react';
 
-import { BASE_URL } from '@/layout/apolloClient';
 import { Button } from '@/ui/components';
+import { BASE_URL } from '@/ui/layout/apolloClient';
 
 const RegisterPopup = ({ handleLoginSwitch }: { handleLoginSwitch: () => void }) => {
   const [userType, setUserType] = useState<'student' | 'teacher' | undefined>(undefined);

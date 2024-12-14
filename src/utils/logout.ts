@@ -1,4 +1,4 @@
-import { client, isLoggedIn } from '@/layout/apolloClient';
+import { client, isLoggedIn } from '@/ui/layout/apolloClient';
 
 export const terminatSession = async () => {
   localStorage.removeItem('JWT');

@@ -1,0 +1,13 @@
+fragment OpenidClient on OpenidClient {
+  id
+  button_text
+  button_icon
+  button_background_color
+  identity_provider
+}
+
+query OpenIdClient {
+  openIdClients {
+    ...OpenidClient
+  }
+}

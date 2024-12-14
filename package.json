@@ -17,6 +17,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.2.0",
     "@mui/material": "^6.2.0",
+    "axios": "^1.7.9",
     "graphql": "^16.9.0",
     "graphql-ws": "^5.16.0",
     "i18next": "^24.1.0",

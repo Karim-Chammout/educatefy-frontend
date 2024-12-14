@@ -233,17 +233,24 @@ export type UpdateProfileResult = {
   user?: Maybe<Account>;
 };
 
-export type AccountInfoQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AccountInfoQuery = { __typename?: 'Query', me: { __typename?: 'Account', nickname?: string | null, gender?: Gender | null, avatar_url?: string | null, accountRole: AccountRole } };
-
 export type OpenidClientFragment = { __typename?: 'OpenidClient', id: string, button_text?: string | null, button_icon?: string | null, button_background_color?: string | null, identity_provider: string };
 
 export type OpenIdClientQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type OpenIdClientQuery = { __typename?: 'Query', openIdClients: Array<{ __typename?: 'OpenidClient', id: string, button_text?: string | null, button_icon?: string | null, button_background_color?: string | null, identity_provider: string }> };
+
+export type AccountInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AccountInfoQuery = { __typename?: 'Query', me: { __typename?: 'Account', nickname?: string | null, gender?: Gender | null, avatar_url?: string | null, accountRole: AccountRole } };
+
+export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null } };
 
 export const OpenidClientFragmentDoc = gql`
     fragment OpenidClient on OpenidClient {
@@ -254,6 +261,71 @@ export const OpenidClientFragmentDoc = gql`
   identity_provider
 }
     `;
+export const AccountFragmentDoc = gql`
+    fragment Account on Account {
+  id
+  name
+  nickname
+  first_name
+  last_name
+  gender
+  date_of_birth
+  avatar_url
+  country {
+    id
+    denomination
+    iso
+  }
+  nationality {
+    id
+    denomination
+    iso
+  }
+  accountRole
+  bio
+  description
+  specialty
+}
+    `;
+export const OpenIdClientDocument = gql`
+    query OpenIdClient {
+  openIdClients {
+    ...OpenidClient
+  }
+}
+    ${OpenidClientFragmentDoc}`;
+
+/**
+ * __useOpenIdClientQuery__
+ *
+ * To run a query within a React component, call `useOpenIdClientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpenIdClientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpenIdClientQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOpenIdClientQuery(baseOptions?: Apollo.QueryHookOptions<OpenIdClientQuery, OpenIdClientQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OpenIdClientQuery, OpenIdClientQueryVariables>(OpenIdClientDocument, options);
+      }
+export function useOpenIdClientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OpenIdClientQuery, OpenIdClientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OpenIdClientQuery, OpenIdClientQueryVariables>(OpenIdClientDocument, options);
+        }
+export function useOpenIdClientSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OpenIdClientQuery, OpenIdClientQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<OpenIdClientQuery, OpenIdClientQueryVariables>(OpenIdClientDocument, options);
+        }
+export type OpenIdClientQueryHookResult = ReturnType<typeof useOpenIdClientQuery>;
+export type OpenIdClientLazyQueryHookResult = ReturnType<typeof useOpenIdClientLazyQuery>;
+export type OpenIdClientSuspenseQueryHookResult = ReturnType<typeof useOpenIdClientSuspenseQuery>;
+export type OpenIdClientQueryResult = Apollo.QueryResult<OpenIdClientQuery, OpenIdClientQueryVariables>;
 export const AccountInfoDocument = gql`
     query AccountInfo {
   me {
@@ -296,42 +368,42 @@ export type AccountInfoQueryHookResult = ReturnType<typeof useAccountInfoQuery>;
 export type AccountInfoLazyQueryHookResult = ReturnType<typeof useAccountInfoLazyQuery>;
 export type AccountInfoSuspenseQueryHookResult = ReturnType<typeof useAccountInfoSuspenseQuery>;
 export type AccountInfoQueryResult = Apollo.QueryResult<AccountInfoQuery, AccountInfoQueryVariables>;
-export const OpenIdClientDocument = gql`
-    query OpenIdClient {
-  openIdClients {
-    ...OpenidClient
+export const MeDocument = gql`
+    query Me {
+  me {
+    ...Account
   }
 }
-    ${OpenidClientFragmentDoc}`;
+    ${AccountFragmentDoc}`;
 
 /**
- * __useOpenIdClientQuery__
+ * __useMeQuery__
  *
- * To run a query within a React component, call `useOpenIdClientQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpenIdClientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useOpenIdClientQuery({
+ * const { data, loading, error } = useMeQuery({
  *   variables: {
  *   },
  * });
  */
-export function useOpenIdClientQuery(baseOptions?: Apollo.QueryHookOptions<OpenIdClientQuery, OpenIdClientQueryVariables>) {
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<OpenIdClientQuery, OpenIdClientQueryVariables>(OpenIdClientDocument, options);
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
       }
-export function useOpenIdClientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OpenIdClientQuery, OpenIdClientQueryVariables>) {
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<OpenIdClientQuery, OpenIdClientQueryVariables>(OpenIdClientDocument, options);
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
         }
-export function useOpenIdClientSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<OpenIdClientQuery, OpenIdClientQueryVariables>) {
+export function useMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MeQuery, MeQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<OpenIdClientQuery, OpenIdClientQueryVariables>(OpenIdClientDocument, options);
+          return Apollo.useSuspenseQuery<MeQuery, MeQueryVariables>(MeDocument, options);
         }
-export type OpenIdClientQueryHookResult = ReturnType<typeof useOpenIdClientQuery>;
-export type OpenIdClientLazyQueryHookResult = ReturnType<typeof useOpenIdClientLazyQuery>;
-export type OpenIdClientSuspenseQueryHookResult = ReturnType<typeof useOpenIdClientSuspenseQuery>;
-export type OpenIdClientQueryResult = Apollo.QueryResult<OpenIdClientQuery, OpenIdClientQueryVariables>;
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;

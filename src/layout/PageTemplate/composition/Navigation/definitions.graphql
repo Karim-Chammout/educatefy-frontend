@@ -1,0 +1,8 @@
+query AccountInfo {
+  me {
+    nickname
+    gender
+    avatar_url
+    accountRole
+  }
+}

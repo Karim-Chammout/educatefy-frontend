@@ -4,6 +4,7 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider as MUIThemeProvider, createTheme } from '@mui/material/styles';
 
 import { client } from '@/ui/layout/apolloClient';
+import Main from '@/ui/layout/Main';
 import muiCustomTheme from '@/ui/theme/muiTheme';
 import theme from '@/ui/theme/theme';
 
@@ -15,7 +16,7 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <ApolloProvider client={client}>
           <CssBaseline />
-          <h1>Hello World!</h1>
+          <Main />
         </ApolloProvider>
       </ThemeProvider>
     </MUIThemeProvider>

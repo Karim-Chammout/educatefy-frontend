@@ -1,3 +1,4 @@
 {
-  "language.selector.label": "Select Language"
+  "language.selector.label": "Select Language",
+  "ui.components.loader.label": "Loading..."
 }

@@ -1,2 +1,4 @@
 export const ACCESS_DENIED = 'ACCESS_DENIED';
 export const PERMISSION_DENIED = 'PERMISSION_DENIED';
+
+export const SIGN_UP_FIRST = 'SIGN_UP_FIRST';

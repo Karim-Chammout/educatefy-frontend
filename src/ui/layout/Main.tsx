@@ -3,6 +3,8 @@ import { Route, Routes } from 'react-router';
 
 import { useMeQuery } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
+import { SetupProfile } from '@/ui/compositions';
+import { hasMissingAccountData } from '@/utils/hasMissingAccountData';
 
 import { isLoggedIn } from './apolloClient';
 import PageTemplate from './PageTemplate';
@@ -28,6 +30,16 @@ const PrivatePagesView = () => {
   if (error || !data) {
     // TODO: Create an error page
     return <p>Something went wrong!</p>;
+  }
+
+  const hasIncompleteAccountData = data.me && hasMissingAccountData(data?.me);
+
+  if (hasIncompleteAccountData) {
+    return (
+      <PageTemplate>
+        <SetupProfile userInfo={data.me} />
+      </PageTemplate>
+    );
   }
 
   return (

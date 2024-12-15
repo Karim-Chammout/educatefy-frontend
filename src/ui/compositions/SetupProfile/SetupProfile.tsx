@@ -78,7 +78,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       !values.nationality ||
       !values.country ||
       !values.dateOfBirth ||
-      (userInfo.accountRole === AccountRole.Teacher && (!specialty || !bio))
+      (userInfo.accountRole === AccountRole.Teacher && (!specialty || !bio || !descriptionContent))
     ) {
       setToasterVisibility({
         newDuration: 5000,
@@ -207,11 +207,12 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
             !nationality ||
             !country ||
             !dateOfBirth ||
-            (userInfo.accountRole === AccountRole.Teacher && (!hasDescription || !bio)) ||
+            (userInfo.accountRole === AccountRole.Teacher &&
+              (!hasDescription || !specialty || !bio)) ||
             updateAccountInfoLoading
           }
           fullWidth
-          sx={{ mt: 4 }}
+          sx={{ mt: 4, mb: 8 }}
         >
           Submit
         </Button>

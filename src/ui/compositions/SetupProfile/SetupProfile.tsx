@@ -42,7 +42,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       gender: genderOptions.find((option) => option.id === userInfo.gender) || null,
       nationality: userInfo.nationality || null,
       country: userInfo.country || null,
-      dateOfBirth: new Date(userInfo.date_of_birth) || null,
+      dateOfBirth: userInfo.date_of_birth ? new Date(userInfo.date_of_birth) : null,
       specialty: userInfo.specialty || null,
       bio: userInfo.bio || null,
     },

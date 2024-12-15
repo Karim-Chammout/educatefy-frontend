@@ -6,9 +6,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import Typography from '@mui/material/Typography';
 import { ChangeEvent, useState } from 'react';
 
+import { Typography } from '@/ui/components';
 import OIDCButtons from '@/ui/compositions/AuthView/OIDCButtons';
 
 const RegisterPopup = ({ handleLoginSwitch }: { handleLoginSwitch: () => void }) => {

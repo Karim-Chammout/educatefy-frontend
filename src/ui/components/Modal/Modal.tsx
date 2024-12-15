@@ -1,7 +1,8 @@
 import { SxProps, Theme } from '@mui/material';
 import MUIModal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
 import { ReactNode } from 'react';
+
+import { Typography } from '@/ui/components';
 
 import { StyledBox } from './Modal.style';
 
@@ -25,15 +26,11 @@ const Modal = ({ open, onClose, title, description, sx, children }: ModalType) =
     >
       <StyledBox>
         {title && (
-          <Typography id={`${title}-modal`} variant="h5" component="h2" sx={{ mb: 2 }}>
+          <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
             {title}
           </Typography>
         )}
-        {description && (
-          <Typography id={`${title}-description`} sx={{ mb: 3 }}>
-            {description}
-          </Typography>
-        )}
+        {description && <Typography sx={{ mb: 3 }}>{description}</Typography>}
         {children}
       </StyledBox>
     </MUIModal>

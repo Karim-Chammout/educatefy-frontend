@@ -1,9 +1,9 @@
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
 import { useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router';
 
+import { Typography } from '@/ui/components';
 import { AuthView } from '@/ui/compositions';
 import OIDCButtons from '@/ui/compositions/AuthView/OIDCButtons';
 import { ToasterContext } from '@/ui/context';

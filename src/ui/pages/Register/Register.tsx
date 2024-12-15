@@ -4,10 +4,10 @@ import Avatar from '@mui/material/Avatar';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import Typography from '@mui/material/Typography';
 import { ChangeEvent, useState } from 'react';
 import { Link } from 'react-router';
 
+import { Typography } from '@/ui/components';
 import { AuthView } from '@/ui/compositions';
 import OIDCButtons from '@/ui/compositions/AuthView/OIDCButtons';
 

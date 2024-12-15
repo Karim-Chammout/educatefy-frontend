@@ -2,8 +2,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
 
+import { Typography } from '@/ui/components';
 import OIDCButtons from '@/ui/compositions/AuthView/OIDCButtons';
 
 const LoginPopup = ({ handleRegisterSwitch }: { handleRegisterSwitch: () => void }) => {

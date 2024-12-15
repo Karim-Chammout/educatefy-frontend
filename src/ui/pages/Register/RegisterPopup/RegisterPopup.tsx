@@ -1,4 +1,3 @@
-import GoogleIcon from '@mui/icons-material/Google';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
@@ -10,8 +9,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
 import { ChangeEvent, useState } from 'react';
 
-import { Button } from '@/ui/components';
-import { BASE_URL } from '@/ui/layout/apolloClient';
+import OIDCButtons from '@/ui/compositions/AuthView/OIDCButtons';
 
 const RegisterPopup = ({ handleLoginSwitch }: { handleLoginSwitch: () => void }) => {
   const [userType, setUserType] = useState<'student' | 'teacher' | undefined>(undefined);
@@ -53,19 +51,7 @@ const RegisterPopup = ({ handleLoginSwitch }: { handleLoginSwitch: () => void })
           <FormControlLabel value="teacher" control={<Radio />} label="Teacher" />
         </div>
       </RadioGroup>
-      {/* TODO: Render the <OIDCButtons /> component instead of the Button bellow */}
-      <Button
-        color="error"
-        fullWidth
-        variant="contained"
-        sx={{ mt: 2, mb: 2 }}
-        LinkComponent="a"
-        href={`${BASE_URL}/api/openid/redirect/1?userRole=${userType}`}
-        startIcon={<GoogleIcon />}
-        disabled={userType === undefined}
-      >
-        Sign up with Google
-      </Button>
+      <OIDCButtons userType={userType} disabled={userType === undefined} isRegister />
       <Typography variant="body1">
         Already have an account?{' '}
         <Link sx={{ cursor: 'pointer' }} onClick={handleLoginSwitch}>

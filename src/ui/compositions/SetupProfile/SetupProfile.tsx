@@ -2,7 +2,7 @@ import Container from '@mui/material/Container';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { format } from 'date-fns';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import {
   AutocompleteElement,
   FieldValues,
@@ -21,11 +21,15 @@ import {
   useCountriesQuery,
   useUpdateAccountInfoMutation,
 } from '@/generated/graphql';
-import { ToasterContext } from '@/ui/context';
 import { Button, Loader, Typography } from '@/ui/components';
+import { ToasterContext } from '@/ui/context';
 import { genderOptions } from '@/utils/genderOptions';
+import { removeHtmlTags } from '@/utils/removeHTMLTags';
+
+import RichTextEditor from '../RichTextEditor';
 
 const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
+  const [descriptionContent, setDescriptionContent] = useState(userInfo.description || '');
   const { setToasterVisibility } = useContext(ToasterContext);
   const { loading, error, data } = useCountriesQuery();
   const [updateAccountInfo, { loading: updateAccountInfoLoading }] = useUpdateAccountInfoMutation();
@@ -97,6 +101,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           dateOfBirth: formatedDateOfBirth,
           teacherSpecialty: specialty,
           teacherBio: bio,
+          teacherDescription: descriptionContent,
         },
       },
       onCompleted(res) {
@@ -121,6 +126,8 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
     // TODO: Create an error page
     return <p>Something went wrong!</p>;
   }
+
+  const hasDescription = removeHtmlTags(descriptionContent);
 
   return (
     <Container maxWidth="xs" sx={{ my: 2 }}>
@@ -181,6 +188,11 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
                 maxRows={3}
                 required
               />
+              <RichTextEditor
+                onChange={setDescriptionContent}
+                initialValue={descriptionContent}
+                placeholder="Write a description about yourself here..."
+              />
             </>
           )}
         </div>
@@ -195,7 +207,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
             !nationality ||
             !country ||
             !dateOfBirth ||
-            (userInfo.accountRole === AccountRole.Teacher && !bio) ||
+            (userInfo.accountRole === AccountRole.Teacher && (!hasDescription || !bio)) ||
             updateAccountInfoLoading
           }
           fullWidth

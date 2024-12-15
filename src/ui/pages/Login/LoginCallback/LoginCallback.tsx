@@ -1,10 +1,10 @@
 import { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
-import api from '@/api';
 import { Loader } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
 import { BASE_URL, isLoggedIn } from '@/ui/layout/apolloClient';
+import { SIGN_UP_FIRST } from '@/utils/constants';
 
 const LoginCallback = () => {
   const location = useLocation();
@@ -28,16 +28,19 @@ const LoginCallback = () => {
   useEffect(() => {
     const sendAuthRequest = async () => {
       try {
-        const response = await api.post(
-          `${BASE_URL}/api/openid/callback/${oidcID}`,
-          JSON.stringify({
+        const response = await fetch(`${BASE_URL}/api/openid/callback/${oidcID}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
             state,
             code,
             scope,
             authuser,
             prompt,
           }),
-        );
+        });
 
         const data = await response.json();
 
@@ -51,22 +54,23 @@ const LoginCallback = () => {
 
         navigate('/explore');
       } catch (error) {
-        console.error('Authentication error:', error);
-        setToasterVisibility({
-          newDuration: null,
-          newText: 'Something went wrong. Please try again later!',
-          newType: 'error',
-        });
-        navigate('/login');
-
-        if ((error as Error).message.includes('SIGN_UP_FIRST')) {
+        if ((error as Error).message === SIGN_UP_FIRST) {
           setToasterVisibility({
             newDuration: null,
             newText: 'You have to create an account first!',
             newType: 'error',
           });
           navigate('/register');
+
+          return;
         }
+
+        setToasterVisibility({
+          newDuration: null,
+          newText: 'Something went wrong. Please try again later!',
+          newType: 'error',
+        });
+        navigate('/login');
       }
     };
 

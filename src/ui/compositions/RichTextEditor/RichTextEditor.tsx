@@ -146,8 +146,8 @@ const RichTextEditor = ({
           },
         });
 
-        const S3_PATH_PREFIX = process.env.S3_PATH_PREFIX;
-        const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
+        const S3_PATH_PREFIX = import.meta.env.VITE_S3_PATH_PREFIX;
+        const S3_BUCKET_NAME = import.meta.env.VITE_S3_BUCKET_NAME;
         const storageBucket = `${S3_PATH_PREFIX}/${S3_BUCKET_NAME}`;
 
         insertToEditor(`${storageBucket}/${uploadedimage.filePath}`);

@@ -14,7 +14,7 @@ import { createClient } from 'graphql-ws';
 
 import { terminatSession } from '@/utils/logout';
 
-export const BASE_URL = 'http://localhost:9090';
+export const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const isLoggedIn = makeVar(!!localStorage.getItem('JWT'));
 

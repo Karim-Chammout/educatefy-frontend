@@ -26,8 +26,7 @@ const OIDCButtons = ({ isRegister, userType, disabled }: OIDCButtonsType) => {
   }
 
   if (error || !data) {
-    // TODO: add error page
-    return 'something went wrong';
+    return null;
   }
 
   return data.openIdClients.map((oidc) => {

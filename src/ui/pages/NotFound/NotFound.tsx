@@ -1,15 +1,21 @@
+import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { Button } from '@/ui/components';
+import { InfoState } from '@/ui/compositions';
 
 const NotFound = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
-    <div>
-      <h1>Not found</h1>
-      <Button onClick={() => navigate('/explore')}>Go to Explore</Button>
-    </div>
+    <InfoState
+      btnLabel={t('notFound.exploreBtnLabel')}
+      btnOnClick={() => navigate('/explore')}
+      icon={<ErrorOutlineRoundedIcon />}
+      title={t('notFound.title')}
+      subtitle={t('notFound.subtitle')}
+    />
   );
 };
 

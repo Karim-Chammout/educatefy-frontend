@@ -34,6 +34,9 @@ module.exports = {
     'import/prefer-default-export': 0,
     'jsx-a11y/anchor-is-valid': 0,
     'no-useless-catch': 0,
+    'consistent-return': 0,
+    'prefer-destructuring': 0,
+    'no-plusplus': 0,
     'dot-notation': 0,
     '@typescript-eslint/dot-notation': 0,
     '@typescript-eslint/no-unused-vars': [

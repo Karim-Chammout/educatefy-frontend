@@ -7,7 +7,7 @@ import { Link, useLocation } from 'react-router';
 import { AuthView } from '@/ui/compositions';
 import OIDCButtons from '@/ui/compositions/AuthView/OIDCButtons';
 import { ToasterContext } from '@/ui/context';
-import { ACCESS_DENIED } from '@/utils/enum';
+import { ACCESS_DENIED } from '@/utils/constants';
 
 const Login = () => {
   const location = useLocation();

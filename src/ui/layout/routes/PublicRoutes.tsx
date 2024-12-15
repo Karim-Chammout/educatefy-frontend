@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router';
 
-import { ACCESS_DENIED } from '@/utils/enum';
+import { ACCESS_DENIED } from '@/utils/constants';
 
 import { Explore, Login, LoginCallback, NotFound, Register } from './LazyComponent';
 

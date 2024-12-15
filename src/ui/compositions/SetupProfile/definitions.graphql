@@ -1,0 +1,19 @@
+fragment Country on Country {
+  id
+  denomination
+}
+
+query Countries {
+  countries {
+    ...Country
+  }
+}
+
+mutation UpdateAccountInfo($accountInfo: AccountInfoInput!) {
+  updateAccountInfo(accountInfo: $accountInfo) {
+    success
+    errors {
+      message
+    }
+  }
+}

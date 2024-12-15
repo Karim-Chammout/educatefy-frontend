@@ -120,7 +120,7 @@ export type Error = {
 export enum Gender {
   Female = 'female',
   Male = 'male',
-  Other = 'other'
+  Unknown = 'unknown'
 }
 
 export type Mutation = {
@@ -240,6 +240,20 @@ export type OpenIdClientQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type OpenIdClientQuery = { __typename?: 'Query', openIdClients: Array<{ __typename?: 'OpenidClient', id: string, button_text?: string | null, button_icon?: string | null, button_background_color?: string | null, identity_provider: string }> };
 
+export type CountryFragment = { __typename?: 'Country', id: string, denomination: string };
+
+export type CountriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', id: string, denomination: string }> };
+
+export type UpdateAccountInfoMutationVariables = Exact<{
+  accountInfo: AccountInfoInput;
+}>;
+
+
+export type UpdateAccountInfoMutation = { __typename?: 'Mutation', updateAccountInfo?: { __typename?: 'MutationResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }> } | null };
+
 export type AccountInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -259,6 +273,12 @@ export const OpenidClientFragmentDoc = gql`
   button_icon
   button_background_color
   identity_provider
+}
+    `;
+export const CountryFragmentDoc = gql`
+    fragment Country on Country {
+  id
+  denomination
 }
     `;
 export const AccountFragmentDoc = gql`
@@ -326,6 +346,81 @@ export type OpenIdClientQueryHookResult = ReturnType<typeof useOpenIdClientQuery
 export type OpenIdClientLazyQueryHookResult = ReturnType<typeof useOpenIdClientLazyQuery>;
 export type OpenIdClientSuspenseQueryHookResult = ReturnType<typeof useOpenIdClientSuspenseQuery>;
 export type OpenIdClientQueryResult = Apollo.QueryResult<OpenIdClientQuery, OpenIdClientQueryVariables>;
+export const CountriesDocument = gql`
+    query Countries {
+  countries {
+    ...Country
+  }
+}
+    ${CountryFragmentDoc}`;
+
+/**
+ * __useCountriesQuery__
+ *
+ * To run a query within a React component, call `useCountriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCountriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCountriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCountriesQuery(baseOptions?: Apollo.QueryHookOptions<CountriesQuery, CountriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CountriesQuery, CountriesQueryVariables>(CountriesDocument, options);
+      }
+export function useCountriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CountriesQuery, CountriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CountriesQuery, CountriesQueryVariables>(CountriesDocument, options);
+        }
+export function useCountriesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CountriesQuery, CountriesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CountriesQuery, CountriesQueryVariables>(CountriesDocument, options);
+        }
+export type CountriesQueryHookResult = ReturnType<typeof useCountriesQuery>;
+export type CountriesLazyQueryHookResult = ReturnType<typeof useCountriesLazyQuery>;
+export type CountriesSuspenseQueryHookResult = ReturnType<typeof useCountriesSuspenseQuery>;
+export type CountriesQueryResult = Apollo.QueryResult<CountriesQuery, CountriesQueryVariables>;
+export const UpdateAccountInfoDocument = gql`
+    mutation UpdateAccountInfo($accountInfo: AccountInfoInput!) {
+  updateAccountInfo(accountInfo: $accountInfo) {
+    success
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type UpdateAccountInfoMutationFn = Apollo.MutationFunction<UpdateAccountInfoMutation, UpdateAccountInfoMutationVariables>;
+
+/**
+ * __useUpdateAccountInfoMutation__
+ *
+ * To run a mutation, you first call `useUpdateAccountInfoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAccountInfoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAccountInfoMutation, { data, loading, error }] = useUpdateAccountInfoMutation({
+ *   variables: {
+ *      accountInfo: // value for 'accountInfo'
+ *   },
+ * });
+ */
+export function useUpdateAccountInfoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAccountInfoMutation, UpdateAccountInfoMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAccountInfoMutation, UpdateAccountInfoMutationVariables>(UpdateAccountInfoDocument, options);
+      }
+export type UpdateAccountInfoMutationHookResult = ReturnType<typeof useUpdateAccountInfoMutation>;
+export type UpdateAccountInfoMutationResult = Apollo.MutationResult<UpdateAccountInfoMutation>;
+export type UpdateAccountInfoMutationOptions = Apollo.BaseMutationOptions<UpdateAccountInfoMutation, UpdateAccountInfoMutationVariables>;
 export const AccountInfoDocument = gql`
     query AccountInfo {
   me {

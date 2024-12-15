@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/Grid2';
 
 import { min } from '@/utils/mediaQuery';
 

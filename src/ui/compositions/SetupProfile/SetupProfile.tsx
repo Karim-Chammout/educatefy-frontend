@@ -26,6 +26,7 @@ import { ToasterContext } from '@/ui/context';
 import { genderOptions } from '@/utils/genderOptions';
 import { removeHtmlTags } from '@/utils/removeHTMLTags';
 
+import ErrorPlaceholder from '../ErrorPlaceholder';
 import RichTextEditor from '../RichTextEditor';
 
 const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
@@ -123,8 +124,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
   }
 
   if (error || !data) {
-    // TODO: Create an error page
-    return <p>Something went wrong!</p>;
+    return <ErrorPlaceholder />;
   }
 
   const hasDescription = removeHtmlTags(descriptionContent);

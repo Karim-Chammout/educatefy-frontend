@@ -37,6 +37,8 @@ module.exports = {
     'consistent-return': 0,
     'prefer-destructuring': 0,
     'import/no-extraneous-dependencies': 0,
+    'react/jsx-props-no-spreading': 1,
+    'no-nested-ternary': 1,
     'no-plusplus': 0,
     'dot-notation': 0,
     '@typescript-eslint/dot-notation': 0,

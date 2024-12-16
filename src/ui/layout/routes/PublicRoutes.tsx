@@ -8,7 +8,7 @@ import { Explore, Login, LoginCallback, NotFound, Register } from './LazyCompone
   list of routes to redirect to login page and show
   an error message if a user tries to visit without loging in.
 */
-const privateRoutes = ['/'];
+const privateRoutes = ['/', '/profile'];
 
 const PublicRoutes = () => {
   return (

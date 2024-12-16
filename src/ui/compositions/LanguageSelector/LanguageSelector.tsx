@@ -1,22 +1,33 @@
 import LanguageIcon from '@mui/icons-material/Language';
-import {
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select/Select';
 import { useTranslation } from 'react-i18next';
 
+import { useUpdateProfileMutation } from '@/generated/graphql';
 import { useLanguageSelection } from '@/hooks';
+import { isLoggedIn } from '@/ui/layout/apolloClient';
 
 const LanguageSelector = () => {
   const { t } = useTranslation();
   const { currentLanguage, changeLanguage, languages } = useLanguageSelection();
+  const [updateSelectedLanguage] = useUpdateProfileMutation();
 
-  const handleChangeLanguage = (e: SelectChangeEvent) => {
+  const handleChangeLanguage = async (e: SelectChangeEvent) => {
     changeLanguage(e.target.value);
+
+    if (isLoggedIn()) {
+      await updateSelectedLanguage({
+        variables: {
+          profileDetails: {
+            selectedLanguage: e.target.value,
+          },
+        },
+      });
+    }
   };
 
   const getLanguageName = (lang: string): string => {

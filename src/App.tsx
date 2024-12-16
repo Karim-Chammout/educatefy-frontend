@@ -6,7 +6,7 @@ import { ThemeProvider as MUIThemeProvider, createTheme } from '@mui/material/st
 import { prefixer } from 'stylis';
 import rtlPlugin from 'stylis-plugin-rtl';
 
-import useLanguageSelection from '@/hooks/useLanguageSelection';
+import { useLanguageSelection } from '@/hooks';
 import { client } from '@/ui/layout/apolloClient';
 import Main from '@/ui/layout/Main';
 import muiCustomTheme from '@/ui/theme/muiTheme';

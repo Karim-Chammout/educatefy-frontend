@@ -47,6 +47,8 @@ export type Account = {
   nationality?: Maybe<Country>;
   /** The nickname of the account */
   nickname?: Maybe<Scalars['String']['output']>;
+  /** The preferred language for the account */
+  preferredLanguage: Scalars['String']['output'];
   /** Represents the subject a teacher is specialized in for teaching. */
   specialty?: Maybe<Scalars['String']['output']>;
 };
@@ -190,6 +192,8 @@ export type ProfileDetailsInput = {
   nationalityId?: InputMaybe<Scalars['ID']['input']>;
   /** The nickname name of the user. */
   nickname?: InputMaybe<Scalars['String']['input']>;
+  /** The preferred language for the user */
+  selectedLanguage?: InputMaybe<Scalars['String']['input']>;
   /** The short bio about the teacher. */
   teacherBio?: InputMaybe<Scalars['String']['input']>;
   /** The short description about the teacher. */
@@ -259,12 +263,38 @@ export type AccountInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AccountInfoQuery = { __typename?: 'Query', me: { __typename?: 'Account', nickname?: string | null, gender?: Gender | null, avatar_url?: string | null, accountRole: AccountRole } };
 
-export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null };
+export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null } };
+
+export type UserFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null };
+
+export type UserProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserProfileQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null }, countries: Array<{ __typename?: 'Country', id: string, denomination: string }> };
+
+export type UpdateProfileMutationVariables = Exact<{
+  profileDetails: ProfileDetailsInput;
+}>;
+
+
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'UpdateProfileResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, user?: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null } | null } | null };
+
+export type ChangeProfilePictureMutationVariables = Exact<{
+  profilePictureDetails: ProfilePictureDetailsInput;
+}>;
+
+
+export type ChangeProfilePictureMutation = { __typename?: 'Mutation', changeProfilePicture?: { __typename?: 'ChangeProfilePictureResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, user?: { __typename?: 'Account', id: string, avatar_url?: string | null } | null } | null };
+
+export type RemoveProfilePictureMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RemoveProfilePictureMutation = { __typename?: 'Mutation', removeProfilePicture?: { __typename?: 'ChangeProfilePictureResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, user?: { __typename?: 'Account', id: string, avatar_url?: string | null } | null } | null };
 
 export const OpenidClientFragmentDoc = gql`
     fragment OpenidClient on OpenidClient {
@@ -301,7 +331,33 @@ export const AccountFragmentDoc = gql`
     denomination
     iso
   }
+  preferredLanguage
   accountRole
+  bio
+  description
+  specialty
+}
+    `;
+export const UserFragmentDoc = gql`
+    fragment User on Account {
+  id
+  name
+  nickname
+  first_name
+  last_name
+  gender
+  date_of_birth
+  avatar_url
+  country {
+    id
+    denomination
+  }
+  nationality {
+    id
+    denomination
+  }
+  accountRole
+  preferredLanguage
   bio
   description
   specialty
@@ -502,3 +558,164 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const UserProfileDocument = gql`
+    query UserProfile {
+  me {
+    ...User
+  }
+  countries {
+    id
+    denomination
+  }
+}
+    ${UserFragmentDoc}`;
+
+/**
+ * __useUserProfileQuery__
+ *
+ * To run a query within a React component, call `useUserProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserProfileQuery(baseOptions?: Apollo.QueryHookOptions<UserProfileQuery, UserProfileQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserProfileQuery, UserProfileQueryVariables>(UserProfileDocument, options);
+      }
+export function useUserProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserProfileQuery, UserProfileQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserProfileQuery, UserProfileQueryVariables>(UserProfileDocument, options);
+        }
+export function useUserProfileSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<UserProfileQuery, UserProfileQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UserProfileQuery, UserProfileQueryVariables>(UserProfileDocument, options);
+        }
+export type UserProfileQueryHookResult = ReturnType<typeof useUserProfileQuery>;
+export type UserProfileLazyQueryHookResult = ReturnType<typeof useUserProfileLazyQuery>;
+export type UserProfileSuspenseQueryHookResult = ReturnType<typeof useUserProfileSuspenseQuery>;
+export type UserProfileQueryResult = Apollo.QueryResult<UserProfileQuery, UserProfileQueryVariables>;
+export const UpdateProfileDocument = gql`
+    mutation UpdateProfile($profileDetails: ProfileDetailsInput!) {
+  updateProfile(profileDetails: $profileDetails) {
+    success
+    errors {
+      message
+    }
+    user {
+      ...User
+    }
+  }
+}
+    ${UserFragmentDoc}`;
+export type UpdateProfileMutationFn = Apollo.MutationFunction<UpdateProfileMutation, UpdateProfileMutationVariables>;
+
+/**
+ * __useUpdateProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProfileMutation, { data, loading, error }] = useUpdateProfileMutation({
+ *   variables: {
+ *      profileDetails: // value for 'profileDetails'
+ *   },
+ * });
+ */
+export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProfileMutation, UpdateProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProfileMutation, UpdateProfileMutationVariables>(UpdateProfileDocument, options);
+      }
+export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
+export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
+export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
+export const ChangeProfilePictureDocument = gql`
+    mutation ChangeProfilePicture($profilePictureDetails: ProfilePictureDetailsInput!) {
+  changeProfilePicture(profilePictureDetails: $profilePictureDetails) {
+    success
+    errors {
+      message
+    }
+    user {
+      id
+      avatar_url
+    }
+  }
+}
+    `;
+export type ChangeProfilePictureMutationFn = Apollo.MutationFunction<ChangeProfilePictureMutation, ChangeProfilePictureMutationVariables>;
+
+/**
+ * __useChangeProfilePictureMutation__
+ *
+ * To run a mutation, you first call `useChangeProfilePictureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeProfilePictureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeProfilePictureMutation, { data, loading, error }] = useChangeProfilePictureMutation({
+ *   variables: {
+ *      profilePictureDetails: // value for 'profilePictureDetails'
+ *   },
+ * });
+ */
+export function useChangeProfilePictureMutation(baseOptions?: Apollo.MutationHookOptions<ChangeProfilePictureMutation, ChangeProfilePictureMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangeProfilePictureMutation, ChangeProfilePictureMutationVariables>(ChangeProfilePictureDocument, options);
+      }
+export type ChangeProfilePictureMutationHookResult = ReturnType<typeof useChangeProfilePictureMutation>;
+export type ChangeProfilePictureMutationResult = Apollo.MutationResult<ChangeProfilePictureMutation>;
+export type ChangeProfilePictureMutationOptions = Apollo.BaseMutationOptions<ChangeProfilePictureMutation, ChangeProfilePictureMutationVariables>;
+export const RemoveProfilePictureDocument = gql`
+    mutation RemoveProfilePicture {
+  removeProfilePicture {
+    success
+    errors {
+      message
+    }
+    user {
+      id
+      avatar_url
+    }
+  }
+}
+    `;
+export type RemoveProfilePictureMutationFn = Apollo.MutationFunction<RemoveProfilePictureMutation, RemoveProfilePictureMutationVariables>;
+
+/**
+ * __useRemoveProfilePictureMutation__
+ *
+ * To run a mutation, you first call `useRemoveProfilePictureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveProfilePictureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeProfilePictureMutation, { data, loading, error }] = useRemoveProfilePictureMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRemoveProfilePictureMutation(baseOptions?: Apollo.MutationHookOptions<RemoveProfilePictureMutation, RemoveProfilePictureMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveProfilePictureMutation, RemoveProfilePictureMutationVariables>(RemoveProfilePictureDocument, options);
+      }
+export type RemoveProfilePictureMutationHookResult = ReturnType<typeof useRemoveProfilePictureMutation>;
+export type RemoveProfilePictureMutationResult = Apollo.MutationResult<RemoveProfilePictureMutation>;
+export type RemoveProfilePictureMutationOptions = Apollo.BaseMutationOptions<RemoveProfilePictureMutation, RemoveProfilePictureMutationVariables>;

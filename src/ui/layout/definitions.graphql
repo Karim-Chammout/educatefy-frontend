@@ -17,6 +17,7 @@ fragment Account on Account {
     denomination
     iso
   }
+  preferredLanguage
   accountRole
   bio
   description

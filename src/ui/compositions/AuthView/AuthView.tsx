@@ -12,7 +12,7 @@ import { ContainerGrid, Wrapper } from './AuthView.style';
 const AuthView = ({ children }: { children: ReactNode }) => {
   // Overwriting the breakpoints in the AuthView as a workaround
   const overriteMuiTheme = createTheme({
-    ...muiCustomTheme,
+    ...muiCustomTheme(),
     breakpoints: {
       values: {
         xs: 0,

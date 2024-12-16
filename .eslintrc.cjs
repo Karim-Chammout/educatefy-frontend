@@ -36,6 +36,7 @@ module.exports = {
     'no-useless-catch': 0,
     'consistent-return': 0,
     'prefer-destructuring': 0,
+    'import/no-extraneous-dependencies': 0,
     'no-plusplus': 0,
     'dot-notation': 0,
     '@typescript-eslint/dot-notation': 0,

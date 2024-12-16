@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'reac
 import { useQuill } from 'react-quilljs';
 
 import api from '@/api';
+import { useLanguageSelection } from '@/hooks';
 
 import { EditorWrapper, LoadingOverlay } from './RichTextEditor.style';
 
@@ -86,6 +87,7 @@ const RichTextEditor = ({
   maxFileSize = 5 * 1024 * 1024, // 5MB default
   onError,
 }: RichTextEditorProps) => {
+  const { languageDirection } = useLanguageSelection();
   const [isUploadingImg, setIsUploadingImg] = useState(false);
 
   const { quill, quillRef } = useQuill({
@@ -222,7 +224,7 @@ const RichTextEditor = ({
   }, [quill]);
 
   return (
-    <EditorWrapper>
+    <EditorWrapper languageDirection={languageDirection}>
       <div ref={quillRef} style={{ height }} />
 
       <LoadingOverlay open={isUploadingImg}>

@@ -2,11 +2,13 @@ import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 
-export const EditorWrapper = styled(Box)(({ theme }) => ({
-  position: 'relative',
-  width: '100%',
-  '& .quill': {
+export const EditorWrapper = styled(Box)<{ languageDirection: string }>(
+  ({ theme, languageDirection }) => ({
+    position: 'relative',
+    width: '100%',
+
     '& .ql-toolbar': {
+      direction: languageDirection,
       borderColor: theme.palette.divider,
       borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
     },
@@ -24,8 +26,8 @@ export const EditorWrapper = styled(Box)(({ theme }) => ({
         color: theme.palette.text.secondary,
       },
     },
-  },
-}));
+  }),
+);
 
 export const LoadingOverlay = styled(Backdrop)(({ theme }) => ({
   position: 'absolute',

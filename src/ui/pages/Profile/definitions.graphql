@@ -1,0 +1,73 @@
+fragment User on Account {
+  id
+  name
+  nickname
+  first_name
+  last_name
+  gender
+  date_of_birth
+  avatar_url
+  country {
+    id
+    denomination
+  }
+  nationality {
+    id
+    denomination
+  }
+  accountRole
+  preferredLanguage
+  bio
+  description
+  specialty
+}
+
+query UserProfile {
+  me {
+    ...User
+  }
+  countries {
+    id
+    denomination
+  }
+}
+
+mutation UpdateProfile($profileDetails: ProfileDetailsInput!) {
+  updateProfile(profileDetails: $profileDetails) {
+    success
+    errors {
+      message
+    }
+    user {
+      ...User
+    }
+  }
+}
+
+mutation ChangeProfilePicture(
+  $profilePictureDetails: ProfilePictureDetailsInput!
+) {
+  changeProfilePicture(profilePictureDetails: $profilePictureDetails) {
+    success
+    errors {
+      message
+    }
+    user {
+      id
+      avatar_url
+    }
+  }
+}
+
+mutation RemoveProfilePicture {
+  removeProfilePicture {
+    success
+    errors {
+      message
+    }
+    user {
+      id
+      avatar_url
+    }
+  }
+}

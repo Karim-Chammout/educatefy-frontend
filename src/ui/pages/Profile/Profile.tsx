@@ -144,11 +144,13 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
 
       <Paper
         elevation={4}
-        sx={{ my: 4, px: 4 }}
-        style={{
+        sx={{
+          my: 4,
+          px: 4,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          flexWrap: 'wrap',
         }}
       >
         <Typography variant="h5" component="h5">

@@ -1,5 +1,5 @@
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format } from 'date-fns';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import {
@@ -13,6 +13,7 @@ import {
 } from 'react-hook-form-mui';
 // @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
+import { useTranslation } from 'react-i18next';
 
 import { AccountRole, UserProfileQuery, useUpdateProfileMutation } from '@/generated/graphql';
 import { Button } from '@/ui/components';
@@ -30,6 +31,7 @@ const EditProfile = ({
   countries: UserProfileQuery['countries'];
   setIsEditModalOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const { t } = useTranslation();
   const [descriptionContent, setDescriptionContent] = useState(userInfo.description || '');
 
   const hasDescription = removeHtmlTags(descriptionContent);
@@ -88,7 +90,7 @@ const EditProfile = ({
     ) {
       setToasterVisibility({
         newDuration: 5000,
-        newText: 'Make sure to fill out the required form values correctly!',
+        newText: t('profile.fillRequiredFields'),
         newType: 'error',
       });
 
@@ -114,7 +116,7 @@ const EditProfile = ({
         if (data.updateProfile?.success) {
           setToasterVisibility({
             newDuration: 3000,
-            newText: 'Profile updated successfully!',
+            newText: t('profile.updateSuccess'),
             newType: 'success',
           });
 
@@ -122,7 +124,7 @@ const EditProfile = ({
         } else {
           setToasterVisibility({
             newDuration: 5000,
-            newText: 'Failed to update profile details. Please try again later!',
+            newText: t('profile.updateFailed'),
             newType: 'error',
           });
         }
@@ -135,12 +137,27 @@ const EditProfile = ({
       {/* @ts-expect-error FIXME: Check why the onSuccess prop is throwing type error */}
       <FormContainer onSuccess={handleSubmit(onSubmit)}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <TextFieldElement name="firstName" label="First name" control={control} required />
-          <TextFieldElement name="lastName" label="Last name" control={control} required />
-          <TextFieldElement name="nickname" label="Nickname" control={control} required />
+          <TextFieldElement
+            name="firstName"
+            label={t('profile.firstName')}
+            control={control}
+            required
+          />
+          <TextFieldElement
+            name="lastName"
+            label={t('profile.lastName')}
+            control={control}
+            required
+          />
+          <TextFieldElement
+            name="nickname"
+            label={t('profile.nickname')}
+            control={control}
+            required
+          />
           <AutocompleteElement
             name="nationality"
-            label="Nationality"
+            label={t('profile.nationality')}
             control={control}
             options={countries.map((c) => ({
               id: c.id,
@@ -150,7 +167,7 @@ const EditProfile = ({
           />
           <AutocompleteElement
             name="country"
-            label="Current country"
+            label={t('profile.country')}
             control={control}
             options={countries.map((c) => ({
               id: c.id,
@@ -160,7 +177,7 @@ const EditProfile = ({
           />
           <AutocompleteElement
             name="gender"
-            label="Gender"
+            label={t('profile.gender')}
             control={control}
             options={genderOptions}
             required
@@ -168,7 +185,7 @@ const EditProfile = ({
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePickerElement
               name="dateOfBirth"
-              label="Date of birth"
+              label={t('profile.dateOfBirth')}
               control={control}
               disableFuture
               required
@@ -176,19 +193,29 @@ const EditProfile = ({
           </LocalizationProvider>
           {userInfo.accountRole === AccountRole.Teacher && (
             <>
-              <TextFieldElement name="specialty" label="Specialty" control={control} required />
-              <TextareaAutosizeElement name="bio" label="Bio" control={control} required />
+              <TextFieldElement
+                name="specialty"
+                label={t('profile.specialty')}
+                control={control}
+                required
+              />
+              <TextareaAutosizeElement
+                name="bio"
+                label={t('profile.bio')}
+                control={control}
+                required
+              />
               <RichTextEditor
                 onChange={setDescriptionContent}
                 initialValue={descriptionContent}
-                placeholder="Write a description about yourself here..."
+                placeholder={t('profile.descriptionPlaceholder')}
               />
             </>
           )}
         </div>
         <div style={{ display: 'flex', gap: '16px', marginTop: '32px' }}>
           <Button variant="outlined" onClick={() => setIsEditModalOpen(false)} fullWidth>
-            Cancel
+            {t('profile.cancel')}
           </Button>
           <Button
             type="submit"
@@ -205,7 +232,7 @@ const EditProfile = ({
                 (!specialty || !bio || !hasDescription))
             }
           >
-            Save
+            {t('profile.save')}
           </Button>
         </div>
       </FormContainer>

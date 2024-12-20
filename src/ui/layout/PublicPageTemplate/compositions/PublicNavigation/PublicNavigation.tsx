@@ -4,6 +4,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router';
 
 import logo from '@/assets/logo.svg';
@@ -13,13 +14,14 @@ import { LogoWrapper, StyledNavLink } from './PublicNavigation.style';
 
 const navItems = [
   {
-    label: 'Explore',
+    label: 'navigation.explore',
     icon: <ExploreIcon />,
     path: '/explore',
   },
 ];
 
 const PublicNavigation = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -43,7 +45,7 @@ const PublicNavigation = () => {
             {navItems.map((item) => (
               <StyledNavLink key={item.path} to={item.path}>
                 {item.icon}
-                {item.label}
+                {t(item.label)}
               </StyledNavLink>
             ))}
           </Box>
@@ -51,15 +53,15 @@ const PublicNavigation = () => {
             {shouldShowCTA &&
               (isMobile ? (
                 <Button variant="contained" LinkComponent={Link} to="/login">
-                  Continue
+                  {t('publicNavigation.continue')}
                 </Button>
               ) : (
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   <Button variant="outlined" LinkComponent={Link} to="/login">
-                    Log in
+                    {t('publicNavigation.login')}
                   </Button>
                   <Button variant="contained" LinkComponent={Link} to="/register">
-                    Register
+                    {t('publicNavigation.register')}
                   </Button>
                 </Box>
               ))}

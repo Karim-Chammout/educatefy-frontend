@@ -11,29 +11,30 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import { MouseEvent, SyntheticEvent, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import person from '@/assets/person.png';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
 import { AuthContext } from '@/ui/context';
+import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { logout } from '@/utils/logout';
 
 const navItems = [
   {
-    label: 'Home',
+    label: 'navigation.home',
     icon: <HomeIcon />,
     path: '/',
     roleAccess: AccountRole.Student,
   },
   {
-    label: 'Explore',
+    label: 'navigation.explore',
     icon: <ExploreIcon />,
     path: '/explore',
     roleAccess: AccountRole.Student,
   },
   {
-    label: 'Dashboard',
+    label: 'navigation.dashboard',
     icon: <DashboardIcon />,
     path: '/dashboard',
     roleAccess: AccountRole.Teacher,
@@ -41,6 +42,7 @@ const navItems = [
 ];
 
 const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'] }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -86,7 +88,7 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
               .map((item) => (
                 <BottomNavigationAction
                   key={item.path}
-                  // label={item.label}
+                  aria-label={t(item.label)}
                   value={item.path}
                   icon={item.icon}
                   onClick={() => navigate(item.path)}
@@ -96,7 +98,7 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
           : navItems.map((item) => (
               <BottomNavigationAction
                 key={item.path}
-                // label={item.label}
+                aria-label={t(item.label)}
                 value={item.path}
                 icon={item.icon}
                 onClick={() => navigate(item.path)}
@@ -107,7 +109,7 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
           onClick={handleAvatarClick}
           icon={
             <Avatar
-              alt={accountInfo.nickname || 'Avatar'}
+              alt={accountInfo.nickname || t('navigation.avatarAlt')}
               src={accountInfo.avatar_url || person}
               sx={{ height: '24px', width: '24px' }}
             />
@@ -140,7 +142,7 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
           <ListItemIcon>
             <Person2Icon fontSize="small" />
           </ListItemIcon>
-          Profile
+          {t('navigation.profile')}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -151,7 +153,7 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>
-          Logout
+          {t('navigation.logout')}
         </MenuItem>
       </Menu>
     </Paper>

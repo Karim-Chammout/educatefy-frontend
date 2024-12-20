@@ -14,6 +14,7 @@ import {
 } from 'react-hook-form-mui';
 // @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
+import { useTranslation } from 'react-i18next';
 
 import {
   AccountFragment,
@@ -30,6 +31,7 @@ import ErrorPlaceholder from '../ErrorPlaceholder';
 import RichTextEditor from '../RichTextEditor';
 
 const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
+  const { t } = useTranslation();
   const [descriptionContent, setDescriptionContent] = useState(userInfo.description || '');
   const { setToasterVisibility } = useContext(ToasterContext);
   const { loading, error, data } = useCountriesQuery();
@@ -83,7 +85,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
     ) {
       setToasterVisibility({
         newDuration: 5000,
-        newText: 'Make sure to fill out the required form values correctly!',
+        newText: t('setupProfile.fillRequiredFields'),
         newType: 'error',
       });
 
@@ -111,7 +113,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
         } else {
           setToasterVisibility({
             newDuration: 5000,
-            newText: 'Failed to update profile information. Please try again later!',
+            newText: t('setupProfile.updateFailed'),
             newType: 'error',
           });
         }
@@ -132,17 +134,32 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
   return (
     <Container maxWidth="xs" sx={{ my: 2 }}>
       <Typography variant="h3" component="h1" gutterBottom>
-        Set up your profile
+        {t('setupProfile.title')}
       </Typography>
       {/* @ts-expect-error FIXME: Check why the onSuccess prop is throwing type error */}
       <FormContainer onSuccess={handleSubmit(onSubmit)}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <TextFieldElement name="firstName" label="First name" control={control} required />
-          <TextFieldElement name="lastName" label="Last name" control={control} required />
-          <TextFieldElement name="nickname" label="Nickname" control={control} required />
+          <TextFieldElement
+            name="firstName"
+            label={t('setupProfile.firstName')}
+            control={control}
+            required
+          />
+          <TextFieldElement
+            name="lastName"
+            label={t('setupProfile.lastName')}
+            control={control}
+            required
+          />
+          <TextFieldElement
+            name="nickname"
+            label={t('setupProfile.nickname')}
+            control={control}
+            required
+          />
           <AutocompleteElement
             name="nationality"
-            label="Nationality"
+            label={t('setupProfile.nationality')}
             control={control}
             required
             options={data.countries.map((c) => ({
@@ -152,7 +169,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           />
           <AutocompleteElement
             name="country"
-            label="Current country"
+            label={t('setupProfile.country')}
             control={control}
             required
             options={data.countries.map((c) => ({
@@ -162,7 +179,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           />
           <AutocompleteElement
             name="gender"
-            label="Gender"
+            label={t('setupProfile.gender')}
             control={control}
             required
             options={genderOptions}
@@ -170,7 +187,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePickerElement
               name="dateOfBirth"
-              label="Date of birth"
+              label={t('setupProfile.dateOfBirth')}
               control={control}
               disableFuture
               required
@@ -178,12 +195,17 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           </LocalizationProvider>
           {userInfo.accountRole === AccountRole.Teacher && (
             <>
-              <TextFieldElement name="specialty" label="Specialty" control={control} required />
+              <TextFieldElement
+                name="specialty"
+                label={t('setupProfile.specialty')}
+                control={control}
+                required
+              />
               <TextareaAutosizeElement
                 name="bio"
-                label="Bio"
+                label={t('setupProfile.bio')}
                 control={control}
-                helperText="Write a short bio about yourself"
+                helperText={t('setupProfile.bioHelperText')}
                 rows={3}
                 maxRows={3}
                 required
@@ -191,7 +213,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
               <RichTextEditor
                 onChange={setDescriptionContent}
                 initialValue={descriptionContent}
-                placeholder="Write a description about yourself here..."
+                placeholder={t('setupProfile.descriptionPlaceholder')}
               />
             </>
           )}
@@ -214,7 +236,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           fullWidth
           sx={{ mt: 4, mb: 8 }}
         >
-          Submit
+          {t('setupProfile.submit')}
         </Button>
       </FormContainer>
     </Container>

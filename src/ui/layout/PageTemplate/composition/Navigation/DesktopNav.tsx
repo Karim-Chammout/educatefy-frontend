@@ -12,14 +12,16 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
+import { TFunction } from 'i18next';
 import { MouseEvent, useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import logo from '@/assets/logo.svg';
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { AuthContext } from '@/ui/context';
+import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { logout } from '@/utils/logout';
 
 import { LogoWrapper, StyledNavLink } from './Navigation.style';
@@ -33,35 +35,36 @@ type NavItemType = {
 
 const navItems: NavItemType[] = [
   {
-    label: 'Home',
+    label: 'navigation.home',
     icon: <HomeIcon />,
     path: '/',
     roleAccess: AccountRole.Student,
   },
   {
-    label: 'Explore',
+    label: 'navigation.explore',
     icon: <ExploreIcon />,
     path: '/explore',
     roleAccess: AccountRole.Student,
   },
   {
-    label: 'Dashboard',
+    label: 'navigation.dashboard',
     icon: <DashboardIcon />,
     path: '/dashboard',
     roleAccess: AccountRole.Teacher,
   },
 ];
 
-const NavItem = ({ item }: { item: NavItemType }) => {
+const NavItem = ({ item, t }: { item: NavItemType; t: TFunction<'translation', undefined> }) => {
   return (
     <StyledNavLink to={item.path}>
       {item.icon}
-      {item.label}
+      {t(item.label)}
     </StyledNavLink>
   );
 };
 
 const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'] }) => {
+  const { t } = useTranslation();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
@@ -100,13 +103,13 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
             {accountInfo?.accountRole === AccountRole.Student
               ? navItems
                   .filter((i) => i.roleAccess !== AccountRole.Teacher)
-                  .map((navItem) => <NavItem key={navItem.path} item={navItem} />)
-              : navItems.map((item) => <NavItem key={item.path} item={item} />)}
+                  .map((navItem) => <NavItem key={navItem.path} item={navItem} t={t} />)
+              : navItems.map((item) => <NavItem key={item.path} item={item} t={t} />)}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar
-                alt={accountInfo?.nickname || 'Avatar'}
+                alt={accountInfo?.nickname || t('navigation.avatarAlt')}
                 src={accountInfo?.avatar_url || person}
               />
             </IconButton>
@@ -137,7 +140,7 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
                 <ListItemIcon>
                   <Person2Icon fontSize="small" />
                 </ListItemIcon>
-                Profile
+                {t('navigation.profile')}
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -148,7 +151,7 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
                 <ListItemIcon>
                   <LogoutIcon fontSize="small" />
                 </ListItemIcon>
-                Logout
+                {t('navigation.logout')}
               </MenuItem>
             </Menu>
           </Box>

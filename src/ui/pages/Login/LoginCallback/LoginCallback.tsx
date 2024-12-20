@@ -1,4 +1,5 @@
 import { useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Loader } from '@/ui/components';
@@ -7,6 +8,7 @@ import { BASE_URL, isLoggedIn } from '@/ui/layout/apolloClient';
 import { SIGN_UP_FIRST } from '@/utils/constants';
 
 const LoginCallback = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const { setToasterVisibility } = useContext(ToasterContext);
@@ -57,7 +59,7 @@ const LoginCallback = () => {
         if ((error as Error).message === SIGN_UP_FIRST) {
           setToasterVisibility({
             newDuration: null,
-            newText: 'You have to create an account first!',
+            newText: t('login.createAccountFirst'),
             newType: 'error',
           });
           navigate('/register');
@@ -67,7 +69,7 @@ const LoginCallback = () => {
 
         setToasterVisibility({
           newDuration: null,
-          newText: 'Something went wrong. Please try again later!',
+          newText: t('login.somethingWentWrong'),
           newType: 'error',
         });
         navigate('/login');

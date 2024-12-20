@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { Accept, DropzoneOptions, useDropzone } from 'react-dropzone';
+import { useTranslation } from 'react-i18next';
 
 type FileDropzoneType = {
   onFilesSelected: (files: File[]) => void;
@@ -17,6 +18,8 @@ const FileDropzone = ({
   disabled = false,
   ...rest
 }: FileDropzoneType) => {
+  const { t } = useTranslation();
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       onFilesSelected(acceptedFiles);
@@ -53,11 +56,11 @@ const FileDropzone = ({
     >
       <input {...getInputProps()} />
       {isDragActive && !isDragReject ? (
-        <p>Drop the files here...</p>
+        <p>{t('fileDropzone.dropHere')}</p>
       ) : isDragReject ? (
-        <p>This file type is not supported</p>
+        <p>{t('fileDropzone.unsupportedFileType')}</p>
       ) : (
-        <p>{disabled ? 'Dropzone is disabled' : 'Drag & drop a file, or click to select'}</p>
+        <p>{disabled ? t('fileDropzone.disabled') : t('fileDropzone.dragOrClick')}</p>
       )}
     </div>
   );

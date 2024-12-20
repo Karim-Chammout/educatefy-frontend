@@ -5,6 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 
 import { Typography } from '@/ui/components';
@@ -12,6 +13,7 @@ import { AuthView } from '@/ui/compositions';
 import OIDCButtons from '@/ui/compositions/AuthView/OIDCButtons';
 
 const Register = () => {
+  const { t } = useTranslation();
   const [userType, setUserType] = useState<'student' | 'teacher' | undefined>(undefined);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +26,7 @@ const Register = () => {
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Sign up
+        {t('register.signUp')}
       </Typography>
       <RadioGroup
         aria-labelledby="user-type-radio-buttons-group-label"
@@ -37,16 +39,16 @@ const Register = () => {
           severity={userType === undefined ? 'warning' : 'success'}
           sx={{ m: 'auto' }}
         >
-          <Typography sx={{ fontWeight: 'bold' }}>Select a user role:</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>{t('register.selectUserRole')}</Typography>
         </Alert>
         <div style={{ display: 'flex' }}>
-          <FormControlLabel value="student" control={<Radio />} label="Student" />
-          <FormControlLabel value="teacher" control={<Radio />} label="Teacher" />
+          <FormControlLabel value="student" control={<Radio />} label={t('register.student')} />
+          <FormControlLabel value="teacher" control={<Radio />} label={t('register.teacher')} />
         </div>
       </RadioGroup>
       <OIDCButtons userType={userType} disabled={userType === undefined} isRegister />
       <Typography variant="body1">
-        Already have an account? <Link to="/login">Login</Link>
+        {t('register.alreadyHaveAccount')} <Link to="/login">{t('register.login')}</Link>
       </Typography>
     </AuthView>
   );

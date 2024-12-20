@@ -70,7 +70,7 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
       setIsLoading(false);
       setToasterVisibility({
         newDuration: 3000,
-        newText: 'Profile picture updated successfully!',
+        newText: t('profile.pictureUpdated'),
         newType: 'success',
       });
 
@@ -78,7 +78,7 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
     } catch (_error) {
       setToasterVisibility({
         newDuration: 5000,
-        newText: 'Failed to update profile picture. Please try again later!',
+        newText: t('profile.pictureUpdateFailed'),
         newType: 'error',
       });
       setIsChangePicModalOpen(false);
@@ -90,13 +90,13 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
       await removeProfilePic();
       setToasterVisibility({
         newDuration: 3000,
-        newText: 'Profile picture removed successfully!',
+        newText: t('profile.pictureRemoved'),
         newType: 'success',
       });
     } catch (_error) {
       setToasterVisibility({
         newDuration: 5000,
-        newText: 'Failed to remove profile picture. Please try again later!',
+        newText: t('profile.pictureRemoveFailed'),
         newType: 'error',
       });
     }
@@ -120,7 +120,7 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <Avatar
             src={userInfo.avatar_url || undefined}
-            alt={userInfo.nickname || 'Profile image'}
+            alt={userInfo.nickname || t('profile.profileImage')}
             sx={{ width: 96, height: 96 }}
           />
           <Typography variant="h4" component="p">
@@ -129,7 +129,7 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
         </div>
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
           <Button startIcon={<EditIcon />} onClick={() => setIsChangePicModalOpen(true)}>
-            Change picture
+            {t('profile.changePicture')}
           </Button>
           <Button
             color="error"
@@ -137,7 +137,7 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
             onClick={() => setIsConfirmRemoveModalOpen(true)}
             disabled={userInfo.avatar_url === null}
           >
-            Delete picture
+            {t('profile.deletePicture')}
           </Button>
         </div>
       </div>
@@ -171,51 +171,51 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
           }}
         >
           <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold' }}>
-            Profile Information
+            {t('profile.profileInformation')}
           </Typography>
           <Button startIcon={<EditIcon />} onClick={() => setIsEditModalOpen(true)}>
-            Edit
+            {t('profile.edit')}
           </Button>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px' }}>
           <InfoItem>
-            <Typography>First Name:</Typography>
+            <Typography>{t('profile.firstName')}:</Typography>
             <Typography variant="h5" component="p">
               {userInfo.first_name}
             </Typography>
           </InfoItem>
           <InfoItem>
-            <Typography>last Name:</Typography>
+            <Typography>{t('profile.lastName')}:</Typography>
             <Typography variant="h5" component="p">
               {userInfo.last_name}
             </Typography>
           </InfoItem>
           <InfoItem>
-            <Typography>Nickname:</Typography>
+            <Typography>{t('profile.nickname')}:</Typography>
             <Typography variant="h5" component="p">
               {userInfo.nickname}
             </Typography>
           </InfoItem>
           <InfoItem>
-            <Typography>Gender:</Typography>
+            <Typography>{t('profile.gender')}:</Typography>
             <Typography variant="h5" component="p">
               {userInfo.gender?.toLowerCase()}
             </Typography>
           </InfoItem>
           <InfoItem>
-            <Typography>Country:</Typography>
+            <Typography>{t('profile.country')}:</Typography>
             <Typography variant="h5" component="p">
               {userInfo.country?.denomination}
             </Typography>
           </InfoItem>
           <InfoItem>
-            <Typography>Nationality:</Typography>
+            <Typography>{t('profile.nationality')}:</Typography>
             <Typography variant="h5" component="p">
               {userInfo.nationality?.denomination}
             </Typography>
           </InfoItem>
           <InfoItem>
-            <Typography>Date of birth:</Typography>
+            <Typography>{t('profile.dateOfBirth')}:</Typography>
             <Typography variant="h5" component="p">
               {dateOfBirth}
             </Typography>
@@ -224,23 +224,23 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
         {userInfo.accountRole === AccountRole.Teacher && (
           <div>
             <Typography variant="h5" component="h1" sx={{ my: 4, fontWeight: 'bold' }}>
-              Teacher-related Information
+              {t('profile.teacherInformation')}
             </Typography>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               <div>
-                <Typography>Specialty:</Typography>
+                <Typography>{t('profile.specialty')}:</Typography>
                 <Typography variant="h5" component="p">
                   {userInfo.specialty}
                 </Typography>
               </div>
               <div>
-                <Typography>Bio:</Typography>
+                <Typography>{t('profile.bio')}:</Typography>
                 <Typography variant="h5" component="p">
                   {userInfo.bio}
                 </Typography>
               </div>
               <div>
-                <Typography>Description:</Typography>
+                <Typography>{t('profile.description')}:</Typography>
                 <Typography
                   dangerouslySetInnerHTML={{
                     __html: userInfo.description || '',
@@ -254,7 +254,7 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
       <Modal
         open={isChangePicModalOpen}
         onClose={() => setIsChangePicModalOpen(false)}
-        title="Upload a picture"
+        title={t('profile.uploadPicture')}
       >
         {isLoading ? (
           <Skeleton variant="rectangular" width="100%" height={100} />
@@ -266,7 +266,7 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
               onClick={() => setIsChangePicModalOpen(false)}
               sx={{ mt: 2 }}
             >
-              Cancel
+              {t('profile.cancel')}
             </Button>
           </>
         )}
@@ -274,7 +274,7 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
       <Modal
         open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        title="Edit your information"
+        title={t('profile.editInformation')}
       >
         <EditProfile
           userInfo={userInfo}
@@ -285,14 +285,14 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
       <Modal
         open={isConfirmRemoveModalOpen}
         onClose={() => setIsConfirmRemoveModalOpen(false)}
-        title="Are you sure you want to remove your porfile picture?"
+        title={t('profile.confirmRemovePicture')}
       >
         <ButtonsWrapper>
           <Button variant="outlined" onClick={() => setIsConfirmRemoveModalOpen(false)} fullWidth>
-            Cancel
+            {t('profile.cancel')}
           </Button>
           <Button color="error" onClick={removeProfilePicture} fullWidth>
-            Confirm
+            {t('profile.confirm')}
           </Button>
         </ButtonsWrapper>
       </Modal>

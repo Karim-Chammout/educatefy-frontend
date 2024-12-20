@@ -2,11 +2,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import { useTranslation } from 'react-i18next';
 
 import { Typography } from '@/ui/components';
 import OIDCButtons from '@/ui/compositions/AuthView/OIDCButtons';
 
 const LoginPopup = ({ handleRegisterSwitch }: { handleRegisterSwitch: () => void }) => {
+  const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -20,13 +23,13 @@ const LoginPopup = ({ handleRegisterSwitch }: { handleRegisterSwitch: () => void
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Sign in
+        {t('login.signIn')}
       </Typography>
       <OIDCButtons />
       <Typography variant="body1">
-        Don't have an account?{' '}
+        {t('login.noAccount')}{' '}
         <Link sx={{ cursor: 'pointer' }} onClick={handleRegisterSwitch}>
-          Sign Up
+          {t('login.signUp')}
         </Link>
       </Typography>
     </Box>

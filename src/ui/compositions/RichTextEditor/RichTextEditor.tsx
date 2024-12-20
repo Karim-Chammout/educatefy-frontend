@@ -1,6 +1,7 @@
 import { Box, CircularProgress } from '@mui/material';
 import 'quill/dist/quill.snow.css';
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuill } from 'react-quilljs';
 
 import api from '@/api';
@@ -83,17 +84,18 @@ const RichTextEditor = ({
   onChange,
   initialValue = '',
   height = 300,
-  placeholder = 'Start writing...',
+  placeholder,
   maxFileSize = 5 * 1024 * 1024, // 5MB default
   onError,
 }: RichTextEditorProps) => {
   const { languageDirection } = useLanguageSelection();
+  const { t } = useTranslation();
   const [isUploadingImg, setIsUploadingImg] = useState(false);
 
   const { quill, quillRef } = useQuill({
     modules: QUILL_MODULES,
     formats: QUILL_FORMATS,
-    placeholder,
+    placeholder: placeholder || t('richTextEditor.placeholder'),
     theme: 'snow',
   });
 
@@ -120,14 +122,14 @@ const RichTextEditor = ({
     async (file: File) => {
       // Validate file type
       if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-        handleError('Invalid file type. Please upload a valid image file.');
+        handleError(t('fileDropzone.unsupportedFileType'));
 
         return;
       }
 
       // Validate file size
       if (file.size > maxFileSize) {
-        handleError(`File size exceeds ${maxFileSize / 1024 / 1024}MB limit.`);
+        handleError(t('richTextEditor.fileSizeError', { size: maxFileSize / 1024 / 1024 }));
 
         return;
       }
@@ -154,13 +156,13 @@ const RichTextEditor = ({
 
         insertToEditor(`${storageBucket}/${uploadedimage.filePath}`);
       } catch (_error) {
-        handleError('Failed to upload image. Please try again.');
+        handleError(t('richTextEditor.uploadError'));
       } finally {
         setIsUploadingImg(false);
         quill.enable();
       }
     },
-    [quill, maxFileSize, handleError, insertToEditor],
+    [quill, maxFileSize, handleError, insertToEditor, t],
   );
 
   const selectLocalImage = useCallback(() => {
@@ -230,7 +232,7 @@ const RichTextEditor = ({
       <LoadingOverlay open={isUploadingImg}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <CircularProgress size={20} />
-          <span>Uploading image...</span>
+          <span>{t('richTextEditor.uploading')}</span>
         </Box>
       </LoadingOverlay>
     </EditorWrapper>

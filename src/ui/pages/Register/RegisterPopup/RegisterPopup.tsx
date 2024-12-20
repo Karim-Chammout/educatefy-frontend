@@ -7,11 +7,13 @@ import Link from '@mui/material/Link';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Typography } from '@/ui/components';
 import OIDCButtons from '@/ui/compositions/AuthView/OIDCButtons';
 
 const RegisterPopup = ({ handleLoginSwitch }: { handleLoginSwitch: () => void }) => {
+  const { t } = useTranslation();
   const [userType, setUserType] = useState<'student' | 'teacher' | undefined>(undefined);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +33,7 @@ const RegisterPopup = ({ handleLoginSwitch }: { handleLoginSwitch: () => void })
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h4">
-        Sign up
+        {t('register.signUp')}
       </Typography>
       <RadioGroup
         aria-labelledby="user-type-radio-buttons-group-label"
@@ -44,18 +46,18 @@ const RegisterPopup = ({ handleLoginSwitch }: { handleLoginSwitch: () => void })
           severity={userType === undefined ? 'warning' : 'success'}
           sx={{ m: 'auto' }}
         >
-          <Typography sx={{ fontWeight: 'bold' }}>Select a user role:</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>{t('register.selectUserRole')}</Typography>
         </Alert>
         <div style={{ display: 'flex' }}>
-          <FormControlLabel value="student" control={<Radio />} label="Student" />
-          <FormControlLabel value="teacher" control={<Radio />} label="Teacher" />
+          <FormControlLabel value="student" control={<Radio />} label={t('register.student')} />
+          <FormControlLabel value="teacher" control={<Radio />} label={t('register.teacher')} />
         </div>
       </RadioGroup>
       <OIDCButtons userType={userType} disabled={userType === undefined} isRegister />
       <Typography variant="body1">
-        Already have an account?{' '}
+        {t('register.alreadyHaveAccount')}{' '}
         <Link sx={{ cursor: 'pointer' }} onClick={handleLoginSwitch}>
-          Login
+          {t('register.login')}
         </Link>
       </Typography>
     </Box>

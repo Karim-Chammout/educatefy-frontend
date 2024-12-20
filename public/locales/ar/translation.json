@@ -73,6 +73,7 @@
   "profile.description": "الوصف",
   "profile.uploadPicture": "تحميل صورة",
   "profile.cancel": "إلغاء",
+  "profile.save": "حفظ",
   "profile.editInformation": "تعديل معلوماتك",
   "profile.confirmRemovePicture": "هل أنت متأكد أنك تريد إزالة صورة الملف الشخصي؟",
   "profile.confirm": "تأكيد",

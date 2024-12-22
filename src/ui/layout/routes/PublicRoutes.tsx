@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router';
 import { ACCESS_DENIED } from '@/utils/constants';
 
 import { Explore, Login, LoginCallback, NotFound, Register } from './LazyComponent';
+import RouteWrapper from './RouteWrapper';
 
 /* 
   list of routes to redirect to login page and show
@@ -13,10 +14,38 @@ const privateRoutes = ['/', '/profile'];
 const PublicRoutes = () => {
   return (
     <Routes>
-      <Route path="/openid/callback" element={<LoginCallback />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/explore" element={<Explore />} />
+      <Route
+        path="/openid/callback"
+        element={
+          <RouteWrapper>
+            <LoginCallback />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <RouteWrapper>
+            <Login />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <RouteWrapper>
+            <Register />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path="/explore"
+        element={
+          <RouteWrapper>
+            <Explore />
+          </RouteWrapper>
+        }
+      />
       {privateRoutes.map((r) => (
         <Route
           key={r}

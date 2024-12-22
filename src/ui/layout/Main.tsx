@@ -13,6 +13,7 @@ import PageTemplate from './PageTemplate';
 import PublicPageTemplate from './PublicPageTemplate';
 import { Explore, Home, NotFound, Profile } from './routes/LazyComponent';
 import PublicRoutes from './routes/PublicRoutes';
+import RouteWrapper from './routes/RouteWrapper';
 
 const PublicPagesView = () => {
   return (
@@ -54,9 +55,30 @@ const PrivatePagesView = () => {
   return (
     <PageTemplate>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/"
+          element={
+            <RouteWrapper>
+              <Home />
+            </RouteWrapper>
+          }
+        />
+        <Route
+          path="/explore"
+          element={
+            <RouteWrapper>
+              <Explore />
+            </RouteWrapper>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <RouteWrapper>
+              <Profile />
+            </RouteWrapper>
+          }
+        />
 
         <Route path="/login" element={<Navigate to="/explore" />} />
         <Route path="/register" element={<Navigate to="/explore" />} />

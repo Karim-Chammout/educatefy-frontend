@@ -2,16 +2,17 @@ import { useReactiveVar } from '@apollo/client';
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
-import { useMeQuery } from '@/generated/graphql';
+import { AccountRole, useMeQuery } from '@/generated/graphql';
+import { useLanguageSelection } from '@/hooks';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, SetupProfile } from '@/ui/compositions';
 import { hasMissingAccountData } from '@/utils/hasMissingAccountData';
 
-import { useLanguageSelection } from '@/hooks';
 import { isLoggedIn } from './apolloClient';
 import PageTemplate from './PageTemplate';
 import PublicPageTemplate from './PublicPageTemplate';
-import { Explore, Home, NotFound, Profile } from './routes/LazyComponent';
+import { DashboardRoutes } from './routes/DashboardRoutes';
+import { Dashboard, Explore, Home, NotFound, Profile } from './routes/LazyComponent';
 import PublicRoutes from './routes/PublicRoutes';
 import RouteWrapper from './routes/RouteWrapper';
 
@@ -79,6 +80,12 @@ const PrivatePagesView = () => {
             </RouteWrapper>
           }
         />
+        <Route
+          path="/dashboard"
+          element={<DashboardRoutes hasPermission={data.me.accountRole === AccountRole.Teacher} />}
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
 
         <Route path="/login" element={<Navigate to="/explore" />} />
         <Route path="/register" element={<Navigate to="/explore" />} />

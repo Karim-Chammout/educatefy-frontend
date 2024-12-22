@@ -80,5 +80,9 @@
   "profile.fillRequiredFields": "Make sure to fill out the required form values correctly!",
   "profile.updateSuccess": "Profile updated successfully!",
   "profile.updateFailed": "Failed to update profile details. Please try again later!",
-  "profile.descriptionPlaceholder": "Write a description about yourself here..."
+  "profile.descriptionPlaceholder": "Write a description about yourself here...",
+  "explore.permissionDenied": "You don't have permission to access this page",
+  "dashboard.courses": "Courses",
+  "dashboard.programs": "Programs",
+  "dashboard.students": "Students"
 }

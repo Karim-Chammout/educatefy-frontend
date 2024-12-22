@@ -80,5 +80,9 @@
   "profile.fillRequiredFields": "تأكد من ملء القيم المطلوبة في النموذج بشكل صحيح!",
   "profile.updateSuccess": "تم تحديث الملف الشخصي بنجاح!",
   "profile.updateFailed": "فشل في تحديث تفاصيل الملف الشخصي. يرجى المحاولة مرة أخرى لاحقًا!",
-  "profile.descriptionPlaceholder": "اكتب وصفًا عن نفسك هنا..."
+  "profile.descriptionPlaceholder": "اكتب وصفًا عن نفسك هنا...",
+  "explore.permissionDenied": "ليس لديك إذن للوصول إلى هذه الصفحة",
+  "dashboard.courses": "الدورات",
+  "dashboard.programs": "البرامج",
+  "dashboard.students": "الطلاب"
 }

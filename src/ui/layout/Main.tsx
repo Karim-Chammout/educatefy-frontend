@@ -1,6 +1,6 @@
 import { useReactiveVar } from '@apollo/client';
 import { useEffect } from 'react';
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
 import { useMeQuery } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
@@ -11,15 +11,7 @@ import { useLanguageSelection } from '@/hooks';
 import { isLoggedIn } from './apolloClient';
 import PageTemplate from './PageTemplate';
 import PublicPageTemplate from './PublicPageTemplate';
-import {
-  Explore,
-  Home,
-  Login,
-  LoginCallback,
-  NotFound,
-  Profile,
-  Register,
-} from './routes/LazyComponent';
+import { Explore, Home, NotFound, Profile } from './routes/LazyComponent';
 import PublicRoutes from './routes/PublicRoutes';
 
 const PublicPagesView = () => {
@@ -64,10 +56,11 @@ const PrivatePagesView = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/openid/callback" element={<LoginCallback />} />
         <Route path="/profile" element={<Profile />} />
+
+        <Route path="/login" element={<Navigate to="/explore" />} />
+        <Route path="/register" element={<Navigate to="/explore" />} />
+        <Route path="/openid/callback" element={<Navigate to="/explore" />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

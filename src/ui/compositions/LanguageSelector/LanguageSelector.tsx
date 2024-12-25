@@ -43,8 +43,8 @@ const LanguageSelector = () => {
     <FormControl
       variant="outlined"
       sx={{
-        m: 2,
         minWidth: '120px',
+        width: '100%',
       }}
     >
       <InputLabel id="language-selector-label">{t('language.selector.label')}</InputLabel>

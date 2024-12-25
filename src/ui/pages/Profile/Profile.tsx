@@ -146,17 +146,22 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
         elevation={4}
         sx={{
           my: 4,
-          px: 4,
+          p: 4,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          gap: '16px',
           flexWrap: 'wrap',
         }}
       >
-        <Typography variant="h5" component="h5">
-          {t('language.selector.label')}
-        </Typography>
-        <LanguageSelector />
+        <div style={{ flex: 3 }}>
+          <Typography variant="h5" component="h5">
+            {t('language.selector.label')}
+          </Typography>
+        </div>
+        <div style={{ flex: 1 }}>
+          <LanguageSelector />
+        </div>
       </Paper>
 
       <Paper elevation={4} sx={{ my: 4, p: 4 }}>

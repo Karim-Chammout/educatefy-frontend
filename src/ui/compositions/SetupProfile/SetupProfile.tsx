@@ -22,16 +22,19 @@ import {
   useCountriesQuery,
   useUpdateAccountInfoMutation,
 } from '@/generated/graphql';
+import { useLanguageSelection } from '@/hooks';
 import { Button, Loader, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
 import { genderOptions } from '@/utils/genderOptions';
 import { removeHtmlTags } from '@/utils/removeHTMLTags';
 
 import ErrorPlaceholder from '../ErrorPlaceholder';
+import LanguageSelector from '../LanguageSelector';
 import RichTextEditor from '../RichTextEditor';
 
 const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
   const { t } = useTranslation();
+  const { currentLanguage } = useLanguageSelection();
   const [descriptionContent, setDescriptionContent] = useState(userInfo.description || '');
   const { setToasterVisibility } = useContext(ToasterContext);
   const { loading, error, data } = useCountriesQuery();
@@ -95,6 +98,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
     await updateAccountInfo({
       variables: {
         accountInfo: {
+          selectedLanguage: currentLanguage,
           firstName: trimmedFirstName,
           lastName: trimmedLastName,
           nickname: trimmedNickname,
@@ -139,6 +143,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       {/* @ts-expect-error FIXME: Check why the onSuccess prop is throwing type error */}
       <FormContainer onSuccess={handleSubmit(onSubmit)}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <LanguageSelector />
           <TextFieldElement
             name="firstName"
             label={t('setupProfile.firstName')}

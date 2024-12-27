@@ -50,37 +50,25 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       country: userInfo.country || null,
       dateOfBirth: userInfo.date_of_birth ? new Date(userInfo.date_of_birth) : null,
       subjects: userInfo.subjects.map((s) => s.id) || [],
-      specialty: userInfo.specialty || null,
       bio: userInfo.bio || null,
     },
   });
 
-  const [
-    firstName,
-    lastName,
-    nickname,
-    gender,
-    nationality,
-    country,
-    dateOfBirth,
-    subjects,
-    specialty,
-    bio,
-  ] = useWatch({
-    name: [
-      'firstName',
-      'lastName',
-      'nickname',
-      'gender',
-      'nationality',
-      'country',
-      'dateOfBirth',
-      'subjects',
-      'specialty',
-      'bio',
-    ],
-    control,
-  });
+  const [firstName, lastName, nickname, gender, nationality, country, dateOfBirth, subjects, bio] =
+    useWatch({
+      name: [
+        'firstName',
+        'lastName',
+        'nickname',
+        'gender',
+        'nationality',
+        'country',
+        'dateOfBirth',
+        'subjects',
+        'bio',
+      ],
+      control,
+    });
 
   const onSubmit = async (values: FieldValues) => {
     const trimmedFirstName = values.firstName.trim();
@@ -120,7 +108,6 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           gender: values.gender.id,
           dateOfBirth: formatedDateOfBirth,
           teacherSpecialties: values.subjects.map((s: any) => s.id),
-          teacherSpecialty: specialty,
           teacherBio: bio,
           teacherDescription: descriptionContent,
         },
@@ -231,12 +218,6 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
                 multiple
                 required
               />
-              <TextFieldElement
-                name="specialty"
-                label={t('setupProfile.specialty')}
-                control={control}
-                required
-              />
               <TextareaAutosizeElement
                 name="bio"
                 label={t('setupProfile.bio')}
@@ -266,7 +247,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
             !country ||
             !dateOfBirth ||
             (userInfo.accountRole === AccountRole.Teacher &&
-              (!hasDescription || !subjects.length || !specialty || !bio)) ||
+              (!hasDescription || !subjects.length || !bio)) ||
             updateAccountInfoLoading
           }
           fullWidth

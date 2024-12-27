@@ -85,7 +85,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       !values.country ||
       !values.dateOfBirth ||
       (userInfo.accountRole === AccountRole.Teacher &&
-        (!values.specialty || !values.subjects.length || !values.bio || !descriptionContent))
+        (!values.subjects.length || !values.bio || !descriptionContent))
     ) {
       setToasterVisibility({
         newDuration: 5000,

@@ -88,7 +88,7 @@ const EditProfile = ({
       !values.country ||
       !values.dateOfBirth ||
       (userInfo.accountRole === AccountRole.Teacher &&
-        (!values.specialty || !values.subjects || !values.bio || !hasDescription))
+        (!values.subjects.length || !values.bio || !hasDescription))
     ) {
       setToasterVisibility({
         newDuration: 5000,

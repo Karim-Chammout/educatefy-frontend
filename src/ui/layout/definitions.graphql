@@ -22,6 +22,10 @@ fragment Account on Account {
   bio
   description
   specialty
+  subjects {
+    id
+    denomination
+  }
 }
 
 query Me {

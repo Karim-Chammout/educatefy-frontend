@@ -48,7 +48,7 @@ const EditProfile = ({
     country: userInfo.country?.id || null,
     gender: userInfo.gender || null,
     dateOfBirth: new Date(userInfo.date_of_birth) || null,
-    subjects: userInfo.subjects.map((s) => s.id) || [],
+    subjects: userInfo.subjects || [],
     bio: userInfo.bio || '',
   };
 
@@ -110,7 +110,7 @@ const EditProfile = ({
           gender: values.gender.id,
           dateOfBirth: formatedDateOfBirth,
           teacherBio: values.bio,
-          teacherSpecialties: values.subjects.map((s: any) => s.id),
+          teacherSpecialties: values.subjects.map((s: { id: string }) => s.id),
           teacherDescription: descriptionContent,
         },
       },

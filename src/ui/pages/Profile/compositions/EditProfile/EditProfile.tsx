@@ -49,39 +49,27 @@ const EditProfile = ({
     gender: userInfo.gender || null,
     dateOfBirth: new Date(userInfo.date_of_birth) || null,
     subjects: userInfo.subjects.map((s) => s.id) || [],
-    specialty: userInfo.specialty || '',
     bio: userInfo.bio || '',
   };
 
   const { handleSubmit, control } = useForm({
     defaultValues,
   });
-  const [
-    firstName,
-    lastName,
-    nickname,
-    gender,
-    nationality,
-    country,
-    dateOfBirth,
-    subjects,
-    specialty,
-    bio,
-  ] = useWatch({
-    name: [
-      'firstName',
-      'lastName',
-      'nickname',
-      'gender',
-      'nationality',
-      'country',
-      'dateOfBirth',
-      'subjects',
-      'specialty',
-      'bio',
-    ],
-    control,
-  });
+  const [firstName, lastName, nickname, gender, nationality, country, dateOfBirth, subjects, bio] =
+    useWatch({
+      name: [
+        'firstName',
+        'lastName',
+        'nickname',
+        'gender',
+        'nationality',
+        'country',
+        'dateOfBirth',
+        'subjects',
+        'bio',
+      ],
+      control,
+    });
 
   const [updateProfile] = useUpdateProfileMutation();
 
@@ -123,7 +111,6 @@ const EditProfile = ({
           dateOfBirth: formatedDateOfBirth,
           teacherBio: values.bio,
           teacherSpecialties: values.subjects.map((s: any) => s.id),
-          teacherSpecialty: values.specialty,
           teacherDescription: descriptionContent,
         },
       },
@@ -225,12 +212,6 @@ const EditProfile = ({
                 multiple
                 required
               />
-              <TextFieldElement
-                name="specialty"
-                label={t('profile.specialty')}
-                control={control}
-                required
-              />
               <TextareaAutosizeElement
                 name="bio"
                 label={t('profile.bio')}
@@ -261,7 +242,7 @@ const EditProfile = ({
               !country ||
               !dateOfBirth ||
               (userInfo.accountRole === AccountRole.Teacher &&
-                (!specialty || !subjects.length || !bio || !hasDescription))
+                (!subjects.length || !bio || !hasDescription))
             }
           >
             {t('profile.save')}

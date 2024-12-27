@@ -49,8 +49,6 @@ export type Account = {
   nickname?: Maybe<Scalars['String']['output']>;
   /** The preferred language for the account */
   preferredLanguage: Scalars['String']['output'];
-  /** Represents the subject a teacher is specialized in for teaching. */
-  specialty?: Maybe<Scalars['String']['output']>;
   /** Represents the subjects a teacher is specialized in for teaching. */
   subjects: Array<Subject>;
 };
@@ -79,8 +77,6 @@ export type AccountInfoInput = {
   teacherDescription?: InputMaybe<Scalars['String']['input']>;
   /** List of subject IDs a teacher is specialized in for teaching. */
   teacherSpecialties?: InputMaybe<Array<Scalars['ID']['input']>>;
-  /** The specialty of the teacher. */
-  teacherSpecialty?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** The role of the account. */
@@ -206,8 +202,6 @@ export type ProfileDetailsInput = {
   teacherDescription?: InputMaybe<Scalars['String']['input']>;
   /** List of subject IDs a teacher is specialized in for teaching. */
   teacherSpecialties?: InputMaybe<Array<Scalars['ID']['input']>>;
-  /** The specialty of the teacher. */
-  teacherSpecialty?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Input for updating an account information */
@@ -284,26 +278,26 @@ export type AccountInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AccountInfoQuery = { __typename?: 'Query', me: { __typename?: 'Account', nickname?: string | null, gender?: Gender | null, avatar_url?: string | null, accountRole: AccountRole } };
 
-export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
+export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } };
 
-export type UserFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
+export type UserFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type UserProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserProfileQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> }, countries: Array<{ __typename?: 'Country', id: string, denomination: string }>, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
+export type UserProfileQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> }, countries: Array<{ __typename?: 'Country', id: string, denomination: string }>, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type UpdateProfileMutationVariables = Exact<{
   profileDetails: ProfileDetailsInput;
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'UpdateProfileResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, user?: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } | null } | null };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'UpdateProfileResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, user?: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } | null } | null };
 
 export type ChangeProfilePictureMutationVariables = Exact<{
   profilePictureDetails: ProfilePictureDetailsInput;
@@ -362,7 +356,6 @@ export const AccountFragmentDoc = gql`
   accountRole
   bio
   description
-  specialty
   subjects {
     id
     denomination
@@ -391,7 +384,6 @@ export const UserFragmentDoc = gql`
   preferredLanguage
   bio
   description
-  specialty
   subjects {
     id
     denomination

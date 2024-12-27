@@ -25,10 +25,12 @@ import { removeHtmlTags } from '@/utils/removeHTMLTags';
 const EditProfile = ({
   userInfo,
   countries,
+  subjectOptions,
   setIsEditModalOpen,
 }: {
   userInfo: UserProfileQuery['me'];
   countries: UserProfileQuery['countries'];
+  subjectOptions: UserProfileQuery['subjects'];
   setIsEditModalOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation();
@@ -46,6 +48,7 @@ const EditProfile = ({
     country: userInfo.country?.id || null,
     gender: userInfo.gender || null,
     dateOfBirth: new Date(userInfo.date_of_birth) || null,
+    subjects: userInfo.subjects.map((s) => s.id) || [],
     specialty: userInfo.specialty || '',
     bio: userInfo.bio || '',
   };
@@ -53,21 +56,32 @@ const EditProfile = ({
   const { handleSubmit, control } = useForm({
     defaultValues,
   });
-  const [firstName, lastName, nickname, gender, nationality, country, dateOfBirth, specialty, bio] =
-    useWatch({
-      name: [
-        'firstName',
-        'lastName',
-        'nickname',
-        'gender',
-        'nationality',
-        'country',
-        'dateOfBirth',
-        'specialty',
-        'bio',
-      ],
-      control,
-    });
+  const [
+    firstName,
+    lastName,
+    nickname,
+    gender,
+    nationality,
+    country,
+    dateOfBirth,
+    subjects,
+    specialty,
+    bio,
+  ] = useWatch({
+    name: [
+      'firstName',
+      'lastName',
+      'nickname',
+      'gender',
+      'nationality',
+      'country',
+      'dateOfBirth',
+      'subjects',
+      'specialty',
+      'bio',
+    ],
+    control,
+  });
 
   const [updateProfile] = useUpdateProfileMutation();
 
@@ -86,7 +100,7 @@ const EditProfile = ({
       !values.country ||
       !values.dateOfBirth ||
       (userInfo.accountRole === AccountRole.Teacher &&
-        (!values.specialty || !values.bio || !hasDescription))
+        (!values.specialty || !values.subjects || !values.bio || !hasDescription))
     ) {
       setToasterVisibility({
         newDuration: 5000,
@@ -108,6 +122,7 @@ const EditProfile = ({
           gender: values.gender.id,
           dateOfBirth: formatedDateOfBirth,
           teacherBio: values.bio,
+          teacherSpecialties: values.subjects.map((s: any) => s.id),
           teacherSpecialty: values.specialty,
           teacherDescription: descriptionContent,
         },
@@ -193,6 +208,23 @@ const EditProfile = ({
           </LocalizationProvider>
           {userInfo.accountRole === AccountRole.Teacher && (
             <>
+              <AutocompleteElement
+                name="subjects"
+                label={t('setupProfile.specialty')}
+                control={control}
+                autocompleteProps={{
+                  // TODO: Check if the library has been updated or double check a proper fix for this
+                  // Seems like there is a bug in the library and the limitTags option doesn't work
+                  // Workaround for disabling the option when the limit is reached
+                  getOptionDisabled: () => subjects.length >= 3,
+                }}
+                options={subjectOptions.map((s) => ({
+                  id: s.id,
+                  label: s.denomination,
+                }))}
+                multiple
+                required
+              />
               <TextFieldElement
                 name="specialty"
                 label={t('profile.specialty')}
@@ -229,7 +261,7 @@ const EditProfile = ({
               !country ||
               !dateOfBirth ||
               (userInfo.accountRole === AccountRole.Teacher &&
-                (!specialty || !bio || !hasDescription))
+                (!specialty || !subjects.length || !bio || !hasDescription))
             }
           >
             {t('profile.save')}

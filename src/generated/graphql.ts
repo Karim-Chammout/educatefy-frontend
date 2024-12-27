@@ -51,6 +51,8 @@ export type Account = {
   preferredLanguage: Scalars['String']['output'];
   /** Represents the subject a teacher is specialized in for teaching. */
   specialty?: Maybe<Scalars['String']['output']>;
+  /** Represents the subjects a teacher is specialized in for teaching. */
+  subjects: Array<Subject>;
 };
 
 /** Input for updating an account information */
@@ -75,6 +77,8 @@ export type AccountInfoInput = {
   teacherBio?: InputMaybe<Scalars['String']['input']>;
   /** The short description about the teacher. */
   teacherDescription?: InputMaybe<Scalars['String']['input']>;
+  /** List of subject IDs a teacher is specialized in for teaching. */
+  teacherSpecialties?: InputMaybe<Array<Scalars['ID']['input']>>;
   /** The specialty of the teacher. */
   teacherSpecialty?: InputMaybe<Scalars['String']['input']>;
 };
@@ -200,6 +204,8 @@ export type ProfileDetailsInput = {
   teacherBio?: InputMaybe<Scalars['String']['input']>;
   /** The short description about the teacher. */
   teacherDescription?: InputMaybe<Scalars['String']['input']>;
+  /** List of subject IDs a teacher is specialized in for teaching. */
+  teacherSpecialties?: InputMaybe<Array<Scalars['ID']['input']>>;
   /** The specialty of the teacher. */
   teacherSpecialty?: InputMaybe<Scalars['String']['input']>;
 };
@@ -226,6 +232,17 @@ export type Query = {
   me: Account;
   /** List of OpenId clients */
   openIdClients: Array<OpenidClient>;
+  /** List of subjects */
+  subjects: Array<Subject>;
+};
+
+/** The subject info */
+export type Subject = {
+  __typename?: 'Subject';
+  /** The name of this subject. */
+  denomination: Scalars['String']['output'];
+  /** A unique id of this subject. */
+  id: Scalars['ID']['output'];
 };
 
 /** The result of the updateProfile mutation. */
@@ -248,10 +265,12 @@ export type OpenIdClientQuery = { __typename?: 'Query', openIdClients: Array<{ _
 
 export type CountryFragment = { __typename?: 'Country', id: string, denomination: string };
 
-export type CountriesQueryVariables = Exact<{ [key: string]: never; }>;
+export type SubjectFragment = { __typename?: 'Subject', id: string, denomination: string };
+
+export type SetupProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', id: string, denomination: string }> };
+export type SetupProfileQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', id: string, denomination: string }>, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type UpdateAccountInfoMutationVariables = Exact<{
   accountInfo: AccountInfoInput;
@@ -265,26 +284,26 @@ export type AccountInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AccountInfoQuery = { __typename?: 'Query', me: { __typename?: 'Account', nickname?: string | null, gender?: Gender | null, avatar_url?: string | null, accountRole: AccountRole } };
 
-export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null };
+export type AccountFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } };
 
-export type UserFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null };
+export type UserFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type UserProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserProfileQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null }, countries: Array<{ __typename?: 'Country', id: string, denomination: string }> };
+export type UserProfileQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> }, countries: Array<{ __typename?: 'Country', id: string, denomination: string }>, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type UpdateProfileMutationVariables = Exact<{
   profileDetails: ProfileDetailsInput;
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'UpdateProfileResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, user?: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null } | null } | null };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'UpdateProfileResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, user?: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, specialty?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } | null } | null };
 
 export type ChangeProfilePictureMutationVariables = Exact<{
   profilePictureDetails: ProfilePictureDetailsInput;
@@ -309,6 +328,12 @@ export const OpenidClientFragmentDoc = gql`
     `;
 export const CountryFragmentDoc = gql`
     fragment Country on Country {
+  id
+  denomination
+}
+    `;
+export const SubjectFragmentDoc = gql`
+    fragment Subject on Subject {
   id
   denomination
 }
@@ -338,6 +363,10 @@ export const AccountFragmentDoc = gql`
   bio
   description
   specialty
+  subjects {
+    id
+    denomination
+  }
 }
     `;
 export const UserFragmentDoc = gql`
@@ -363,6 +392,10 @@ export const UserFragmentDoc = gql`
   bio
   description
   specialty
+  subjects {
+    id
+    denomination
+  }
 }
     `;
 export const OpenIdClientDocument = gql`
@@ -404,45 +437,49 @@ export type OpenIdClientQueryHookResult = ReturnType<typeof useOpenIdClientQuery
 export type OpenIdClientLazyQueryHookResult = ReturnType<typeof useOpenIdClientLazyQuery>;
 export type OpenIdClientSuspenseQueryHookResult = ReturnType<typeof useOpenIdClientSuspenseQuery>;
 export type OpenIdClientQueryResult = Apollo.QueryResult<OpenIdClientQuery, OpenIdClientQueryVariables>;
-export const CountriesDocument = gql`
-    query Countries {
+export const SetupProfileDocument = gql`
+    query SetupProfile {
   countries {
     ...Country
   }
+  subjects {
+    ...Subject
+  }
 }
-    ${CountryFragmentDoc}`;
+    ${CountryFragmentDoc}
+${SubjectFragmentDoc}`;
 
 /**
- * __useCountriesQuery__
+ * __useSetupProfileQuery__
  *
- * To run a query within a React component, call `useCountriesQuery` and pass it any options that fit your needs.
- * When your component renders, `useCountriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSetupProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSetupProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCountriesQuery({
+ * const { data, loading, error } = useSetupProfileQuery({
  *   variables: {
  *   },
  * });
  */
-export function useCountriesQuery(baseOptions?: Apollo.QueryHookOptions<CountriesQuery, CountriesQueryVariables>) {
+export function useSetupProfileQuery(baseOptions?: Apollo.QueryHookOptions<SetupProfileQuery, SetupProfileQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CountriesQuery, CountriesQueryVariables>(CountriesDocument, options);
+        return Apollo.useQuery<SetupProfileQuery, SetupProfileQueryVariables>(SetupProfileDocument, options);
       }
-export function useCountriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CountriesQuery, CountriesQueryVariables>) {
+export function useSetupProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SetupProfileQuery, SetupProfileQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CountriesQuery, CountriesQueryVariables>(CountriesDocument, options);
+          return Apollo.useLazyQuery<SetupProfileQuery, SetupProfileQueryVariables>(SetupProfileDocument, options);
         }
-export function useCountriesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CountriesQuery, CountriesQueryVariables>) {
+export function useSetupProfileSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SetupProfileQuery, SetupProfileQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<CountriesQuery, CountriesQueryVariables>(CountriesDocument, options);
+          return Apollo.useSuspenseQuery<SetupProfileQuery, SetupProfileQueryVariables>(SetupProfileDocument, options);
         }
-export type CountriesQueryHookResult = ReturnType<typeof useCountriesQuery>;
-export type CountriesLazyQueryHookResult = ReturnType<typeof useCountriesLazyQuery>;
-export type CountriesSuspenseQueryHookResult = ReturnType<typeof useCountriesSuspenseQuery>;
-export type CountriesQueryResult = Apollo.QueryResult<CountriesQuery, CountriesQueryVariables>;
+export type SetupProfileQueryHookResult = ReturnType<typeof useSetupProfileQuery>;
+export type SetupProfileLazyQueryHookResult = ReturnType<typeof useSetupProfileLazyQuery>;
+export type SetupProfileSuspenseQueryHookResult = ReturnType<typeof useSetupProfileSuspenseQuery>;
+export type SetupProfileQueryResult = Apollo.QueryResult<SetupProfileQuery, SetupProfileQueryVariables>;
 export const UpdateAccountInfoDocument = gql`
     mutation UpdateAccountInfo($accountInfo: AccountInfoInput!) {
   updateAccountInfo(accountInfo: $accountInfo) {
@@ -566,6 +603,10 @@ export const UserProfileDocument = gql`
     ...User
   }
   countries {
+    id
+    denomination
+  }
+  subjects {
     id
     denomination
   }

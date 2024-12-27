@@ -15,11 +15,11 @@ const ProfileContainer = () => {
     return <ErrorPlaceholder />;
   }
 
-  const { me, countries } = data;
+  const { me, countries, subjects } = data;
 
   return (
     <div>
-      <Profile userInfo={me} countries={countries} />
+      <Profile userInfo={me} countries={countries} subjects={subjects} />
     </div>
   );
 };

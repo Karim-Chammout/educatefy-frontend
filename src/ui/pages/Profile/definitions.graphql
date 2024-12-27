@@ -20,6 +20,10 @@ fragment User on Account {
   bio
   description
   specialty
+  subjects {
+    id
+    denomination
+  }
 }
 
 query UserProfile {
@@ -27,6 +31,10 @@ query UserProfile {
     ...User
   }
   countries {
+    id
+    denomination
+  }
+  subjects {
     id
     denomination
   }
@@ -44,9 +52,7 @@ mutation UpdateProfile($profileDetails: ProfileDetailsInput!) {
   }
 }
 
-mutation ChangeProfilePicture(
-  $profilePictureDetails: ProfilePictureDetailsInput!
-) {
+mutation ChangeProfilePicture($profilePictureDetails: ProfilePictureDetailsInput!) {
   changeProfilePicture(profilePictureDetails: $profilePictureDetails) {
     success
     errors {

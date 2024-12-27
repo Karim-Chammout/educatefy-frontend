@@ -1,6 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Avatar from '@mui/material/Avatar';
+import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
@@ -26,9 +27,10 @@ import { ButtonsWrapper, InfoItem } from './Profile.style';
 type ProfileType = {
   userInfo: UserProfileQuery['me'];
   countries: UserProfileQuery['countries'];
+  subjects: UserProfileQuery['subjects'];
 };
 
-const Profile = ({ userInfo, countries }: ProfileType) => {
+const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
   const { t } = useTranslation();
   const { setToasterVisibility } = useContext(ToasterContext);
 
@@ -234,9 +236,9 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               <div>
                 <Typography>{t('profile.specialty')}:</Typography>
-                <Typography variant="h5" component="p">
-                  {userInfo.specialty}
-                </Typography>
+                {userInfo.subjects.map((subject) => (
+                  <Chip key={subject.id} label={subject.denomination} sx={{ mr: 1 }} />
+                ))}
               </div>
               <div>
                 <Typography>{t('profile.bio')}:</Typography>
@@ -284,6 +286,7 @@ const Profile = ({ userInfo, countries }: ProfileType) => {
         <EditProfile
           userInfo={userInfo}
           countries={countries}
+          subjectOptions={subjects}
           setIsEditModalOpen={setIsEditModalOpen}
         />
       </Modal>

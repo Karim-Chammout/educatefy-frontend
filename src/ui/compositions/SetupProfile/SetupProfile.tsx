@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import {
   AccountFragment,
   AccountRole,
-  useCountriesQuery,
+  useSetupProfileQuery,
   useUpdateAccountInfoMutation,
 } from '@/generated/graphql';
 import { useLanguageSelection } from '@/hooks';
@@ -37,7 +37,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
   const { currentLanguage } = useLanguageSelection();
   const [descriptionContent, setDescriptionContent] = useState(userInfo.description || '');
   const { setToasterVisibility } = useContext(ToasterContext);
-  const { loading, error, data } = useCountriesQuery();
+  const { loading, error, data } = useSetupProfileQuery();
   const [updateAccountInfo, { loading: updateAccountInfoLoading }] = useUpdateAccountInfoMutation();
 
   const { handleSubmit, control } = useForm({
@@ -49,26 +49,38 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       nationality: userInfo.nationality || null,
       country: userInfo.country || null,
       dateOfBirth: userInfo.date_of_birth ? new Date(userInfo.date_of_birth) : null,
+      subjects: userInfo.subjects.map((s) => s.id) || [],
       specialty: userInfo.specialty || null,
       bio: userInfo.bio || null,
     },
   });
 
-  const [firstName, lastName, nickname, gender, nationality, country, dateOfBirth, specialty, bio] =
-    useWatch({
-      name: [
-        'firstName',
-        'lastName',
-        'nickname',
-        'gender',
-        'nationality',
-        'country',
-        'dateOfBirth',
-        'specialty',
-        'bio',
-      ],
-      control,
-    });
+  const [
+    firstName,
+    lastName,
+    nickname,
+    gender,
+    nationality,
+    country,
+    dateOfBirth,
+    subjects,
+    specialty,
+    bio,
+  ] = useWatch({
+    name: [
+      'firstName',
+      'lastName',
+      'nickname',
+      'gender',
+      'nationality',
+      'country',
+      'dateOfBirth',
+      'subjects',
+      'specialty',
+      'bio',
+    ],
+    control,
+  });
 
   const onSubmit = async (values: FieldValues) => {
     const trimmedFirstName = values.firstName.trim();
@@ -84,7 +96,8 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       !values.nationality ||
       !values.country ||
       !values.dateOfBirth ||
-      (userInfo.accountRole === AccountRole.Teacher && (!specialty || !bio || !descriptionContent))
+      (userInfo.accountRole === AccountRole.Teacher &&
+        (!values.specialty || !values.subjects.length || !values.bio || !descriptionContent))
     ) {
       setToasterVisibility({
         newDuration: 5000,
@@ -106,6 +119,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           countryId: values.country.id,
           gender: values.gender.id,
           dateOfBirth: formatedDateOfBirth,
+          teacherSpecialties: values.subjects.map((s: any) => s.id),
           teacherSpecialty: specialty,
           teacherBio: bio,
           teacherDescription: descriptionContent,
@@ -200,6 +214,23 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           </LocalizationProvider>
           {userInfo.accountRole === AccountRole.Teacher && (
             <>
+              <AutocompleteElement
+                name="subjects"
+                label={t('setupProfile.specialty')}
+                control={control}
+                autocompleteProps={{
+                  // TODO: Check if the library has been updated or double check a proper fix for this
+                  // Seems like there is a bug in the library and the limitTags option doesn't work
+                  // Workaround for disabling the option when the limit is reached
+                  getOptionDisabled: () => subjects.length >= 3,
+                }}
+                options={data.subjects.map((s) => ({
+                  id: s.id,
+                  label: s.denomination,
+                }))}
+                multiple
+                required
+              />
               <TextFieldElement
                 name="specialty"
                 label={t('setupProfile.specialty')}
@@ -235,7 +266,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
             !country ||
             !dateOfBirth ||
             (userInfo.accountRole === AccountRole.Teacher &&
-              (!hasDescription || !specialty || !bio)) ||
+              (!hasDescription || !subjects.length || !specialty || !bio)) ||
             updateAccountInfoLoading
           }
           fullWidth

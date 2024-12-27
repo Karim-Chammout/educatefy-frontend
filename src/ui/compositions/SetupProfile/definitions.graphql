@@ -3,9 +3,17 @@ fragment Country on Country {
   denomination
 }
 
-query Countries {
+fragment Subject on Subject {
+  id
+  denomination
+}
+
+query SetupProfile {
   countries {
     ...Country
+  }
+  subjects {
+    ...Subject
   }
 }
 

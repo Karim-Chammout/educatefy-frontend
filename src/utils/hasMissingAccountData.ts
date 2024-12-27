@@ -9,7 +9,7 @@ export const hasMissingAccountData = (account: AccountFragment | null | undefine
       !account.nationality ||
       !account.country ||
       (account.accountRole === AccountRole.Teacher &&
-        (!account.specialty || !account.subjects || !account.bio || !account.description)))
+        (!account.subjects || !account.bio || !account.description)))
   ) {
     return true;
   }

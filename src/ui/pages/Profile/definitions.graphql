@@ -19,7 +19,6 @@ fragment User on Account {
   preferredLanguage
   bio
   description
-  specialty
   subjects {
     id
     denomination

@@ -12,7 +12,7 @@ import { isLoggedIn } from './apolloClient';
 import PageTemplate from './PageTemplate';
 import PublicPageTemplate from './PublicPageTemplate';
 import { DashboardRoutes } from './routes/DashboardRoutes';
-import { Dashboard, Explore, Home, NotFound, Profile } from './routes/LazyComponent';
+import { Courses, Dashboard, Explore, Home, NotFound, Profile } from './routes/LazyComponent';
 import PublicRoutes from './routes/PublicRoutes';
 import RouteWrapper from './routes/RouteWrapper';
 
@@ -84,7 +84,22 @@ const PrivatePagesView = () => {
           path="/dashboard"
           element={<DashboardRoutes hasPermission={data.me.accountRole === AccountRole.Teacher} />}
         >
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RouteWrapper>
+                <Dashboard />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/dashboard/courses"
+            element={
+              <RouteWrapper>
+                <Courses />
+              </RouteWrapper>
+            }
+          />
         </Route>
 
         <Route path="/login" element={<Navigate to="/explore" />} />

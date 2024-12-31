@@ -11,6 +11,7 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import TextField from '@mui/material/TextField';
 import { compareAsc, compareDesc, format, parseISO } from 'date-fns';
 import { ChangeEvent, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { TeacherCourseFragment } from '@/generated/graphql';
@@ -18,15 +19,16 @@ import { Button } from '@/ui/components';
 import { isNumeric } from '@/utils/isNumeric';
 
 const tableHeaderValues = [
-  ['id', 'ID'],
-  ['denomination', 'Name'],
-  ['level', 'Level'],
-  ['is_published', 'Status'],
-  ['updated_at', 'Last updated at'],
-  ['created_at', 'Created at'],
+  ['id'],
+  ['denomination'],
+  ['level'],
+  ['is_published'],
+  ['updated_at'],
+  ['created_at'],
 ] as const;
 
 const Courses = ({ courses }: { courses: Array<TeacherCourseFragment> }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
@@ -122,12 +124,12 @@ const Courses = ({ courses }: { courses: Array<TeacherCourseFragment> }) => {
             onClick={() => navigate('/dashboard/courses/create')}
             startIcon={<AddCircleOutlineIcon />}
           >
-            Create a new course
+            {t('courses.createNewCourse')}
           </Button>
         </div>
         <div style={{ flex: 1 }}>
           <TextField
-            label="Search for a course"
+            label={t('courses.searchForCourse')}
             variant="outlined"
             value={searchTerm}
             onChange={handleSearchChange}
@@ -140,14 +142,14 @@ const Courses = ({ courses }: { courses: Array<TeacherCourseFragment> }) => {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow sx={{ '& .MuiTableCell-head': { background: 'lightgray' } }}>
-                {tableHeaderValues.map(([key, label]) => (
+                {tableHeaderValues.map(([key]) => (
                   <TableCell key={key}>
                     <TableSortLabel
                       active={orderBy === key}
                       direction={orderBy === key ? order : 'asc'}
                       onClick={() => handleSort(key)}
                     >
-                      {label}
+                      {t(`courses.tableHeaders.${key}`)}
                     </TableSortLabel>
                   </TableCell>
                 ))}
@@ -166,7 +168,9 @@ const Courses = ({ courses }: { courses: Array<TeacherCourseFragment> }) => {
                     <TableCell>{course.id}</TableCell>
                     <TableCell>{course.denomination}</TableCell>
                     <TableCell>{course.level}</TableCell>
-                    <TableCell>{course.is_published ? 'Published' : 'Unpublished'}</TableCell>
+                    <TableCell>
+                      {course.is_published ? t('courses.published') : t('courses.unpublished')}
+                    </TableCell>
                     <TableCell>{formatDate(course.updated_at)}</TableCell>
                     <TableCell>{formatDate(course.created_at)}</TableCell>
                   </TableRow>

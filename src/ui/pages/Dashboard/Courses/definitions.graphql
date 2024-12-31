@@ -1,0 +1,15 @@
+fragment TeacherCourse on Course {
+  id
+  denomination
+  slug
+  level
+  is_published
+  created_at
+  updated_at
+}
+
+query TeacherCourses {
+  teacherCourses {
+    ...TeacherCourse
+  }
+}

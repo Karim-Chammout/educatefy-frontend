@@ -84,5 +84,15 @@
   "explore.permissionDenied": "ليس لديك إذن للوصول إلى هذه الصفحة",
   "dashboard.courses": "الدورات",
   "dashboard.programs": "البرامج",
-  "dashboard.students": "الطلاب"
+  "dashboard.students": "الطلاب",
+  "courses.createNewCourse": "إنشاء دورة جديدة",
+  "courses.searchForCourse": "ابحث عن دورة",
+  "courses.published": "منشور",
+  "courses.unpublished": "غير منشور",
+  "courses.tableHeaders.id": "الرقم التعريفي",
+  "courses.tableHeaders.denomination": "الاسم",
+  "courses.tableHeaders.level": "المستوى",
+  "courses.tableHeaders.is_published": "الحالة",
+  "courses.tableHeaders.updated_at": "آخر تحديث في",
+  "courses.tableHeaders.created_at": "تم الإنشاء في"
 }

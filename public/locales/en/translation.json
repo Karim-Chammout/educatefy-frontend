@@ -84,5 +84,15 @@
   "explore.permissionDenied": "You don't have permission to access this page",
   "dashboard.courses": "Courses",
   "dashboard.programs": "Programs",
-  "dashboard.students": "Students"
+  "dashboard.students": "Students",
+  "courses.createNewCourse": "Create a new course",
+  "courses.searchForCourse": "Search for a course",
+  "courses.published": "Published",
+  "courses.unpublished": "Unpublished",
+  "courses.tableHeaders.id": "ID",
+  "courses.tableHeaders.denomination": "Name",
+  "courses.tableHeaders.level": "Level",
+  "courses.tableHeaders.is_published": "Status",
+  "courses.tableHeaders.updated_at": "Last updated at",
+  "courses.tableHeaders.created_at": "Created at"
 }

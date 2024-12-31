@@ -94,5 +94,7 @@
   "courses.tableHeaders.level": "Level",
   "courses.tableHeaders.is_published": "Status",
   "courses.tableHeaders.updated_at": "Last updated at",
-  "courses.tableHeaders.created_at": "Created at"
+  "courses.tableHeaders.created_at": "Created at",
+  "courses.noCoursesTitle": "No Courses Created",
+  "courses.noCoursesSubtitle": "You have not created any courses yet."
 }

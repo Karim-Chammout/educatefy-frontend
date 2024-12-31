@@ -94,5 +94,7 @@
   "courses.tableHeaders.level": "المستوى",
   "courses.tableHeaders.is_published": "الحالة",
   "courses.tableHeaders.updated_at": "آخر تحديث في",
-  "courses.tableHeaders.created_at": "تم الإنشاء في"
+  "courses.tableHeaders.created_at": "تم الإنشاء في",
+  "courses.noCoursesTitle": "لم يتم إنشاء دورات",
+  "courses.noCoursesSubtitle": "لم تقم بإنشاء أي دورات بعد."
 }

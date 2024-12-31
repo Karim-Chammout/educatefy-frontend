@@ -113,6 +113,87 @@ export type Country = {
   phone_code: Scalars['String']['output'];
 };
 
+/** The course info. */
+export type Course = {
+  __typename?: 'Course';
+  /** The date of when this course was created. */
+  created_at: Scalars['Date']['output'];
+  /** The denomination of this course. */
+  denomination: Scalars['String']['output'];
+  /** The description of this course. */
+  description: Scalars['String']['output'];
+  /** The end date of the course */
+  end_date?: Maybe<Scalars['Date']['output']>;
+  /** A link to an external meeting. */
+  external_meeting_link?: Maybe<Scalars['String']['output']>;
+  /** A link to an external resource. */
+  external_resource_link?: Maybe<Scalars['String']['output']>;
+  /** A unique id of this course. */
+  id: Scalars['ID']['output'];
+  /** The image of this course */
+  image?: Maybe<Scalars['String']['output']>;
+  /** A flag to indicate whether this course is published or not */
+  is_published: Scalars['Boolean']['output'];
+  /** The language of this course */
+  language: Scalars['String']['output'];
+  /** The difficulty level of this course. */
+  level: CourseLevel;
+  /** A unique slug of this course. */
+  slug: Scalars['String']['output'];
+  /** The start date of the course */
+  start_date?: Maybe<Scalars['Date']['output']>;
+  /** The subtitle of this course. */
+  subtitle: Scalars['String']['output'];
+  /** The date of when this course was last updated. */
+  updated_at: Scalars['Date']['output'];
+};
+
+/** Input for createing a course record. */
+export type CourseInfoInput = {
+  /** The denomination of this course. */
+  denomination: Scalars['String']['input'];
+  /** The description of this course. */
+  description: Scalars['String']['input'];
+  /** The end date of the course. */
+  end_date?: InputMaybe<Scalars['Date']['input']>;
+  /** A link to an external meeting. */
+  external_meeting_link?: InputMaybe<Scalars['String']['input']>;
+  /** A link to an external resource. */
+  external_resource_link?: InputMaybe<Scalars['String']['input']>;
+  /** The image of this course. */
+  image?: InputMaybe<Scalars['String']['input']>;
+  /** A flag to indicate whether this course is published or not. */
+  is_published: Scalars['Boolean']['input'];
+  /** The language of this course. */
+  language: Scalars['String']['input'];
+  /** The difficulty level of this course. */
+  level: CourseLevel;
+  /** The slug of this course. */
+  slug: Scalars['String']['input'];
+  /** The start date of the course. */
+  start_date?: InputMaybe<Scalars['Date']['input']>;
+  /** The subtitle of this course. */
+  subtitle: Scalars['String']['input'];
+};
+
+/** The difficulty level of a course. */
+export enum CourseLevel {
+  Advanced = 'advanced',
+  Beginner = 'beginner',
+  Intermediate = 'intermediate'
+}
+
+/** The result of the creating or updating a course. */
+export type CreateOrUpdateCourseResult = {
+  __typename?: 'CreateOrUpdateCourseResult';
+  /** The created or updated course information. */
+  course?: Maybe<Course>;
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
+};
+
 /** An object type that wraps an error */
 export type Error = {
   __typename?: 'Error';
@@ -131,10 +212,14 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Change the profile picture of a user. */
   changeProfilePicture?: Maybe<ChangeProfilePictureResult>;
+  /** Creates a course. */
+  createCourse?: Maybe<CreateOrUpdateCourseResult>;
   /** Remove the profile picture of a user. */
   removeProfilePicture?: Maybe<ChangeProfilePictureResult>;
   /** Updates a user account information. */
   updateAccountInfo?: Maybe<MutationResult>;
+  /** Updates a course. */
+  updateCourse?: Maybe<CreateOrUpdateCourseResult>;
   /** Updates a user profile details. */
   updateProfile?: Maybe<UpdateProfileResult>;
 };
@@ -145,8 +230,18 @@ export type MutationChangeProfilePictureArgs = {
 };
 
 
+export type MutationCreateCourseArgs = {
+  courseInfo: CourseInfoInput;
+};
+
+
 export type MutationUpdateAccountInfoArgs = {
   accountInfo: AccountInfoInput;
+};
+
+
+export type MutationUpdateCourseArgs = {
+  updateCourseInfo: UpdateCourseInfoInput;
 };
 
 
@@ -222,12 +317,21 @@ export type Query = {
   __typename?: 'Query';
   /** List of countries */
   countries: Array<Country>;
+  /** Retrieve a course by its slug */
+  course?: Maybe<Course>;
   /** The current user */
   me: Account;
   /** List of OpenId clients */
   openIdClients: Array<OpenidClient>;
   /** List of subjects */
   subjects: Array<Subject>;
+  /** List of courses created by the teacher */
+  teacherCourses: Array<Course>;
+};
+
+
+export type QueryCourseArgs = {
+  slug: Scalars['String']['input'];
 };
 
 /** The subject info */
@@ -237,6 +341,36 @@ export type Subject = {
   denomination: Scalars['String']['output'];
   /** A unique id of this subject. */
   id: Scalars['ID']['output'];
+};
+
+/** Input for updating a course record. */
+export type UpdateCourseInfoInput = {
+  /** The denomination of this course */
+  denomination?: InputMaybe<Scalars['String']['input']>;
+  /** The description of this course */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The end date of the course */
+  end_date?: InputMaybe<Scalars['Date']['input']>;
+  /** A link to an external meeting. */
+  external_meeting_link?: InputMaybe<Scalars['String']['input']>;
+  /** A link to an external resource. */
+  external_resource_link?: InputMaybe<Scalars['String']['input']>;
+  /** The ID of this course */
+  id: Scalars['ID']['input'];
+  /** The image of this course */
+  image?: InputMaybe<Scalars['String']['input']>;
+  /** A flag to indicate whether this course is published or not */
+  is_published?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The language of this course. */
+  language?: InputMaybe<Scalars['String']['input']>;
+  /** The difficulty level of this course */
+  level?: InputMaybe<CourseLevel>;
+  /** The slug of this course */
+  slug?: InputMaybe<Scalars['String']['input']>;
+  /** The start date of the course */
+  start_date?: InputMaybe<Scalars['Date']['input']>;
+  /** The subtitle of this course */
+  subtitle?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** The result of the updateProfile mutation. */
@@ -284,6 +418,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } };
+
+export type TeacherCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, is_published: boolean, created_at: any, updated_at: any };
+
+export type TeacherCoursesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TeacherCoursesQuery = { __typename?: 'Query', teacherCourses: Array<{ __typename?: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, is_published: boolean, created_at: any, updated_at: any }> };
 
 export type UserFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
@@ -360,6 +501,17 @@ export const AccountFragmentDoc = gql`
     id
     denomination
   }
+}
+    `;
+export const TeacherCourseFragmentDoc = gql`
+    fragment TeacherCourse on Course {
+  id
+  denomination
+  slug
+  level
+  is_published
+  created_at
+  updated_at
 }
     `;
 export const UserFragmentDoc = gql`
@@ -589,6 +741,45 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const TeacherCoursesDocument = gql`
+    query TeacherCourses {
+  teacherCourses {
+    ...TeacherCourse
+  }
+}
+    ${TeacherCourseFragmentDoc}`;
+
+/**
+ * __useTeacherCoursesQuery__
+ *
+ * To run a query within a React component, call `useTeacherCoursesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeacherCoursesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeacherCoursesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTeacherCoursesQuery(baseOptions?: Apollo.QueryHookOptions<TeacherCoursesQuery, TeacherCoursesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TeacherCoursesQuery, TeacherCoursesQueryVariables>(TeacherCoursesDocument, options);
+      }
+export function useTeacherCoursesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeacherCoursesQuery, TeacherCoursesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TeacherCoursesQuery, TeacherCoursesQueryVariables>(TeacherCoursesDocument, options);
+        }
+export function useTeacherCoursesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<TeacherCoursesQuery, TeacherCoursesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TeacherCoursesQuery, TeacherCoursesQueryVariables>(TeacherCoursesDocument, options);
+        }
+export type TeacherCoursesQueryHookResult = ReturnType<typeof useTeacherCoursesQuery>;
+export type TeacherCoursesLazyQueryHookResult = ReturnType<typeof useTeacherCoursesLazyQuery>;
+export type TeacherCoursesSuspenseQueryHookResult = ReturnType<typeof useTeacherCoursesSuspenseQuery>;
+export type TeacherCoursesQueryResult = Apollo.QueryResult<TeacherCoursesQuery, TeacherCoursesQueryVariables>;
 export const UserProfileDocument = gql`
     query UserProfile {
   me {

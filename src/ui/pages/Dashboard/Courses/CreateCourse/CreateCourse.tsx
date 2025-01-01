@@ -17,20 +17,20 @@ import {
 } from 'react-hook-form-mui';
 // @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
-import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import api from '@/api';
-import { CourseLevel, useCreateCourseMutation, useLanguageQuery } from '@/generated/graphql';
+import { CourseLevel, LanguageFragment, useCreateCourseMutation } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
-import { Button, Loader, Typography } from '@/ui/components';
-import { ErrorPlaceholder, FileDropzone, RichTextEditor } from '@/ui/compositions';
+import { Button, Typography } from '@/ui/components';
+import { FileDropzone, RichTextEditor } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 import { isValidSlug } from '@/utils/isValidSlug';
 import { isValidUrl } from '@/utils/isValidUrl';
 import { removeHtmlTags } from '@/utils/removeHTMLTags';
 
-const CreateCourse = () => {
+const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [descriptionContent, setDescriptionContent] = useState('');
@@ -39,7 +39,6 @@ const CreateCourse = () => {
   const [isImageLoading, setIsImageLoading] = useState(false);
   const { setToasterVisibility } = useContext(ToasterContext);
 
-  const { loading, error, data: languageData } = useLanguageQuery();
   const [createCourse, { loading: createCourseLoading }] = useCreateCourseMutation();
 
   const { handleSubmit, control, setValue: setFormValue } = useForm();
@@ -194,14 +193,6 @@ const CreateCourse = () => {
 
   const hasDescription = removeHtmlTags(descriptionContent);
 
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (error || !languageData) {
-    return <ErrorPlaceholder />;
-  }
-
   return (
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
       <Box
@@ -267,7 +258,7 @@ const CreateCourse = () => {
                   helperText: t('course.languageHelperText'),
                 }}
                 control={control}
-                options={languageData.languages.map((lang) => ({
+                options={languages.map((lang) => ({
                   id: lang.code,
                   label: lang.denomination,
                 }))}

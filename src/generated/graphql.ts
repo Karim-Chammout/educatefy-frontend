@@ -142,6 +142,8 @@ export type Course = {
   slug: Scalars['String']['output'];
   /** The start date of the course */
   start_date?: Maybe<Scalars['Date']['output']>;
+  /** The subjects linked to this course. */
+  subjects: Array<Subject>;
   /** The subtitle of this course. */
   subtitle: Scalars['String']['output'];
   /** The date of when this course was last updated. */
@@ -338,8 +340,12 @@ export type Query = {
   me: Account;
   /** List of OpenId clients */
   openIdClients: Array<OpenidClient>;
+  /** Retrieve a subject by its id */
+  subject?: Maybe<Subject>;
   /** List of subjects */
   subjects: Array<Subject>;
+  /** List of subjects that have courses associated with them */
+  subjectsListWithLinkedCourses: Array<Subject>;
   /** List of courses created by the teacher */
   teacherCourses: Array<Course>;
 };
@@ -354,9 +360,16 @@ export type QueryEditableCourseArgs = {
   id: Scalars['ID']['input'];
 };
 
+
+export type QuerySubjectArgs = {
+  id: Scalars['ID']['input'];
+};
+
 /** The subject info */
 export type Subject = {
   __typename?: 'Subject';
+  /** The courses linked to this subject. */
+  courses: Array<Course>;
   /** The name of this subject. */
   denomination: Scalars['String']['output'];
   /** A unique id of this subject. */
@@ -476,6 +489,13 @@ export type TeacherCoursesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TeacherCoursesQuery = { __typename?: 'Query', teacherCourses: Array<{ __typename?: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, is_published: boolean, created_at: any, updated_at: any }> };
 
+export type ExploreCourseFragment = { __typename?: 'Course', id: string, denomination: string, description: string, slug: string, level: CourseLevel, image?: string | null };
+
+export type ExploreQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ExploreQuery = { __typename?: 'Query', subjectsListWithLinkedCourses: Array<{ __typename?: 'Subject', id: string, denomination: string, courses: Array<{ __typename?: 'Course', id: string, denomination: string, description: string, slug: string, level: CourseLevel, image?: string | null }> }> };
+
 export type UserFragment = { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type UserProfileQueryVariables = Exact<{ [key: string]: never; }>;
@@ -586,6 +606,16 @@ export const TeacherCourseFragmentDoc = gql`
   is_published
   created_at
   updated_at
+}
+    `;
+export const ExploreCourseFragmentDoc = gql`
+    fragment ExploreCourse on Course {
+  id
+  denomination
+  description
+  slug
+  level
+  image
 }
     `;
 export const UserFragmentDoc = gql`
@@ -1017,6 +1047,49 @@ export type TeacherCoursesQueryHookResult = ReturnType<typeof useTeacherCoursesQ
 export type TeacherCoursesLazyQueryHookResult = ReturnType<typeof useTeacherCoursesLazyQuery>;
 export type TeacherCoursesSuspenseQueryHookResult = ReturnType<typeof useTeacherCoursesSuspenseQuery>;
 export type TeacherCoursesQueryResult = Apollo.QueryResult<TeacherCoursesQuery, TeacherCoursesQueryVariables>;
+export const ExploreDocument = gql`
+    query Explore {
+  subjectsListWithLinkedCourses {
+    id
+    denomination
+    courses {
+      ...ExploreCourse
+    }
+  }
+}
+    ${ExploreCourseFragmentDoc}`;
+
+/**
+ * __useExploreQuery__
+ *
+ * To run a query within a React component, call `useExploreQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExploreQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExploreQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useExploreQuery(baseOptions?: Apollo.QueryHookOptions<ExploreQuery, ExploreQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ExploreQuery, ExploreQueryVariables>(ExploreDocument, options);
+      }
+export function useExploreLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExploreQuery, ExploreQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ExploreQuery, ExploreQueryVariables>(ExploreDocument, options);
+        }
+export function useExploreSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ExploreQuery, ExploreQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExploreQuery, ExploreQueryVariables>(ExploreDocument, options);
+        }
+export type ExploreQueryHookResult = ReturnType<typeof useExploreQuery>;
+export type ExploreLazyQueryHookResult = ReturnType<typeof useExploreLazyQuery>;
+export type ExploreSuspenseQueryHookResult = ReturnType<typeof useExploreSuspenseQuery>;
+export type ExploreQueryResult = Apollo.QueryResult<ExploreQuery, ExploreQueryVariables>;
 export const UserProfileDocument = gql`
     query UserProfile {
   me {

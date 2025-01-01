@@ -12,7 +12,15 @@ import { isLoggedIn } from './apolloClient';
 import PageTemplate from './PageTemplate';
 import PublicPageTemplate from './PublicPageTemplate';
 import { DashboardRoutes } from './routes/DashboardRoutes';
-import { Courses, Dashboard, Explore, Home, NotFound, Profile } from './routes/LazyComponent';
+import {
+  Courses,
+  CreateCourse,
+  Dashboard,
+  Explore,
+  Home,
+  NotFound,
+  Profile,
+} from './routes/LazyComponent';
 import PublicRoutes from './routes/PublicRoutes';
 import RouteWrapper from './routes/RouteWrapper';
 
@@ -97,6 +105,14 @@ const PrivatePagesView = () => {
             element={
               <RouteWrapper>
                 <Courses />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/dashboard/courses/create"
+            element={
+              <RouteWrapper>
+                <CreateCourse />
               </RouteWrapper>
             }
           />

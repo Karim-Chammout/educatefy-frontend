@@ -20,6 +20,7 @@ import {
   Home,
   NotFound,
   Profile,
+  UpdateCourse,
 } from './routes/LazyComponent';
 import PublicRoutes from './routes/PublicRoutes';
 import RouteWrapper from './routes/RouteWrapper';
@@ -117,6 +118,14 @@ const PrivatePagesView = () => {
             }
           />
         </Route>
+        <Route
+          path="/dashboard/courses/update/:id"
+          element={
+            <RouteWrapper>
+              <UpdateCourse />
+            </RouteWrapper>
+          }
+        />
 
         <Route path="/login" element={<Navigate to="/explore" />} />
         <Route path="/register" element={<Navigate to="/explore" />} />

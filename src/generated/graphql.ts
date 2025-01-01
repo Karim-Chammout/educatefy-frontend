@@ -330,6 +330,8 @@ export type Query = {
   countries: Array<Country>;
   /** Retrieve a course by its slug */
   course?: Maybe<Course>;
+  /** Retrieve a course to be edited by the teacher. */
+  editableCourse?: Maybe<Course>;
   /** List of languages */
   languages: Array<Language>;
   /** The current user */
@@ -345,6 +347,11 @@ export type Query = {
 
 export type QueryCourseArgs = {
   slug: Scalars['String']['input'];
+};
+
+
+export type QueryEditableCourseArgs = {
+  id: Scalars['ID']['input'];
 };
 
 /** The subject info */
@@ -446,6 +453,22 @@ export type CreateCourseMutationVariables = Exact<{
 
 export type CreateCourseMutation = { __typename?: 'Mutation', createCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, slug: string } | null } | null };
 
+export type EditableCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null };
+
+export type EditableCourseQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EditableCourseQuery = { __typename?: 'Query', editableCourse?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null } | null, languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }> };
+
+export type UpdateCourseMutationVariables = Exact<{
+  updateCourseInfo: UpdateCourseInfoInput;
+}>;
+
+
+export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null } | null } | null };
+
 export type TeacherCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, is_published: boolean, created_at: any, updated_at: any };
 
 export type TeacherCoursesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -535,6 +558,23 @@ export const LanguageFragmentDoc = gql`
   id
   denomination
   code
+}
+    `;
+export const EditableCourseFragmentDoc = gql`
+    fragment EditableCourse on Course {
+  id
+  denomination
+  slug
+  subtitle
+  description
+  level
+  image
+  language
+  external_resource_link
+  external_meeting_link
+  is_published
+  start_date
+  end_date
 }
     `;
 export const TeacherCourseFragmentDoc = gql`
@@ -854,6 +894,90 @@ export function useCreateCourseMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateCourseMutationHookResult = ReturnType<typeof useCreateCourseMutation>;
 export type CreateCourseMutationResult = Apollo.MutationResult<CreateCourseMutation>;
 export type CreateCourseMutationOptions = Apollo.BaseMutationOptions<CreateCourseMutation, CreateCourseMutationVariables>;
+export const EditableCourseDocument = gql`
+    query EditableCourse($id: ID!) {
+  editableCourse(id: $id) {
+    ...EditableCourse
+  }
+  languages {
+    id
+    denomination
+    code
+  }
+}
+    ${EditableCourseFragmentDoc}`;
+
+/**
+ * __useEditableCourseQuery__
+ *
+ * To run a query within a React component, call `useEditableCourseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEditableCourseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEditableCourseQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEditableCourseQuery(baseOptions: Apollo.QueryHookOptions<EditableCourseQuery, EditableCourseQueryVariables> & ({ variables: EditableCourseQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EditableCourseQuery, EditableCourseQueryVariables>(EditableCourseDocument, options);
+      }
+export function useEditableCourseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EditableCourseQuery, EditableCourseQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EditableCourseQuery, EditableCourseQueryVariables>(EditableCourseDocument, options);
+        }
+export function useEditableCourseSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EditableCourseQuery, EditableCourseQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EditableCourseQuery, EditableCourseQueryVariables>(EditableCourseDocument, options);
+        }
+export type EditableCourseQueryHookResult = ReturnType<typeof useEditableCourseQuery>;
+export type EditableCourseLazyQueryHookResult = ReturnType<typeof useEditableCourseLazyQuery>;
+export type EditableCourseSuspenseQueryHookResult = ReturnType<typeof useEditableCourseSuspenseQuery>;
+export type EditableCourseQueryResult = Apollo.QueryResult<EditableCourseQuery, EditableCourseQueryVariables>;
+export const UpdateCourseDocument = gql`
+    mutation UpdateCourse($updateCourseInfo: UpdateCourseInfoInput!) {
+  updateCourse(updateCourseInfo: $updateCourseInfo) {
+    success
+    errors {
+      message
+    }
+    course {
+      ...EditableCourse
+    }
+  }
+}
+    ${EditableCourseFragmentDoc}`;
+export type UpdateCourseMutationFn = Apollo.MutationFunction<UpdateCourseMutation, UpdateCourseMutationVariables>;
+
+/**
+ * __useUpdateCourseMutation__
+ *
+ * To run a mutation, you first call `useUpdateCourseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCourseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCourseMutation, { data, loading, error }] = useUpdateCourseMutation({
+ *   variables: {
+ *      updateCourseInfo: // value for 'updateCourseInfo'
+ *   },
+ * });
+ */
+export function useUpdateCourseMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCourseMutation, UpdateCourseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCourseMutation, UpdateCourseMutationVariables>(UpdateCourseDocument, options);
+      }
+export type UpdateCourseMutationHookResult = ReturnType<typeof useUpdateCourseMutation>;
+export type UpdateCourseMutationResult = Apollo.MutationResult<UpdateCourseMutation>;
+export type UpdateCourseMutationOptions = Apollo.BaseMutationOptions<UpdateCourseMutation, UpdateCourseMutationVariables>;
 export const TeacherCoursesDocument = gql`
     query TeacherCourses {
   teacherCourses {

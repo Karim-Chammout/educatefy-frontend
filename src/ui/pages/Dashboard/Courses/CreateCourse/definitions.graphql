@@ -1,0 +1,24 @@
+fragment Language on Language {
+  id
+  denomination
+  code
+}
+
+query Language {
+  languages {
+    ...Language
+  }
+}
+
+mutation CreateCourse($courseInfo: CourseInfoInput!) {
+  createCourse(courseInfo: $courseInfo) {
+    success
+    errors {
+      message
+    }
+    course {
+      id
+      slug
+    }
+  }
+}

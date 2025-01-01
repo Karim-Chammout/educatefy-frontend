@@ -1,0 +1,38 @@
+fragment EditableCourse on Course {
+  id
+  denomination
+  slug
+  subtitle
+  description
+  level
+  image
+  language
+  external_resource_link
+  external_meeting_link
+  is_published
+  start_date
+  end_date
+}
+
+query EditableCourse($id: ID!) {
+  editableCourse(id: $id) {
+    ...EditableCourse
+  }
+  languages {
+    id
+    denomination
+    code
+  }
+}
+
+mutation UpdateCourse($updateCourseInfo: UpdateCourseInfoInput!) {
+  updateCourse(updateCourseInfo: $updateCourseInfo) {
+    success
+    errors {
+      message
+    }
+    course {
+      ...EditableCourse
+    }
+  }
+}

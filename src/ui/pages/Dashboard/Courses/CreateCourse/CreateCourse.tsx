@@ -243,7 +243,20 @@ const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
                   name="slug"
                   label={t('course.slug')}
                   control={control}
-                  helperText={t('course.slugHelperText')}
+                  helperText={
+                    slug && !isValidSlug(slug) ? t('form.invalidSlug') : t('course.slugHelperText')
+                  }
+                  slotProps={{
+                    input: {
+                      error: slug && !isValidSlug(slug),
+                    },
+                    formHelperText: {
+                      error: slug && !isValidSlug(slug),
+                    },
+                    inputLabel: {
+                      error: slug && !isValidSlug(slug),
+                    },
+                  }}
                   required
                   fullWidth
                 />
@@ -452,6 +465,7 @@ const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
               disabled={
                 !denomination ||
                 !slug ||
+                (slug && !isValidSlug(slug)) ||
                 !subtitle ||
                 !language ||
                 !level ||

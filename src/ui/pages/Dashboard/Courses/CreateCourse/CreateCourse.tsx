@@ -351,7 +351,7 @@ const CreateCourse = () => {
                 required
                 options={Object.values(CourseLevel).map((courseLevel) => ({
                   id: courseLevel,
-                  label: courseLevel,
+                  label: t(`course.courseLevel.${courseLevel}`),
                 }))}
                 autocompleteProps={{
                   fullWidth: true,

@@ -1,0 +1,18 @@
+fragment ExploreCourse on Course {
+  id
+  denomination
+  description
+  slug
+  level
+  image
+}
+
+query Explore {
+  subjectsListWithLinkedCourses {
+    id
+    denomination
+    courses {
+      ...ExploreCourse
+    }
+  }
+}

@@ -29,6 +29,7 @@ import { ToasterContext } from '@/ui/context';
 import { isValidSlug } from '@/utils/isValidSlug';
 import { isValidUrl } from '@/utils/isValidUrl';
 import { removeHtmlTags } from '@/utils/removeHTMLTags';
+import { ServerErrorType } from '@/utils/ServerErrorType';
 
 const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
   const { t } = useTranslation();
@@ -180,6 +181,12 @@ const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
           });
 
           navigate(`/dashboard/courses/update/${courseId}`);
+        } else if (data.createCourse?.errors[0].message === ServerErrorType.SLUG_ALREADY_TAKEN) {
+          setToasterVisibility({
+            newDuration: null,
+            newText: t('course.slugTaken'),
+            newType: 'error',
+          });
         } else {
           setToasterVisibility({
             newDuration: 5000,

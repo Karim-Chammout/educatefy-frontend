@@ -208,6 +208,17 @@ export enum Gender {
   Unknown = 'unknown'
 }
 
+/** The language info */
+export type Language = {
+  __typename?: 'Language';
+  /** The code of this language */
+  code: Scalars['String']['output'];
+  /** The name of this language */
+  denomination: Scalars['String']['output'];
+  /** A unique id of this language */
+  id: Scalars['ID']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Change the profile picture of a user. */
@@ -319,6 +330,8 @@ export type Query = {
   countries: Array<Country>;
   /** Retrieve a course by its slug */
   course?: Maybe<Course>;
+  /** List of languages */
+  languages: Array<Language>;
   /** The current user */
   me: Account;
   /** List of OpenId clients */
@@ -419,6 +432,20 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } };
 
+export type LanguageFragment = { __typename?: 'Language', id: string, denomination: string, code: string };
+
+export type LanguageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LanguageQuery = { __typename?: 'Query', languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }> };
+
+export type CreateCourseMutationVariables = Exact<{
+  courseInfo: CourseInfoInput;
+}>;
+
+
+export type CreateCourseMutation = { __typename?: 'Mutation', createCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, slug: string } | null } | null };
+
 export type TeacherCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, is_published: boolean, created_at: any, updated_at: any };
 
 export type TeacherCoursesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -501,6 +528,13 @@ export const AccountFragmentDoc = gql`
     id
     denomination
   }
+}
+    `;
+export const LanguageFragmentDoc = gql`
+    fragment Language on Language {
+  id
+  denomination
+  code
 }
     `;
 export const TeacherCourseFragmentDoc = gql`
@@ -741,6 +775,85 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const LanguageDocument = gql`
+    query Language {
+  languages {
+    ...Language
+  }
+}
+    ${LanguageFragmentDoc}`;
+
+/**
+ * __useLanguageQuery__
+ *
+ * To run a query within a React component, call `useLanguageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLanguageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLanguageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLanguageQuery(baseOptions?: Apollo.QueryHookOptions<LanguageQuery, LanguageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LanguageQuery, LanguageQueryVariables>(LanguageDocument, options);
+      }
+export function useLanguageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LanguageQuery, LanguageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LanguageQuery, LanguageQueryVariables>(LanguageDocument, options);
+        }
+export function useLanguageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<LanguageQuery, LanguageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LanguageQuery, LanguageQueryVariables>(LanguageDocument, options);
+        }
+export type LanguageQueryHookResult = ReturnType<typeof useLanguageQuery>;
+export type LanguageLazyQueryHookResult = ReturnType<typeof useLanguageLazyQuery>;
+export type LanguageSuspenseQueryHookResult = ReturnType<typeof useLanguageSuspenseQuery>;
+export type LanguageQueryResult = Apollo.QueryResult<LanguageQuery, LanguageQueryVariables>;
+export const CreateCourseDocument = gql`
+    mutation CreateCourse($courseInfo: CourseInfoInput!) {
+  createCourse(courseInfo: $courseInfo) {
+    success
+    errors {
+      message
+    }
+    course {
+      id
+      slug
+    }
+  }
+}
+    `;
+export type CreateCourseMutationFn = Apollo.MutationFunction<CreateCourseMutation, CreateCourseMutationVariables>;
+
+/**
+ * __useCreateCourseMutation__
+ *
+ * To run a mutation, you first call `useCreateCourseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCourseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCourseMutation, { data, loading, error }] = useCreateCourseMutation({
+ *   variables: {
+ *      courseInfo: // value for 'courseInfo'
+ *   },
+ * });
+ */
+export function useCreateCourseMutation(baseOptions?: Apollo.MutationHookOptions<CreateCourseMutation, CreateCourseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCourseMutation, CreateCourseMutationVariables>(CreateCourseDocument, options);
+      }
+export type CreateCourseMutationHookResult = ReturnType<typeof useCreateCourseMutation>;
+export type CreateCourseMutationResult = Apollo.MutationResult<CreateCourseMutation>;
+export type CreateCourseMutationOptions = Apollo.BaseMutationOptions<CreateCourseMutation, CreateCourseMutationVariables>;
 export const TeacherCoursesDocument = gql`
     query TeacherCourses {
   teacherCourses {

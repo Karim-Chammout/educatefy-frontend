@@ -1,3 +1,3 @@
-import CreateCourse from './CreateCourse';
+import CreateCourseContainer from './CreateCourseContainer';
 
-export default CreateCourse;
+export default CreateCourseContainer;

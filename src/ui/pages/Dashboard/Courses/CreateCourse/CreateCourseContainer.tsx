@@ -1,8 +1,8 @@
-import { Loader } from '@/ui/components';
-
 import { useLanguageQuery } from '@/generated/graphql';
-import CreateCourse from './CreateCourse';
+import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
+
+import CreateCourse from './CreateCourse';
 
 const CreateCourseContainer = () => {
   const { loading, error, data } = useLanguageQuery();

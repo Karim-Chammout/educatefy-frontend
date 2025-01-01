@@ -17,6 +17,7 @@ import {
 } from 'react-hook-form-mui';
 // @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import api from '@/api';
@@ -42,6 +43,7 @@ const UpdateCourse = ({
   course: EditableCourseFragment;
   languages: LanguageFragment[];
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [descriptionContent, setDescriptionContent] = useState(course.description);
   const [currentImage, setCurrentImage] = useState<string | null>(course.image || null);
@@ -72,14 +74,14 @@ const UpdateCourse = ({
           setCurrentImage(`${BUCKET_PATH_NAME_URL}/${uploadedPicture.filePath}`);
           setToasterVisibility({
             newDuration: 3000,
-            newText: 'Course image uploaded successfully!',
+            newText: t('courseImage.uploadSuccess'),
             newType: 'success',
           });
         }
       } catch (_error) {
         setToasterVisibility({
           newDuration: 5000,
-          newText: 'Failed to upload course image. Please try again later!',
+          newText: t('courseImage.uploadError'),
           newType: 'error',
         });
       } finally {
@@ -125,7 +127,7 @@ const UpdateCourse = ({
     if (!isValidSlug(values.slug)) {
       setToasterVisibility({
         newDuration: 5000,
-        newText: 'Make sure to have a valid slug value!',
+        newText: t('form.invalidSlug'),
         newType: 'error',
       });
 
@@ -146,7 +148,7 @@ const UpdateCourse = ({
     ) {
       setToasterVisibility({
         newDuration: 5000,
-        newText: 'Make sure to fill out the required form values correctly!',
+        newText: t('form.fillRequiredFields'),
         newType: 'error',
       });
 
@@ -181,19 +183,19 @@ const UpdateCourse = ({
         if (data.updateCourse?.success) {
           setToasterVisibility({
             newDuration: 3000,
-            newText: 'Course updated successfully!',
+            newText: t('course.updateSuccess'),
             newType: 'success',
           });
         } else if (data.updateCourse?.errors[0].message === ServerErrorType.SLUG_ALREADY_TAKEN) {
           setToasterVisibility({
             newDuration: null,
-            newText: 'Failed to update course! The slug is already taken, please update it!',
-            newType: 'warning',
+            newText: t('course.slugTaken'),
+            newType: 'error',
           });
         } else {
           setToasterVisibility({
             newDuration: 5000,
-            newText: 'Failed to update course information. Please try again later!',
+            newText: t('course.updateError'),
             newType: 'error',
           });
         }
@@ -214,10 +216,10 @@ const UpdateCourse = ({
         }}
       >
         <Typography variant="h4" component="h1" gutterBottom>
-          Update course
+          {t('course.updateTitle')}
         </Typography>
         <Button variant="outlined" onClick={() => navigate('/dashboard/courses')}>
-          Cancel
+          {t('common.cancel')}
         </Button>
       </Box>
 
@@ -227,39 +229,39 @@ const UpdateCourse = ({
           {/* Basic Information Section */}
           <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Basic Information
+              {t('course.basicInfo')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Enter the core details about your course
+              {t('course.basicInfoSubtitle')}
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
               <TextFieldElement
                 name="denomination"
-                label="Course Name"
+                label={t('course.name')}
                 control={control}
                 required
                 fullWidth
               />
               <TextFieldElement
                 name="slug"
-                label="Slug"
+                label={t('course.slug')}
                 control={control}
-                helperText="This will be used in the course URL"
+                helperText={t('course.slugHelperText')}
                 required
                 fullWidth
               />
               <TextFieldElement
                 name="subtitle"
-                label="Subtitle"
+                label={t('course.subtitle')}
                 control={control}
                 required
                 fullWidth
               />
               <AutocompleteElement
                 name="language"
-                label="Language"
+                label={t('course.language')}
                 textFieldProps={{
-                  helperText: 'Select the language of the course',
+                  helperText: t('course.languageHelperText'),
                 }}
                 control={control}
                 options={languages.map((lang) => ({
@@ -270,7 +272,7 @@ const UpdateCourse = ({
               />
               <TextFieldElement
                 name="externalResourceLink"
-                label="External resource link"
+                label={t('course.externalResourceLink')}
                 slotProps={{
                   input: {
                     error: !!(externalResourceLink && !isValidUrl(externalResourceLink)),
@@ -285,14 +287,14 @@ const UpdateCourse = ({
                 control={control}
                 helperText={
                   externalResourceLink && !isValidUrl(externalResourceLink)
-                    ? 'Invalid URL'
-                    : 'This can be used if you want to add a link to redirect to an external resource.'
+                    ? t('form.invalidUrl')
+                    : t('course.externalResourceLinkHelperText')
                 }
                 fullWidth
               />
               <TextFieldElement
                 name="externalMeetingLink"
-                label="External meeting link"
+                label={t('course.externalMeetingLink')}
                 slotProps={{
                   input: {
                     error: !!(externalMeetingLink && !isValidUrl(externalMeetingLink)),
@@ -307,8 +309,8 @@ const UpdateCourse = ({
                 control={control}
                 helperText={
                   externalMeetingLink && !isValidUrl(externalMeetingLink)
-                    ? 'Invalid URL'
-                    : 'This can be used if you want to add a link to an external meeting.'
+                    ? t('form.invalidUrl')
+                    : t('course.externalMeetingLinkHelperText')
                 }
                 fullWidth
               />
@@ -318,26 +320,30 @@ const UpdateCourse = ({
           {/* Course Details Section */}
           <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Course Details
+              {t('course.details')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Set the difficulty level and schedule
+              {t('course.detailsSubtitle')}
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2 }}>
                 <FormControlLabel
                   control={
-                    <SwitchElement name="isPublished" control={control} label="Publish Course" />
+                    <SwitchElement
+                      name="isPublished"
+                      control={control}
+                      label={t('course.publish')}
+                    />
                   }
                   label=""
                 />
                 <Typography variant="body2" color="text.secondary">
-                  Make this course visible to all users
+                  {t('course.publishHelperText')}
                 </Typography>
               </Box>
               <AutocompleteElement
                 name="level"
-                label="Level"
+                label={t('course.level')}
                 control={control}
                 required
                 options={Object.values(CourseLevel).map((courseLevel) => ({
@@ -359,7 +365,7 @@ const UpdateCourse = ({
                   <Box sx={{ flex: 1 }}>
                     <DatePickerElement
                       name="startDate"
-                      label="Start Date"
+                      label={t('course.startDate')}
                       control={control}
                       sx={{ width: '100%' }}
                       disablePast
@@ -368,7 +374,7 @@ const UpdateCourse = ({
                   <Box sx={{ flex: 1 }}>
                     <DatePickerElement
                       name="endDate"
-                      label="End Date"
+                      label={t('course.endDate')}
                       control={control}
                       sx={{ width: '100%' }}
                       disablePast
@@ -382,16 +388,16 @@ const UpdateCourse = ({
           {/* Course Description Section */}
           <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Course Description
+              {t('course.description')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Write a detailed description of your course
+              {t('course.descriptionSubtitle')}
             </Typography>
             <Box sx={{ minHeight: 200 }}>
               <RichTextEditor
                 onChange={setDescriptionContent}
                 initialValue={descriptionContent}
-                placeholder="Write your course description here..."
+                placeholder={t('course.descriptionPlaceholder')}
               />
             </Box>
           </Paper>
@@ -399,10 +405,10 @@ const UpdateCourse = ({
           {/* Course Image Upload Section */}
           <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Course Image
+              {t('course.image')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Upload or update the image for your course
+              {t('course.imageSubtitle')}
             </Typography>
 
             {currentImage !== null ? (
@@ -417,7 +423,7 @@ const UpdateCourse = ({
               >
                 <img
                   src={currentImage}
-                  alt="Course Preview"
+                  alt={t('course.imageAlt')}
                   style={{
                     maxWidth: '300px',
                     maxHeight: '300px',
@@ -426,7 +432,7 @@ const UpdateCourse = ({
                   }}
                 />
                 <Button size="small" color="error" variant="outlined" onClick={handleRemoveImage}>
-                  Remove Image
+                  {t('common.remove')}
                 </Button>
               </Box>
             ) : (
@@ -447,7 +453,7 @@ const UpdateCourse = ({
               color="primary"
               onClick={() => navigate('/dashboard/courses')}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
@@ -467,7 +473,7 @@ const UpdateCourse = ({
                 updateCourseLoading
               }
             >
-              Update course
+              {t('common.update')}
             </Button>
           </div>
         </Box>

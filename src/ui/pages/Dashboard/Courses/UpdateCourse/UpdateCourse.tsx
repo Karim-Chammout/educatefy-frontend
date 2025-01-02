@@ -217,7 +217,7 @@ const UpdateCourse = ({
         if (data.deleteCourse?.success) {
           setToasterVisibility({
             newDuration: 3000,
-            newText: 'Course deleted successfully',
+            newText: t('course.deleteSuccess'),
             newType: 'success',
           });
 
@@ -225,7 +225,7 @@ const UpdateCourse = ({
         } else {
           setToasterVisibility({
             newDuration: 5000,
-            newText: "Something went wrong. Couldn't delete the course",
+            newText: t('course.deleteError'),
             newType: 'error',
           });
         }
@@ -484,7 +484,7 @@ const UpdateCourse = ({
             }}
           >
             <Button color="error" onClick={() => setIsConfirmDeleteModalOpen(true)}>
-              Delete
+              {t('common.delete')}
             </Button>
             <Button
               type="submit"
@@ -512,7 +512,7 @@ const UpdateCourse = ({
       <Modal
         open={isConfirmDeleteModalOpen}
         onClose={() => setIsConfirmDeleteModalOpen(false)}
-        title="Are you sure you want to delete this course?"
+        title={t('course.confirmDeleteTitle')}
         maxWidth="xs"
         CTAs={
           <DialogActions>
@@ -526,8 +526,7 @@ const UpdateCourse = ({
         }
       >
         <Typography variant="body2" color="text.secondary">
-          Students who are enrolled in this course will no longer have access to it. Click "Confirm"
-          to continue.
+          {t('course.confirmDeleteSubtitle')}
         </Typography>
       </Modal>
     </Container>

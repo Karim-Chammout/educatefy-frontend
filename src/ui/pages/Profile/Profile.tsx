@@ -3,6 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
+import DialogActions from '@mui/material/DialogActions';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import { format } from 'date-fns';
@@ -22,7 +23,7 @@ import { FileDropzone, LanguageSelector } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 
 import { EditProfile } from './compositions';
-import { ButtonsWrapper, InfoItem } from './Profile.style';
+import { InfoItem } from './Profile.style';
 
 type ProfileType = {
   userInfo: UserProfileQuery['me'];
@@ -262,20 +263,19 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
         open={isChangePicModalOpen}
         onClose={() => setIsChangePicModalOpen(false)}
         title={t('profile.uploadPicture')}
+        maxWidth="xs"
+        CTAs={
+          <DialogActions>
+            <Button variant="outlined" onClick={() => setIsChangePicModalOpen(false)}>
+              {t('profile.cancel')}
+            </Button>
+          </DialogActions>
+        }
       >
         {isLoading ? (
           <Skeleton variant="rectangular" width="100%" height={100} />
         ) : (
-          <>
-            <FileDropzone onFilesSelected={onFilesSelected} />
-            <Button
-              variant="outlined"
-              onClick={() => setIsChangePicModalOpen(false)}
-              sx={{ mt: 2 }}
-            >
-              {t('profile.cancel')}
-            </Button>
-          </>
+          <FileDropzone onFilesSelected={onFilesSelected} />
         )}
       </Modal>
       <Modal
@@ -294,16 +294,18 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
         open={isConfirmRemoveModalOpen}
         onClose={() => setIsConfirmRemoveModalOpen(false)}
         title={t('profile.confirmRemovePicture')}
-      >
-        <ButtonsWrapper>
-          <Button variant="outlined" onClick={() => setIsConfirmRemoveModalOpen(false)} fullWidth>
-            {t('profile.cancel')}
-          </Button>
-          <Button color="error" onClick={removeProfilePicture} fullWidth>
-            {t('profile.confirm')}
-          </Button>
-        </ButtonsWrapper>
-      </Modal>
+        maxWidth="xs"
+        CTAs={
+          <DialogActions>
+            <Button variant="outlined" onClick={() => setIsConfirmRemoveModalOpen(false)} fullWidth>
+              {t('profile.cancel')}
+            </Button>
+            <Button color="error" onClick={removeProfilePicture} fullWidth>
+              {t('profile.confirm')}
+            </Button>
+          </DialogActions>
+        }
+      />
     </Container>
   );
 };

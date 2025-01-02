@@ -1,39 +1,62 @@
-import { SxProps, Theme } from '@mui/material';
-import MUIModal from '@mui/material/Modal';
+import CloseIcon from '@mui/icons-material/Close';
+import { useMediaQuery, useTheme } from '@mui/material';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
 import { ReactNode } from 'react';
 
-import { Typography } from '@/ui/components';
-
-import { StyledBox } from './Modal.style';
+import { StyledDialog } from './Modal.style';
 
 type ModalType = {
   open: boolean;
   onClose: () => void;
-  title?: string;
-  description?: string;
-  sx?: SxProps<Theme>;
   children?: ReactNode;
+  CTAs?: ReactNode;
+  title?: string;
+  maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  fullWidth?: boolean;
 };
 
-const Modal = ({ open, onClose, title, description, sx, children }: ModalType) => {
+const Modal = ({
+  open,
+  onClose,
+  title,
+  children,
+  CTAs,
+  maxWidth = 'sm',
+  fullWidth = true,
+}: ModalType) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <MUIModal
+    <StyledDialog
       open={open}
       onClose={onClose}
-      sx={{ ...sx }}
-      aria-labelledby={`${title}-modal`}
-      aria-describedby={`${description}-modal`}
+      maxWidth={maxWidth}
+      fullWidth={fullWidth}
+      fullScreen={isMobile}
+      aria-labelledby={title}
     >
-      <StyledBox>
-        {title && (
-          <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
-            {title}
-          </Typography>
-        )}
-        {description && <Typography sx={{ mb: 3 }}>{description}</Typography>}
-        {children}
-      </StyledBox>
-    </MUIModal>
+      {title && (
+        <DialogTitle id={title} sx={{ fontWeight: 'bold', paddingRight: '48px' }}>
+          {title}
+          <IconButton
+            aria-label="close"
+            onClick={onClose}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+      )}
+      {children && <DialogContent>{children}</DialogContent>}
+      {CTAs}
+    </StyledDialog>
   );
 };
 

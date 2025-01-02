@@ -14,18 +14,4 @@ const infoItemStyles = css`
   )}
 `;
 
-const buttonWrapperStyles = css`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-
-  ${min(
-    'xs',
-    `
-      flex-wrap: nowrap;
-  `,
-  )}
-`;
-
 export const InfoItem = styled('div')(infoItemStyles);
-export const ButtonsWrapper = styled('div')(buttonWrapperStyles);

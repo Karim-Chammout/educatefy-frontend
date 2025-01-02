@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import DialogActions from '@mui/material/DialogActions';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Paper from '@mui/material/Paper';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -25,10 +26,11 @@ import {
   CourseLevel,
   EditableCourseFragment,
   LanguageFragment,
+  useDeleteCourseMutation,
   useUpdateCourseMutation,
 } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
-import { Button, Typography } from '@/ui/components';
+import { Button, Modal, Typography } from '@/ui/components';
 import { FileDropzone, RichTextEditor } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 import { ServerErrorType } from '@/utils/ServerErrorType';
@@ -48,8 +50,11 @@ const UpdateCourse = ({
   const [descriptionContent, setDescriptionContent] = useState(course.description);
   const [currentImage, setCurrentImage] = useState<string | null>(course.image || null);
   const [isImageLoading, setIsImageLoading] = useState(false);
+  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+
   const { setToasterVisibility } = useContext(ToasterContext);
   const [updateCourse, { loading: updateCourseLoading }] = useUpdateCourseMutation();
+  const [deleteCourse] = useDeleteCourseMutation();
 
   const S3_PATH_PREFIX = import.meta.env.VITE_S3_PATH_PREFIX;
   const S3_BUCKET_NAME = import.meta.env.VITE_S3_BUCKET_NAME;
@@ -198,6 +203,36 @@ const UpdateCourse = ({
             newText: t('course.updateError'),
             newType: 'error',
           });
+        }
+      },
+    });
+  };
+
+  const handleDeleteCourse = async () => {
+    await deleteCourse({
+      variables: {
+        id: course.id,
+      },
+      onCompleted(data) {
+        if (data.deleteCourse?.success) {
+          setToasterVisibility({
+            newDuration: 3000,
+            newText: 'Course deleted successfully',
+            newType: 'success',
+          });
+
+          navigate('/dashboard/courses');
+        } else {
+          setToasterVisibility({
+            newDuration: 5000,
+            newText: "Something went wrong. Couldn't delete the course",
+            newType: 'error',
+          });
+        }
+      },
+      update(cache, res) {
+        if (res.data?.deleteCourse?.success) {
+          cache.evict({ id: `Course:${course.id}` });
         }
       },
     });
@@ -448,12 +483,8 @@ const UpdateCourse = ({
               gap: '16px',
             }}
           >
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => navigate('/dashboard/courses')}
-            >
-              {t('common.cancel')}
+            <Button color="error" onClick={() => setIsConfirmDeleteModalOpen(true)}>
+              Delete
             </Button>
             <Button
               type="submit"
@@ -478,6 +509,27 @@ const UpdateCourse = ({
           </div>
         </Box>
       </FormContainer>
+      <Modal
+        open={isConfirmDeleteModalOpen}
+        onClose={() => setIsConfirmDeleteModalOpen(false)}
+        title="Are you sure you want to delete this course?"
+        maxWidth="xs"
+        CTAs={
+          <DialogActions>
+            <Button variant="outlined" onClick={() => setIsConfirmDeleteModalOpen(false)} fullWidth>
+              {t('common.cancel')}
+            </Button>
+            <Button color="error" onClick={handleDeleteCourse} fullWidth>
+              {t('common.confirm')}
+            </Button>
+          </DialogActions>
+        }
+      >
+        <Typography variant="body2" color="text.secondary">
+          Students who are enrolled in this course will no longer have access to it. Click "Confirm"
+          to continue.
+        </Typography>
+      </Modal>
     </Container>
   );
 };

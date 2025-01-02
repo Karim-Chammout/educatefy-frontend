@@ -104,6 +104,7 @@
   "course.createSuccess": "تم إنشاء الدورة بنجاح!",
   "course.createError": "فشل في إنشاء الدورة. يرجى المحاولة مرة أخرى لاحقًا!",
   "common.cancel": "إلغاء",
+  "common.confirm": "تأكيد",
   "course.basicInfo": "المعلومات الأساسية",
   "course.basicInfoSubtitle": "أدخل التفاصيل الأساسية حول دورتك",
   "course.name": "اسم الدورة",

@@ -104,6 +104,7 @@
   "course.createSuccess": "Course created successfully!",
   "course.createError": "Failed to create the course. Please try again later!",
   "common.cancel": "Cancel",
+  "common.confirm": "Confirm",
   "course.basicInfo": "Basic information",
   "course.basicInfoSubtitle": "Enter the core details about your course",
   "course.name": "Course name",

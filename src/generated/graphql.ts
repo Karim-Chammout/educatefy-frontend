@@ -227,6 +227,8 @@ export type Mutation = {
   changeProfilePicture?: Maybe<ChangeProfilePictureResult>;
   /** Creates a course. */
   createCourse?: Maybe<CreateOrUpdateCourseResult>;
+  /** Deletes a course. */
+  deleteCourse?: Maybe<MutationResult>;
   /** Remove the profile picture of a user. */
   removeProfilePicture?: Maybe<ChangeProfilePictureResult>;
   /** Updates a user account information. */
@@ -245,6 +247,11 @@ export type MutationChangeProfilePictureArgs = {
 
 export type MutationCreateCourseArgs = {
   courseInfo: CourseInfoInput;
+};
+
+
+export type MutationDeleteCourseArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -481,6 +488,13 @@ export type UpdateCourseMutationVariables = Exact<{
 
 
 export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null } | null } | null };
+
+export type DeleteCourseMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteCourseMutation = { __typename?: 'Mutation', deleteCourse?: { __typename?: 'MutationResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }> } | null };
 
 export type TeacherCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, is_published: boolean, created_at: any, updated_at: any };
 
@@ -1008,6 +1022,42 @@ export function useUpdateCourseMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateCourseMutationHookResult = ReturnType<typeof useUpdateCourseMutation>;
 export type UpdateCourseMutationResult = Apollo.MutationResult<UpdateCourseMutation>;
 export type UpdateCourseMutationOptions = Apollo.BaseMutationOptions<UpdateCourseMutation, UpdateCourseMutationVariables>;
+export const DeleteCourseDocument = gql`
+    mutation DeleteCourse($id: ID!) {
+  deleteCourse(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type DeleteCourseMutationFn = Apollo.MutationFunction<DeleteCourseMutation, DeleteCourseMutationVariables>;
+
+/**
+ * __useDeleteCourseMutation__
+ *
+ * To run a mutation, you first call `useDeleteCourseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCourseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCourseMutation, { data, loading, error }] = useDeleteCourseMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCourseMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCourseMutation, DeleteCourseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCourseMutation, DeleteCourseMutationVariables>(DeleteCourseDocument, options);
+      }
+export type DeleteCourseMutationHookResult = ReturnType<typeof useDeleteCourseMutation>;
+export type DeleteCourseMutationResult = Apollo.MutationResult<DeleteCourseMutation>;
+export type DeleteCourseMutationOptions = Apollo.BaseMutationOptions<DeleteCourseMutation, DeleteCourseMutationVariables>;
 export const TeacherCoursesDocument = gql`
     query TeacherCourses {
   teacherCourses {

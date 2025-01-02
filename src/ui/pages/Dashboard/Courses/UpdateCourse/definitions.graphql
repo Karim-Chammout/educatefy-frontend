@@ -36,3 +36,12 @@ mutation UpdateCourse($updateCourseInfo: UpdateCourseInfoInput!) {
     }
   }
 }
+
+mutation DeleteCourse($id: ID!) {
+  deleteCourse(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}

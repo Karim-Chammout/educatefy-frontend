@@ -267,7 +267,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
         CTAs={
           <DialogActions>
             <Button variant="outlined" onClick={() => setIsChangePicModalOpen(false)}>
-              {t('profile.cancel')}
+              {t('common.cancel')}
             </Button>
           </DialogActions>
         }
@@ -298,7 +298,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
         CTAs={
           <DialogActions>
             <Button variant="outlined" onClick={() => setIsConfirmRemoveModalOpen(false)} fullWidth>
-              {t('profile.cancel')}
+              {t('common.cancel')}
             </Button>
             <Button color="error" onClick={removeProfilePicture} fullWidth>
               {t('profile.confirm')}

@@ -228,7 +228,7 @@ const EditProfile = ({
         </div>
         <div style={{ display: 'flex', gap: '16px', marginTop: '32px' }}>
           <Button variant="outlined" onClick={() => setIsEditModalOpen(false)} fullWidth>
-            {t('profile.cancel')}
+            {t('common.cancel')}
           </Button>
           <Button
             type="submit"

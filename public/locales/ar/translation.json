@@ -136,6 +136,7 @@
   "course.image": "صورة الدورة",
   "course.imageAlt": "معاينة الدورة",
   "common.remove": "إزالة",
+  "common.delete": "حذف",
   "common.create": "إنشاء دورة",
   "common.backToCourses": "العودة إلى الدورات",
   "course.notFoundSubtitle": "الدورة التي تبحث عنها غير موجودة.",
@@ -145,5 +146,9 @@
   "course.updateError": "فشل تحديث معلومات الدورة. يرجى المحاولة مرة أخرى لاحقًا!",
   "course.slugTaken": "فشل تحديث الدورة! الرابط الفريد مستخدم بالفعل، يرجى تحديثه!",
   "course.imageSubtitle": "تحميل أو تحديث صورة الدورة",
-  "common.update": "تحديث"
+  "common.update": "تحديث",
+  "course.deleteSuccess": "تم حذف الدورة بنجاح!",
+  "course.deleteError": "حدث خطأ ما. لم نتمكن من حذف الدورة",
+  "course.confirmDeleteTitle": "هل أنت متأكد أنك تريد حذف هذه الدورة؟",
+  "course.confirmDeleteSubtitle": "لن يتمكن الطلاب المسجلون في هذه الدورة من الوصول إليها بعد الآن. انقر على \"تأكيد\" للمتابعة."
 }

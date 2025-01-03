@@ -21,7 +21,12 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import api from '@/api';
-import { CourseLevel, LanguageFragment, useCreateCourseMutation } from '@/generated/graphql';
+import {
+  CourseLevel,
+  LanguageFragment,
+  SubjectFragment,
+  useCreateCourseMutation,
+} from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { Button, Typography } from '@/ui/components';
 import { FileDropzone, RichTextEditor } from '@/ui/compositions';
@@ -31,7 +36,13 @@ import { isValidUrl } from '@/utils/isValidUrl';
 import { removeHtmlTags } from '@/utils/removeHTMLTags';
 import { ServerErrorType } from '@/utils/ServerErrorType';
 
-const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
+const CreateCourse = ({
+  languages,
+  subjectsList,
+}: {
+  languages: LanguageFragment[];
+  subjectsList: SubjectFragment[];
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [descriptionContent, setDescriptionContent] = useState('');
@@ -48,19 +59,28 @@ const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
   const S3_BUCKET_NAME = import.meta.env.VITE_S3_BUCKET_NAME;
   const BUCKET_PATH_NAME_URL = `${S3_PATH_PREFIX}/${S3_BUCKET_NAME}`;
 
-  const [denomination, slug, subtitle, level, language, externalMeetingLink, externalResourceLink] =
-    useWatch({
-      name: [
-        'denomination',
-        'slug',
-        'subtitle',
-        'level',
-        'language',
-        'externalMeetingLink',
-        'externalResourceLink',
-      ],
-      control,
-    });
+  const [
+    denomination,
+    slug,
+    subtitle,
+    level,
+    language,
+    subjects,
+    externalMeetingLink,
+    externalResourceLink,
+  ] = useWatch({
+    name: [
+      'denomination',
+      'slug',
+      'subtitle',
+      'level',
+      'language',
+      'subjects',
+      'externalMeetingLink',
+      'externalResourceLink',
+    ],
+    control,
+  });
 
   const handleFileSelect = async (files: File[]) => {
     if (files.length > 0) {
@@ -139,7 +159,9 @@ const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
       !values.subtitle ||
       !descriptionContent ||
       !values.level.id ||
-      !values.language.id
+      !values.language.id ||
+      !values.subjects ||
+      values.subjects.length === 0
     ) {
       setToasterVisibility({
         newDuration: 5000,
@@ -149,6 +171,8 @@ const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
 
       return;
     }
+
+    const subjectIds = values.subjects.map((subject: { id: string }) => subject.id);
 
     await createCourse({
       variables: {
@@ -168,6 +192,7 @@ const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
             uploadedImageDetails?.success && uploadedImageDetails.filePath
               ? uploadedImageDetails.filePath
               : null,
+          subjectIds,
         },
       },
       onCompleted(data) {
@@ -282,6 +307,20 @@ const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
                   id: lang.code,
                   label: lang.denomination,
                 }))}
+                required
+              />
+              <AutocompleteElement
+                name="subjects"
+                label={t('course.subjects')}
+                textFieldProps={{
+                  helperText: t('course.subjectsHelperText'),
+                }}
+                control={control}
+                options={subjectsList.map((s) => ({
+                  id: s.id,
+                  label: s.denomination,
+                }))}
+                multiple
                 required
               />
               <TextFieldElement
@@ -478,6 +517,8 @@ const CreateCourse = ({ languages }: { languages: LanguageFragment[] }) => {
                 !level ||
                 (externalResourceLink && !isValidUrl(externalResourceLink)) ||
                 (externalMeetingLink && !isValidUrl(externalMeetingLink)) ||
+                !subjects ||
+                (subjects && subjects.length === 0) ||
                 !hasDescription ||
                 isImageLoading ||
                 createCourseLoading

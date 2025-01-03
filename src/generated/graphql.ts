@@ -174,6 +174,8 @@ export type CourseInfoInput = {
   slug: Scalars['String']['input'];
   /** The start date of the course. */
   start_date?: InputMaybe<Scalars['Date']['input']>;
+  /** List of subject IDs to associate with the course */
+  subjectIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   /** The subtitle of this course. */
   subtitle: Scalars['String']['input'];
 };
@@ -461,10 +463,10 @@ export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: 
 
 export type LanguageFragment = { __typename?: 'Language', id: string, denomination: string, code: string };
 
-export type LanguageQueryVariables = Exact<{ [key: string]: never; }>;
+export type CreateCoursePageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LanguageQuery = { __typename?: 'Query', languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }> };
+export type CreateCoursePageQuery = { __typename?: 'Query', languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }>, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type CreateCourseMutationVariables = Exact<{
   courseInfo: CourseInfoInput;
@@ -859,45 +861,49 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
-export const LanguageDocument = gql`
-    query Language {
+export const CreateCoursePageDocument = gql`
+    query CreateCoursePage {
   languages {
     ...Language
+  }
+  subjects {
+    id
+    denomination
   }
 }
     ${LanguageFragmentDoc}`;
 
 /**
- * __useLanguageQuery__
+ * __useCreateCoursePageQuery__
  *
- * To run a query within a React component, call `useLanguageQuery` and pass it any options that fit your needs.
- * When your component renders, `useLanguageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCreateCoursePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreateCoursePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useLanguageQuery({
+ * const { data, loading, error } = useCreateCoursePageQuery({
  *   variables: {
  *   },
  * });
  */
-export function useLanguageQuery(baseOptions?: Apollo.QueryHookOptions<LanguageQuery, LanguageQueryVariables>) {
+export function useCreateCoursePageQuery(baseOptions?: Apollo.QueryHookOptions<CreateCoursePageQuery, CreateCoursePageQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LanguageQuery, LanguageQueryVariables>(LanguageDocument, options);
+        return Apollo.useQuery<CreateCoursePageQuery, CreateCoursePageQueryVariables>(CreateCoursePageDocument, options);
       }
-export function useLanguageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LanguageQuery, LanguageQueryVariables>) {
+export function useCreateCoursePageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CreateCoursePageQuery, CreateCoursePageQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LanguageQuery, LanguageQueryVariables>(LanguageDocument, options);
+          return Apollo.useLazyQuery<CreateCoursePageQuery, CreateCoursePageQueryVariables>(CreateCoursePageDocument, options);
         }
-export function useLanguageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<LanguageQuery, LanguageQueryVariables>) {
+export function useCreateCoursePageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CreateCoursePageQuery, CreateCoursePageQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<LanguageQuery, LanguageQueryVariables>(LanguageDocument, options);
+          return Apollo.useSuspenseQuery<CreateCoursePageQuery, CreateCoursePageQueryVariables>(CreateCoursePageDocument, options);
         }
-export type LanguageQueryHookResult = ReturnType<typeof useLanguageQuery>;
-export type LanguageLazyQueryHookResult = ReturnType<typeof useLanguageLazyQuery>;
-export type LanguageSuspenseQueryHookResult = ReturnType<typeof useLanguageSuspenseQuery>;
-export type LanguageQueryResult = Apollo.QueryResult<LanguageQuery, LanguageQueryVariables>;
+export type CreateCoursePageQueryHookResult = ReturnType<typeof useCreateCoursePageQuery>;
+export type CreateCoursePageLazyQueryHookResult = ReturnType<typeof useCreateCoursePageLazyQuery>;
+export type CreateCoursePageSuspenseQueryHookResult = ReturnType<typeof useCreateCoursePageSuspenseQuery>;
+export type CreateCoursePageQueryResult = Apollo.QueryResult<CreateCoursePageQuery, CreateCoursePageQueryVariables>;
 export const CreateCourseDocument = gql`
     mutation CreateCourse($courseInfo: CourseInfoInput!) {
   createCourse(courseInfo: $courseInfo) {

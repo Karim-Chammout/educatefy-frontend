@@ -113,6 +113,8 @@
   "course.subtitle": "Subtitle",
   "course.subtitleHelperText": "Short subtitle for the course",
   "course.language": "Language",
+  "course.subjects": "The subjects of the course",
+  "course.subjectsHelperText": "The course will be categorised based on the selected subjects",
   "course.languageHelperText": "Select the language of the course",
   "course.externalResourceLink": "External resource link",
   "course.externalResourceLinkHelperText": "This can be used if you want to add a link to redirect to an external resource.",

@@ -1,10 +1,9 @@
 {
   "language.selector.label": "Select Language",
   "ui.components.loader.label": "Loading...",
-  "errorPlaceholder.exploreBtnLabel": "Go to Explore",
   "errorPlaceholder.title": "An Error Occurred",
   "errorPlaceholder.subtitle": "Something went wrong. Please try again later or contact support.",
-  "notFound.exploreBtnLabel": "Go to Explore",
+  "common.exploreBtnLabel": "Go to Explore",
   "notFound.subtitle": "The page you're looking for doesn't exist.",
   "notFound.title": "Page Not Found",
   "fileDropzone.dropHere": "Drop the file here...",

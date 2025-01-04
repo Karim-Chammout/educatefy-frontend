@@ -1,10 +1,9 @@
 {
   "language.selector.label": "اختر لغة",
   "ui.components.loader.label": "يتم التحميل...",
-  "errorPlaceholder.exploreBtnLabel": "انتقل إلى استكشاف",
   "errorPlaceholder.title": "حدث خطأ",
   "errorPlaceholder.subtitle": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا أو الاتصال بالدعم.",
-  "notFound.exploreBtnLabel": "انتقل إلى استكشاف",
+  "common.exploreBtnLabel": "انتقل إلى استكشاف",
   "notFound.subtitle": "الصفحة التي تبحث عنها غير موجودة.",
   "notFound.title": "الصفحة غير موجودة",
   "fileDropzone.dropHere": "أسقط الملف هنا...",

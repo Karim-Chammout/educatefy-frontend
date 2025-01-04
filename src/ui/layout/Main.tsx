@@ -13,6 +13,7 @@ import PageTemplate from './PageTemplate';
 import PublicPageTemplate from './PublicPageTemplate';
 import { DashboardRoutes } from './routes/DashboardRoutes';
 import {
+  Course,
   Courses,
   CreateCourse,
   Dashboard,
@@ -89,6 +90,15 @@ const PrivatePagesView = () => {
             </RouteWrapper>
           }
         />
+        <Route
+          path="/course/:slug"
+          element={
+            <RouteWrapper>
+              <Course />
+            </RouteWrapper>
+          }
+        />
+
         <Route
           path="/dashboard"
           element={<DashboardRoutes hasPermission={data.me.accountRole === AccountRole.Teacher} />}

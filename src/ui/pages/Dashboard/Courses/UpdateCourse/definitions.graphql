@@ -12,6 +12,10 @@ fragment EditableCourse on Course {
   is_published
   start_date
   end_date
+  subjects {
+    id
+    denomination
+  }
 }
 
 query EditableCourse($id: ID!) {

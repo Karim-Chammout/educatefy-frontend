@@ -106,6 +106,7 @@ const UpdateCourse = ({
       slug: course.slug,
       level: course.level,
       language: languages.find((lang) => lang.denomination === course.language)?.code || null,
+      subjects: course.subjects || null,
       externalResourceLink: course.external_resource_link || null,
       externalMeetingLink: course.external_meeting_link || null,
       isPublished: course.is_published,
@@ -114,19 +115,28 @@ const UpdateCourse = ({
     },
   });
 
-  const [denomination, subtitle, slug, level, language, externalMeetingLink, externalResourceLink] =
-    useWatch({
-      name: [
-        'denomination',
-        'slug',
-        'subtitle',
-        'level',
-        'language',
-        'externalMeetingLink',
-        'externalResourceLink',
-      ],
-      control,
-    });
+  const [
+    denomination,
+    subtitle,
+    slug,
+    level,
+    language,
+    subjects,
+    externalMeetingLink,
+    externalResourceLink,
+  ] = useWatch({
+    name: [
+      'denomination',
+      'slug',
+      'subtitle',
+      'level',
+      'language',
+      'subjects',
+      'externalMeetingLink',
+      'externalResourceLink',
+    ],
+    control,
+  });
 
   const onSubmit = async (values: FieldValues) => {
     if (!isValidSlug(values.slug)) {
@@ -149,7 +159,10 @@ const UpdateCourse = ({
       !values.slug ||
       !values.subtitle ||
       !descriptionContent ||
-      !values.level
+      !values.level ||
+      !values.language.id ||
+      !values.subjects ||
+      values.subjects.length === 0
     ) {
       setToasterVisibility({
         newDuration: 5000,
@@ -167,6 +180,8 @@ const UpdateCourse = ({
       ? currentImage.substring(BUCKET_PATH_NAME_URL.length + 1)
       : null;
 
+    const subjectIds = values.subjects.map((subject: { id: string }) => subject.id);
+
     await updateCourse({
       variables: {
         updateCourseInfo: {
@@ -182,6 +197,8 @@ const UpdateCourse = ({
           external_resource_link: values.externalResourceLink,
           external_meeting_link: values.externalMeetingLink,
           image: imageToUpdate,
+          language: values.language.id,
+          subjectIds,
         },
       },
       onCompleted(data) {
@@ -303,6 +320,20 @@ const UpdateCourse = ({
                   id: lang.code,
                   label: lang.denomination,
                 }))}
+                required
+              />
+              <AutocompleteElement
+                name="subjects"
+                label={t('course.subjects')}
+                textFieldProps={{
+                  helperText: t('course.subjectsHelperText'),
+                }}
+                control={control}
+                options={course.subjects.map((s) => ({
+                  id: s.id,
+                  label: s.denomination,
+                }))}
+                multiple
                 required
               />
               <TextFieldElement
@@ -499,6 +530,8 @@ const UpdateCourse = ({
                 !level ||
                 (externalResourceLink && !isValidUrl(externalResourceLink)) ||
                 (externalMeetingLink && !isValidUrl(externalMeetingLink)) ||
+                !subjects ||
+                (subjects && subjects.length === 0) ||
                 !hasDescription ||
                 isImageLoading ||
                 updateCourseLoading

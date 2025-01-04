@@ -127,8 +127,8 @@ const UpdateCourse = ({
   ] = useWatch({
     name: [
       'denomination',
-      'slug',
       'subtitle',
+      'slug',
       'level',
       'language',
       'subjects',
@@ -160,7 +160,7 @@ const UpdateCourse = ({
       !values.subtitle ||
       !descriptionContent ||
       !values.level ||
-      !values.language.id ||
+      !values.language ||
       !values.subjects ||
       values.subjects.length === 0
     ) {

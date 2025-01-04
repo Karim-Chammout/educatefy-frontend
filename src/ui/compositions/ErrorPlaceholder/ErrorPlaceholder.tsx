@@ -10,7 +10,7 @@ const ErrorPlaceholder = () => {
 
   return (
     <InfoState
-      btnLabel={t('errorPlaceholder.exploreBtnLabel')}
+      btnLabel={t('common.exploreBtnLabel')}
       btnOnClick={() => navigate('/explore')}
       icon={<ErrorOutlineRoundedIcon />}
       title={t('errorPlaceholder.title')}

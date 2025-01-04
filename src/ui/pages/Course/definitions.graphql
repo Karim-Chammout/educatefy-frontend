@@ -1,0 +1,26 @@
+fragment Course on Course {
+  id
+  denomination
+  slug
+  subtitle
+  description
+  level
+  image
+  external_resource_link
+  external_meeting_link
+  start_date
+  end_date
+  language
+  updated_at
+  created_at
+  subjects {
+    id
+    denomination
+  }
+}
+
+query Course($slug: String!) {
+  course(slug: $slug) {
+    ...Course
+  }
+}

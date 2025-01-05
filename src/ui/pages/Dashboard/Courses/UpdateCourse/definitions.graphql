@@ -16,6 +16,10 @@ fragment EditableCourse on Course {
     id
     denomination
   }
+  objectives {
+    id
+    objective
+  }
 }
 
 query EditableCourse($id: ID!) {

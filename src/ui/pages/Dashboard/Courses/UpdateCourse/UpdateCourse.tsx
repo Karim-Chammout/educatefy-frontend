@@ -57,6 +57,10 @@ const UpdateCourse = ({
   const [objectivesList, setObjectivesList] = useState<EditableCourseFragment['objectives']>(
     course.objectives,
   );
+  const [requirementItem, setRequirementItem] = useState('');
+  const [requirementsList, setRequirementsList] = useState<EditableCourseFragment['requirements']>(
+    course.requirements,
+  );
   const [currentImage, setCurrentImage] = useState<string | null>(course.image || null);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
@@ -131,6 +135,29 @@ const UpdateCourse = ({
     setObjectivesList(newObjectivesList);
   };
 
+  const handleAddRequirement = () => {
+    if (!requirementItem || requirementItem.trim() === '') {
+      return;
+    }
+
+    const newRequirement = {
+      id: `${Date.now() * Math.floor(Math.random() * 1000)}`,
+      requirement: requirementItem,
+    };
+
+    setRequirementsList((prev) => [...prev, newRequirement]);
+    setRequirementItem('');
+  };
+
+  const handleDeleteRequirement = (id: string) => {
+    if (!requirementsList) {
+      return;
+    }
+
+    const newRequirementsList = requirementsList.filter((item) => item.id !== id);
+    setRequirementsList(newRequirementsList);
+  };
+
   const { handleSubmit, control } = useForm({
     defaultValues: {
       denomination: course.denomination,
@@ -196,7 +223,9 @@ const UpdateCourse = ({
       !values.subjects ||
       values.subjects.length === 0 ||
       !objectivesList ||
-      (objectivesList && objectivesList.length === 0)
+      (objectivesList && objectivesList.length === 0) ||
+      !requirementsList ||
+      (requirementsList && requirementsList.length === 0)
     ) {
       setToasterVisibility({
         newDuration: 5000,
@@ -219,6 +248,10 @@ const UpdateCourse = ({
       id: item.id,
       objective: item.objective,
     }));
+    const requirements = requirementsList.map((item) => ({
+      id: item.id,
+      requirement: item.requirement,
+    }));
 
     await updateCourse({
       variables: {
@@ -238,6 +271,7 @@ const UpdateCourse = ({
           language: values.language.id,
           subjectIds,
           objectives,
+          requirements,
         },
       },
       onCompleted(data) {
@@ -564,7 +598,7 @@ const UpdateCourse = ({
                   fullWidth
                 />
                 <Button variant="outlined" onClick={handleAddObjective} disabled={!objectiveItem}>
-                  {t('course.add')}
+                  {t('common.add')}
                 </Button>
               </div>
 
@@ -580,6 +614,57 @@ const UpdateCourse = ({
                           size="small"
                           color="error"
                           onClick={() => handleDeleteObjective(item.id)}
+                        >
+                          X
+                        </Button>
+                      </ListItem>
+                      <Divider />
+                    </Box>
+                  ))}
+                </List>
+              )}
+            </Box>
+          </Paper>
+
+          {/* Requierments Section */}
+          <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              {t('course.courseRequirements')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              {t('course.courseRequirementsSubtitle')}
+            </Typography>
+            <Box>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
+                <TextField
+                  label={t('course.requirement')}
+                  value={requirementItem}
+                  onChange={(e) => setRequirementItem(e.target.value)}
+                  helperText={t('course.requirementHelperText')}
+                  required
+                  fullWidth
+                />
+                <Button
+                  variant="outlined"
+                  onClick={handleAddRequirement}
+                  disabled={!requirementItem || requirementItem.trim() === ''}
+                >
+                  {t('common.add')}
+                </Button>
+              </div>
+
+              {/* Objectives List */}
+              {requirementsList && requirementsList.length > 0 && (
+                <List>
+                  {requirementsList.map((item) => (
+                    <Box key={item.id}>
+                      <ListItem>
+                        <ListItemText primary={item.requirement} color="text.secondary" />
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          color="error"
+                          onClick={() => handleDeleteRequirement(item.id)}
                         >
                           X
                         </Button>

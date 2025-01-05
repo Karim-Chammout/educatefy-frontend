@@ -138,6 +138,8 @@ export type Course = {
   language: Scalars['String']['output'];
   /** The difficulty level of this course. */
   level: CourseLevel;
+  /** The objectives of this course. */
+  objectives: Array<CourseObjective>;
   /** A unique slug of this course. */
   slug: Scalars['String']['output'];
   /** The start date of the course */
@@ -170,6 +172,8 @@ export type CourseInfoInput = {
   language: Scalars['String']['input'];
   /** The difficulty level of this course. */
   level: CourseLevel;
+  /** List of objectives for the course */
+  objectives?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The slug of this course. */
   slug: Scalars['String']['input'];
   /** The start date of the course. */
@@ -186,6 +190,23 @@ export enum CourseLevel {
   Beginner = 'beginner',
   Intermediate = 'intermediate'
 }
+
+/** The course objective info */
+export type CourseObjective = {
+  __typename?: 'CourseObjective';
+  /** A unique id of this course objective. */
+  id: Scalars['ID']['output'];
+  /** The objective of this course. */
+  objective: Scalars['String']['output'];
+};
+
+/** Input for a course objective record. */
+export type CourseObjectiveInput = {
+  /** A unique id of this course objective. */
+  id: Scalars['ID']['input'];
+  /** The objective of this course. */
+  objective: Scalars['String']['input'];
+};
 
 /** The result of the creating or updating a course. */
 export type CreateOrUpdateCourseResult = {
@@ -407,6 +428,8 @@ export type UpdateCourseInfoInput = {
   language?: InputMaybe<Scalars['String']['input']>;
   /** The difficulty level of this course */
   level?: InputMaybe<CourseLevel>;
+  /** List of objectives for the course */
+  objectives?: InputMaybe<Array<CourseObjectiveInput>>;
   /** The slug of this course */
   slug?: InputMaybe<Scalars['String']['input']>;
   /** The start date of the course */
@@ -486,21 +509,21 @@ export type CreateCourseMutationVariables = Exact<{
 
 export type CreateCourseMutation = { __typename?: 'Mutation', createCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, slug: string } | null } | null };
 
-export type EditableCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
+export type EditableCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }> };
 
 export type EditableCourseQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type EditableCourseQuery = { __typename?: 'Query', editableCourse?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } | null, languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }> };
+export type EditableCourseQuery = { __typename?: 'Query', editableCourse?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }> } | null, languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }> };
 
 export type UpdateCourseMutationVariables = Exact<{
   updateCourseInfo: UpdateCourseInfoInput;
 }>;
 
 
-export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } | null } | null };
+export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }> } | null } | null };
 
 export type DeleteCourseMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -647,6 +670,10 @@ export const EditableCourseFragmentDoc = gql`
   subjects {
     id
     denomination
+  }
+  objectives {
+    id
+    objective
   }
 }
     `;

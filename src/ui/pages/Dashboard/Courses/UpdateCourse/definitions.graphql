@@ -20,6 +20,10 @@ fragment EditableCourse on Course {
     id
     objective
   }
+  requirements {
+    id
+    requirement
+  }
 }
 
 query EditableCourse($id: ID!) {

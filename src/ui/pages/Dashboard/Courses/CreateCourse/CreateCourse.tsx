@@ -55,6 +55,10 @@ const CreateCourse = ({
   const [objectivesList, setObjectivesList] = useState<null | { id: number; objective: string }[]>(
     null,
   );
+  const [requirementItem, setRequirementItem] = useState('');
+  const [requirementsList, setRequirementsList] = useState<
+    null | { id: number; requirement: string }[]
+  >(null);
   const [courseImage, setCourseImage] = useState<File | null>(null);
   const [uploadedImageDetails, setUploadedImageDetails] = useState<FileResponseType | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -169,6 +173,29 @@ const CreateCourse = ({
     setObjectivesList(newObjectivesList);
   };
 
+  const handleAddRequirement = () => {
+    if (!requirementItem || requirementItem.trim() === '') {
+      return;
+    }
+
+    const newRequirement = {
+      id: Date.now() * Math.floor(Math.random() * 1000),
+      requirement: requirementItem,
+    };
+
+    setRequirementsList((prev) => (prev ? [...prev, newRequirement] : [newRequirement]));
+    setRequirementItem('');
+  };
+
+  const handleDeleteRequirement = (id: number) => {
+    if (!requirementsList) {
+      return;
+    }
+
+    const newRequirementsList = requirementsList.filter((item) => item.id !== id);
+    setRequirementsList(newRequirementsList);
+  };
+
   const onSubmit = async (values: FieldValues) => {
     if (!isValidSlug(values.slug)) {
       setToasterVisibility({
@@ -195,7 +222,9 @@ const CreateCourse = ({
       !values.subjects ||
       values.subjects.length === 0 ||
       !objectivesList ||
-      (objectivesList && objectivesList.length === 0)
+      (objectivesList && objectivesList.length === 0) ||
+      !requirementsList ||
+      (requirementsList && requirementsList.length === 0)
     ) {
       setToasterVisibility({
         newDuration: 5000,
@@ -208,6 +237,7 @@ const CreateCourse = ({
 
     const subjectIds = values.subjects.map((subject: { id: string }) => subject.id);
     const objectives = objectivesList.map((item) => item.objective);
+    const requirements = requirementsList.map((item) => item.requirement);
 
     await createCourse({
       variables: {
@@ -229,6 +259,7 @@ const CreateCourse = ({
               : null,
           subjectIds,
           objectives,
+          requirements,
         },
       },
       onCompleted(data) {
@@ -548,7 +579,7 @@ const CreateCourse = ({
                   onClick={handleAddObjective}
                   disabled={!objectiveItem || objectiveItem.trim() === ''}
                 >
-                  {t('course.add')}
+                  {t('common.add')}
                 </Button>
               </div>
 
@@ -564,6 +595,57 @@ const CreateCourse = ({
                           size="small"
                           color="error"
                           onClick={() => handleDeleteObjective(item.id)}
+                        >
+                          X
+                        </Button>
+                      </ListItem>
+                      <Divider />
+                    </Box>
+                  ))}
+                </List>
+              )}
+            </Box>
+          </Paper>
+
+          {/* Requierments Section */}
+          <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              {t('course.courseRequirements')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              {t('course.courseRequirementsSubtitle')}
+            </Typography>
+            <Box>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
+                <TextField
+                  label={t('course.requirement')}
+                  value={requirementItem}
+                  onChange={(e) => setRequirementItem(e.target.value)}
+                  helperText={t('course.requirementHelperText')}
+                  required
+                  fullWidth
+                />
+                <Button
+                  variant="outlined"
+                  onClick={handleAddRequirement}
+                  disabled={!requirementItem || requirementItem.trim() === ''}
+                >
+                  {t('common.add')}
+                </Button>
+              </div>
+
+              {/* Objectives List */}
+              {requirementsList && requirementsList.length > 0 && (
+                <List>
+                  {requirementsList.map((item) => (
+                    <Box key={item.id}>
+                      <ListItem>
+                        <ListItemText primary={item.requirement} color="text.secondary" />
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          color="error"
+                          onClick={() => handleDeleteRequirement(item.id)}
                         >
                           X
                         </Button>
@@ -608,6 +690,8 @@ const CreateCourse = ({
                 (subjects && subjects.length === 0) ||
                 !objectivesList ||
                 (objectivesList && objectivesList.length === 0) ||
+                !requirementsList ||
+                (requirementsList && requirementsList.length === 0) ||
                 !hasDescription ||
                 isImageLoading ||
                 createCourseLoading

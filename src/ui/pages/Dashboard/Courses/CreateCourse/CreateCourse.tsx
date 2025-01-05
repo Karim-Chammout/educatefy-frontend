@@ -1,7 +1,12 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { format } from 'date-fns';
@@ -46,6 +51,10 @@ const CreateCourse = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [descriptionContent, setDescriptionContent] = useState('');
+  const [objectiveItem, setObjectiveItem] = useState('');
+  const [objectivesList, setObjectivesList] = useState<null | { id: number; objective: string }[]>(
+    null,
+  );
   const [courseImage, setCourseImage] = useState<File | null>(null);
   const [uploadedImageDetails, setUploadedImageDetails] = useState<FileResponseType | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -137,6 +146,29 @@ const CreateCourse = ({
     setFormValue('slug', generatedSlug);
   };
 
+  const handleAddObjective = () => {
+    if (!objectiveItem || objectiveItem.trim() === '') {
+      return;
+    }
+
+    const newObjective = {
+      id: Date.now() * Math.floor(Math.random() * 1000),
+      objective: objectiveItem,
+    };
+
+    setObjectivesList((prev) => (prev ? [...prev, newObjective] : [newObjective]));
+    setObjectiveItem('');
+  };
+
+  const handleDeleteObjective = (id: number) => {
+    if (!objectivesList) {
+      return;
+    }
+
+    const newObjectivesList = objectivesList.filter((item) => item.id !== id);
+    setObjectivesList(newObjectivesList);
+  };
+
   const onSubmit = async (values: FieldValues) => {
     if (!isValidSlug(values.slug)) {
       setToasterVisibility({
@@ -161,7 +193,9 @@ const CreateCourse = ({
       !values.level.id ||
       !values.language.id ||
       !values.subjects ||
-      values.subjects.length === 0
+      values.subjects.length === 0 ||
+      !objectivesList ||
+      (objectivesList && objectivesList.length === 0)
     ) {
       setToasterVisibility({
         newDuration: 5000,
@@ -173,6 +207,7 @@ const CreateCourse = ({
     }
 
     const subjectIds = values.subjects.map((subject: { id: string }) => subject.id);
+    const objectives = objectivesList.map((item) => item.objective);
 
     await createCourse({
       variables: {
@@ -193,6 +228,7 @@ const CreateCourse = ({
               ? uploadedImageDetails.filePath
               : null,
           subjectIds,
+          objectives,
         },
       },
       onCompleted(data) {
@@ -489,6 +525,57 @@ const CreateCourse = ({
             )}
           </Paper>
 
+          {/* Learning outcomes Section */}
+          <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              {t('course.learningOutcomes')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              {t('course.learningOutcomesSubtitle')}
+            </Typography>
+            <Box>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
+                <TextField
+                  label={t('course.objective')}
+                  value={objectiveItem}
+                  onChange={(e) => setObjectiveItem(e.target.value)}
+                  helperText={t('course.objectiveHelperText')}
+                  required
+                  fullWidth
+                />
+                <Button
+                  variant="outlined"
+                  onClick={handleAddObjective}
+                  disabled={!objectiveItem || objectiveItem.trim() === ''}
+                >
+                  {t('course.add')}
+                </Button>
+              </div>
+
+              {/* Objectives List */}
+              {objectivesList && objectivesList.length > 0 && (
+                <List>
+                  {objectivesList.map((item) => (
+                    <Box key={item.id}>
+                      <ListItem>
+                        <ListItemText primary={item.objective} color="text.secondary" />
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          color="error"
+                          onClick={() => handleDeleteObjective(item.id)}
+                        >
+                          X
+                        </Button>
+                      </ListItem>
+                      <Divider />
+                    </Box>
+                  ))}
+                </List>
+              )}
+            </Box>
+          </Paper>
+
           {/* Action Buttons */}
           <div
             style={{
@@ -519,6 +606,8 @@ const CreateCourse = ({
                 (externalMeetingLink && !isValidUrl(externalMeetingLink)) ||
                 !subjects ||
                 (subjects && subjects.length === 0) ||
+                !objectivesList ||
+                (objectivesList && objectivesList.length === 0) ||
                 !hasDescription ||
                 isImageLoading ||
                 createCourseLoading

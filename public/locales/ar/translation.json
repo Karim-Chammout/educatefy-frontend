@@ -155,5 +155,9 @@
   "course.learningOutcomesSubtitle": "حدد نتائج وأهداف الدورة",
   "course.objective": "الهدف",
   "course.objectiveHelperText": "ما الذي سيتعلمه الطلاب؟",
-  "course.add": "إضافة"
+  "course.courseRequirements": "متطلبات الدورة",
+  "course.courseRequirementsSubtitle": "تعيين متطلبات الدورة",
+  "course.requirement": "الشرط المطلوب",
+  "course.requirementHelperText": "ما الذي يجب أن يعرفه الطلاب قبل البدء في هذه الدورة؟",
+  "common.add": "إضافة"
 }

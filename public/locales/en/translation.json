@@ -155,5 +155,9 @@
   "course.learningOutcomesSubtitle": "Set the learning outcomes and the course objectives",
   "course.objective": "Objective",
   "course.objectiveHelperText": "What will students learn?",
-  "course.add": "Add"
+  "course.courseRequirements": "Course requirements",
+  "course.courseRequirementsSubtitle": "Set the requirements for the course",
+  "course.requirement": "Requirement",
+  "course.requirementHelperText": "What should the students know before starting this course?",
+  "common.add": "Add"
 }

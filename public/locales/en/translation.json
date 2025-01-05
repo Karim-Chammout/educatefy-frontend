@@ -150,5 +150,10 @@
   "course.deleteSuccess": "Course deleted successfully!",
   "course.deleteError": "Something went wrong. Couldn't delete the course",
   "course.confirmDeleteTitle": "Are you sure you want to delete this course?",
-  "course.confirmDeleteSubtitle": "Students who are enrolled in this course will no longer have access to it. Click 'Confirm' to continue."
+  "course.confirmDeleteSubtitle": "Students who are enrolled in this course will no longer have access to it. Click 'Confirm' to continue.",
+  "course.learningOutcomes": "learning outcomes",
+  "course.learningOutcomesSubtitle": "Set the learning outcomes and the course objectives",
+  "course.objective": "Objective",
+  "course.objectiveHelperText": "What will students learn?",
+  "course.add": "Add"
 }

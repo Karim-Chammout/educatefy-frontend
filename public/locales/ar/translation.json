@@ -150,5 +150,10 @@
   "course.deleteSuccess": "تم حذف الدورة بنجاح!",
   "course.deleteError": "حدث خطأ ما. لم نتمكن من حذف الدورة",
   "course.confirmDeleteTitle": "هل أنت متأكد أنك تريد حذف هذه الدورة؟",
-  "course.confirmDeleteSubtitle": "لن يتمكن الطلاب المسجلون في هذه الدورة من الوصول إليها بعد الآن. انقر على \"تأكيد\" للمتابعة."
+  "course.confirmDeleteSubtitle": "لن يتمكن الطلاب المسجلون في هذه الدورة من الوصول إليها بعد الآن. انقر على \"تأكيد\" للمتابعة.",
+  "course.learningOutcomes": "نتائج الدورة",
+  "course.learningOutcomesSubtitle": "حدد نتائج وأهداف الدورة",
+  "course.objective": "الهدف",
+  "course.objectiveHelperText": "ما الذي سيتعلمه الطلاب؟",
+  "course.add": "إضافة"
 }

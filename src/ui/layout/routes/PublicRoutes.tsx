@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router';
 
 import { ACCESS_DENIED } from '@/utils/constants';
 
-import { Explore, Login, LoginCallback, NotFound, Register } from './LazyComponent';
+import { Course, Explore, Login, LoginCallback, NotFound, Register } from './LazyComponent';
 import RouteWrapper from './RouteWrapper';
 
 /* 
@@ -46,6 +46,15 @@ const PublicRoutes = () => {
           </RouteWrapper>
         }
       />
+      <Route
+        path="/course/:slug"
+        element={
+          <RouteWrapper>
+            <Course />
+          </RouteWrapper>
+        }
+      />
+
       {privateRoutes.map((r) => (
         <Route
           key={r}

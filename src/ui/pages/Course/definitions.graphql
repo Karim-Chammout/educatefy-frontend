@@ -13,6 +13,7 @@ fragment Course on Course {
   language
   updated_at
   created_at
+  status
   subjects {
     id
     denomination
@@ -22,5 +23,18 @@ fragment Course on Course {
 query Course($slug: String!) {
   course(slug: $slug) {
     ...Course
+  }
+}
+
+mutation UpdateCourseStatus($courseStatusInput: CourseStatusInput!) {
+  updateCourseStatus(courseStatusInput: $courseStatusInput) {
+    success
+    errors {
+      message
+    }
+    course {
+      id
+      status
+    }
   }
 }

@@ -159,5 +159,8 @@
   "course.courseRequirementsSubtitle": "Set the requirements for the course",
   "course.requirement": "Requirement",
   "course.requirementHelperText": "What should the students know before starting this course?",
+  "course.enroll": "Enroll now",
+  "course.unenroll": "Unenroll",
+  "error.message": "Something went wrong. Please try again later",
   "common.add": "Add"
 }

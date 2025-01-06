@@ -146,6 +146,8 @@ export type Course = {
   slug: Scalars['String']['output'];
   /** The start date of the course */
   start_date?: Maybe<Scalars['Date']['output']>;
+  /** The status of the course for the current user */
+  status: CourseStatus;
   /** The subjects linked to this course. */
   subjects: Array<Subject>;
   /** The subtitle of this course. */
@@ -229,6 +231,26 @@ export type CourseRequirementInput = {
   requirement: Scalars['String']['input'];
 };
 
+/** The status of the course for the current user. */
+export enum CourseStatus {
+  /** This course is available for enrollment. */
+  Available = 'available',
+  /** This course has been completed by the user. */
+  Completed = 'completed',
+  /** The user is currently enrolled in this course. */
+  Enrolled = 'enrolled',
+  /** The user unenrolled from this course. */
+  Unenrolled = 'unenrolled'
+}
+
+/** Input for updating a course status. */
+export type CourseStatusInput = {
+  /** The ID of the course */
+  id: Scalars['ID']['input'];
+  /** The new status of the course */
+  status: CourseStatus;
+};
+
 /** The result of the creating or updating a course. */
 export type CreateOrUpdateCourseResult = {
   __typename?: 'CreateOrUpdateCourseResult';
@@ -279,6 +301,8 @@ export type Mutation = {
   updateAccountInfo?: Maybe<MutationResult>;
   /** Updates a course. */
   updateCourse?: Maybe<CreateOrUpdateCourseResult>;
+  /** Updates the status of a course. */
+  updateCourseStatus?: Maybe<UpdateCourseStatusResult>;
   /** Updates a user profile details. */
   updateProfile?: Maybe<UpdateProfileResult>;
 };
@@ -306,6 +330,11 @@ export type MutationUpdateAccountInfoArgs = {
 
 export type MutationUpdateCourseArgs = {
   updateCourseInfo: UpdateCourseInfoInput;
+};
+
+
+export type MutationUpdateCourseStatusArgs = {
+  courseStatusInput: CourseStatusInput;
 };
 
 
@@ -463,6 +492,17 @@ export type UpdateCourseInfoInput = {
   subtitle?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** The result of the updateCourseStatus mutation. */
+export type UpdateCourseStatusResult = {
+  __typename?: 'UpdateCourseStatusResult';
+  /** The updated course information. */
+  course?: Maybe<Course>;
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
+};
+
 /** The result of the updateProfile mutation. */
 export type UpdateProfileResult = {
   __typename?: 'UpdateProfileResult';
@@ -509,14 +549,21 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } };
 
-export type CourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
+export type CourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
 
 export type CourseQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type CourseQuery = { __typename?: 'Query', course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } | null };
+export type CourseQuery = { __typename?: 'Query', course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } | null };
+
+export type UpdateCourseStatusMutationVariables = Exact<{
+  courseStatusInput: CourseStatusInput;
+}>;
+
+
+export type UpdateCourseStatusMutation = { __typename?: 'Mutation', updateCourseStatus?: { __typename?: 'UpdateCourseStatusResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, status: CourseStatus } | null } | null };
 
 export type LanguageFragment = { __typename?: 'Language', id: string, denomination: string, code: string };
 
@@ -662,6 +709,7 @@ export const CourseFragmentDoc = gql`
   language
   updated_at
   created_at
+  status
   subjects {
     id
     denomination
@@ -992,6 +1040,46 @@ export type CourseQueryHookResult = ReturnType<typeof useCourseQuery>;
 export type CourseLazyQueryHookResult = ReturnType<typeof useCourseLazyQuery>;
 export type CourseSuspenseQueryHookResult = ReturnType<typeof useCourseSuspenseQuery>;
 export type CourseQueryResult = Apollo.QueryResult<CourseQuery, CourseQueryVariables>;
+export const UpdateCourseStatusDocument = gql`
+    mutation UpdateCourseStatus($courseStatusInput: CourseStatusInput!) {
+  updateCourseStatus(courseStatusInput: $courseStatusInput) {
+    success
+    errors {
+      message
+    }
+    course {
+      id
+      status
+    }
+  }
+}
+    `;
+export type UpdateCourseStatusMutationFn = Apollo.MutationFunction<UpdateCourseStatusMutation, UpdateCourseStatusMutationVariables>;
+
+/**
+ * __useUpdateCourseStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateCourseStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCourseStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCourseStatusMutation, { data, loading, error }] = useUpdateCourseStatusMutation({
+ *   variables: {
+ *      courseStatusInput: // value for 'courseStatusInput'
+ *   },
+ * });
+ */
+export function useUpdateCourseStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCourseStatusMutation, UpdateCourseStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCourseStatusMutation, UpdateCourseStatusMutationVariables>(UpdateCourseStatusDocument, options);
+      }
+export type UpdateCourseStatusMutationHookResult = ReturnType<typeof useUpdateCourseStatusMutation>;
+export type UpdateCourseStatusMutationResult = Apollo.MutationResult<UpdateCourseStatusMutation>;
+export type UpdateCourseStatusMutationOptions = Apollo.BaseMutationOptions<UpdateCourseStatusMutation, UpdateCourseStatusMutationVariables>;
 export const CreateCoursePageDocument = gql`
     query CreateCoursePage {
   languages {

@@ -28,7 +28,7 @@ const PublicPageTemplate = ({ children }: { children: ReactNode }) => {
         <main>
           <Container maxWidth={false}>{children}</Container>
         </main>
-        <Modal open={isAuthModalVisible} onClose={() => setModalVisibility(false)}>
+        <Modal open={isAuthModalVisible} onClose={() => setModalVisibility(false)} maxWidth="xs">
           {isAuthModalVisible && authModalType === 'login' ? (
             <LoginPopup handleRegisterSwitch={() => setAuthModalVisibility('register')} />
           ) : (

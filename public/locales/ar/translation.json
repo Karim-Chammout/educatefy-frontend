@@ -137,7 +137,7 @@
   "course.imageAlt": "معاينة الدورة",
   "common.remove": "إزالة",
   "common.delete": "حذف",
-  "common.create": "إنشاء دورة",
+  "course.createCourseBtn": "إنشاء دورة",
   "common.backToCourses": "العودة إلى الدورات",
   "course.notFoundSubtitle": "الدورة التي تبحث عنها غير موجودة.",
   "course.notFoundTitle": "الدورة غير موجودة",
@@ -165,5 +165,14 @@
   "course.sectionsSubtitle": "أنشئ أقسامًا لتنظيم هيكل دورتك",
   "course.manageSectionsBtn": "إدارة أقسام الدورة",
   "error.message": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا",
-  "common.add": "إضافة"
+  "common.add": "إضافة",
+  "courseSection.backToCourse": "العودة إلى الدورة",
+  "courseSection.sections": "الأقسام",
+  "common.create": "إنشاء",
+  "common.open": "فتح",
+  "courseSection.updateSection": "تحديث قسم الدورة",
+  "courseSection.createSection": "إنشاء قسم جديد للدورة",
+  "courseSection.sectionName": "اسم القسم",
+  "courseSection.isPublished": "منشور؟",
+  "courseSection.confirmDeleteSection": "هل أنت متأكد أنك تريد حذف هذا القسم من الدورة؟"
 }

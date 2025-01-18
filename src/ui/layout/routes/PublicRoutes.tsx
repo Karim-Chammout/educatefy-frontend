@@ -9,7 +9,7 @@ import RouteWrapper from './RouteWrapper';
   list of routes to redirect to login page and show
   an error message if a user tries to visit without loging in.
 */
-const privateRoutes = ['/', '/profile'];
+const privateRoutes = ['/', '/profile', '/dashboard/*'];
 
 const PublicRoutes = () => {
   return (

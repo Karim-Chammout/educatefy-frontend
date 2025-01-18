@@ -1,3 +1,4 @@
+import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import DialogActions from '@mui/material/DialogActions';
@@ -24,7 +25,7 @@ import {
 // @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 import api from '@/api';
 import {
@@ -675,6 +676,25 @@ const UpdateCourse = ({
                 </List>
               )}
             </Box>
+          </Paper>
+
+          {/* Course Sections */}
+          <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Course sections
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Create sections to organize the structure of your course
+            </Typography>
+            <Button
+              startIcon={<EditIcon />}
+              variant="outlined"
+              color="info"
+              LinkComponent={Link}
+              to={`/dashboard/courses/update/${course.id}/sections`}
+            >
+              Manage course sectoins
+            </Button>
           </Paper>
 
           {/* Action Buttons */}

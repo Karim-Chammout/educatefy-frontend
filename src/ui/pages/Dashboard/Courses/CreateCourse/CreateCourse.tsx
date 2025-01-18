@@ -697,7 +697,7 @@ const CreateCourse = ({
                 createCourseLoading
               }
             >
-              {t('common.create')}
+              {t('course.createCourseBtn')}
             </Button>
           </div>
         </Box>

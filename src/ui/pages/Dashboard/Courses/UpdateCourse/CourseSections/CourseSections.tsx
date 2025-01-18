@@ -15,6 +15,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 
 import {
@@ -30,6 +31,7 @@ import { Button, Modal, Typography } from '@/ui/components';
 import { StyledLink } from './CourseSections.style';
 
 const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
+  const { t } = useTranslation();
   const [sectionDenomination, setSectionDenomination] = useState('');
   const [isPublished, setIsPublished] = useState(true);
   const [editingSection, setEditingSection] = useState<{ id: null | string; isEditing: boolean }>({
@@ -148,9 +150,11 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
       <div>
         <Breadcrumbs>
-          <StyledLink to={`/dashboard/courses/update/${course.id}`}>Back to course</StyledLink>
+          <StyledLink to={`/dashboard/courses/update/${course.id}`}>
+            {t('courseSection.backToCourse')}
+          </StyledLink>
           <StyledLink to={`/dashboard/courses/update/${course.id}/sections`} isCurrent>
-            Sections
+            {t('courseSection.sections')}
           </StyledLink>
         </Breadcrumbs>
       </div>
@@ -163,13 +167,13 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
         }}
       >
         <Typography component="h1" variant="h4">
-          Course sections
+          {t('courseSection.sections')}
         </Typography>
         <Button
           onClick={() => setIsCourseSectionModalOpen(true)}
           startIcon={<AddCircleOutlineIcon />}
         >
-          Create
+          {t('common.create')}
         </Button>
       </Box>
 
@@ -213,7 +217,7 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
                     LinkComponent={Link}
                     to={`/dashboard/courses/update/${course.id}/sections/${section.id}`}
                   >
-                    Open
+                    {t('common.open')}
                   </Button>
                 </div>
               </ListItem>
@@ -223,27 +227,31 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
         </List>
       </Box>
       <Modal
-        title={editingSection.isEditing ? 'Update course section' : 'Create a new course section'}
+        title={
+          editingSection.isEditing
+            ? t('courseSection.updateSection')
+            : t('courseSection.createSection')
+        }
         open={isCourseSectionModalOpen}
         onClose={handleCloseModal}
         maxWidth="xs"
         CTAs={
           <DialogActions>
             <Button onClick={handleCloseModal} variant="outlined" fullWidth>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={handleCourseSectionSave}
               disabled={!sectionDenomination.trim() || loadingUpateSection || loadingCreateSection}
               fullWidth
             >
-              Confirm
+              {t('common.confirm')}
             </Button>
           </DialogActions>
         }
       >
         <TextField
-          label="Section name"
+          label={t('courseSection.sectionName')}
           value={sectionDenomination}
           onChange={(e) => setSectionDenomination(e.target.value)}
           fullWidth
@@ -254,24 +262,24 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
             <Switch
               checked={isPublished}
               onChange={(e) => setIsPublished(e.target.checked)}
-              title="Is published?"
+              title={t('courseSection.isPublished')}
             />
           }
-          label="Is published?"
+          label={t('courseSection.isPublished')}
         />
       </Modal>
       <Modal
-        title="Are you sure you want to delete this course selection?"
+        title={t('courseSection.confirmDeleteSection')}
         open={isDeleteCourseSectionModalOpen}
         onClose={handleCloseDeleteModal}
         maxWidth="xs"
         CTAs={
           <DialogActions>
             <Button onClick={handleCloseDeleteModal} variant="outlined" fullWidth>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button color="error" onClick={handleDeleteCourseSection} fullWidth>
-              Confirm
+              {t('common.confirm')}
             </Button>
           </DialogActions>
         }

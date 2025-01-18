@@ -681,10 +681,10 @@ const UpdateCourse = ({
           {/* Course Sections */}
           <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Course sections
+              {t('course.sections')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Create sections to organize the structure of your course
+              {t('course.sectionsSubtitle')}
             </Typography>
             <Button
               startIcon={<EditIcon />}
@@ -693,7 +693,7 @@ const UpdateCourse = ({
               LinkComponent={Link}
               to={`/dashboard/courses/update/${course.id}/sections`}
             >
-              Manage course sectoins
+              {t('course.manageSections')}
             </Button>
           </Paper>
 

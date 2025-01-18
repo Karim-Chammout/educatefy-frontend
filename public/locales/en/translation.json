@@ -161,6 +161,9 @@
   "course.requirementHelperText": "What should the students know before starting this course?",
   "course.enroll": "Enroll now",
   "course.unenroll": "Unenroll",
+  "course.sections": "Course sections",
+  "course.sectionsSubtitle": "Create sections to organize the structure of your course",
+  "course.manageSectionsBtn": "Manage course sectoins",
   "error.message": "Something went wrong. Please try again later",
   "common.add": "Add"
 }

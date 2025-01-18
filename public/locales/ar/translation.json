@@ -161,6 +161,9 @@
   "course.requirementHelperText": "ما الذي يجب أن يعرفه الطلاب قبل البدء في هذه الدورة؟",
   "course.enroll": "سجّل الآن",
   "course.unenroll": "إلغاء التسجيل",
+  "course.sections": "أقسام الدورة",
+  "course.sectionsSubtitle": "أنشئ أقسامًا لتنظيم هيكل دورتك",
+  "course.manageSectionsBtn": "إدارة أقسام الدورة",
   "error.message": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا",
   "common.add": "إضافة"
 }

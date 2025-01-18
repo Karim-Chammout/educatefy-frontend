@@ -1,0 +1,36 @@
+mutation CreateCourseSection($courseSectionInfo: CourseSectionInfoInput!) {
+  createCourseSection(courseSectionInfo: $courseSectionInfo) {
+    success
+    errors {
+      message
+    }
+    courseSection {
+      id
+      denomination
+      is_published
+    }
+  }
+}
+
+mutation UpdateCourseSection($courseSectionInfo: UpdateCourseSectionInfo!) {
+  updateCourseSection(courseSectionInfo: $courseSectionInfo) {
+    success
+    errors {
+      message
+    }
+    courseSection {
+      id
+      denomination
+      is_published
+    }
+  }
+}
+
+mutation DeleteCourseSection($id: ID!) {
+  deleteCourseSection(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}

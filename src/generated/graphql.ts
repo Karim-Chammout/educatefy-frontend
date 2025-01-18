@@ -96,6 +96,9 @@ export type ChangeProfilePictureResult = {
   user?: Maybe<Account>;
 };
 
+/** A content component which can be of various types. */
+export type ContentComponent = TextContent | VideoContent;
+
 /** The country info */
 export type Country = {
   __typename?: 'Country';
@@ -142,6 +145,8 @@ export type Course = {
   objectives: Array<CourseObjective>;
   /** The requirements of this course. */
   requirements: Array<CourseRequirement>;
+  /** The sections of this course. */
+  sections: Array<CourseSection>;
   /** A unique slug of this course. */
   slug: Scalars['String']['output'];
   /** The start date of the course */
@@ -231,6 +236,34 @@ export type CourseRequirementInput = {
   requirement: Scalars['String']['input'];
 };
 
+/** The course section info */
+export type CourseSection = {
+  __typename?: 'CourseSection';
+  /** The denomination of this course section */
+  denomination: Scalars['String']['output'];
+  /** A unique id of this course section. */
+  id: Scalars['ID']['output'];
+  /** A flag to indicate whether this course section is published or not */
+  is_published: Scalars['Boolean']['output'];
+  /** The course section items */
+  items: Array<CourseSectionItem>;
+  /** The rank of this course section */
+  rank: Scalars['Int']['output'];
+};
+
+/** Input for createing a course section record. */
+export type CourseSectionInfoInput = {
+  /** The ID of the course. */
+  courseId: Scalars['ID']['input'];
+  /** The denomination of this course section. */
+  denomination: Scalars['String']['input'];
+  /** A flag to indicate whether this course section is published or not. */
+  is_published: Scalars['Boolean']['input'];
+};
+
+/** Course section item which contains the course curriculum (e.g. lesson) */
+export type CourseSectionItem = Lesson;
+
 /** The status of the course for the current user. */
 export enum CourseStatus {
   /** This course is available for enrollment. */
@@ -262,6 +295,28 @@ export type CreateOrUpdateCourseResult = {
   success: Scalars['Boolean']['output'];
 };
 
+/** The result of the creating or updating a course section. */
+export type CreateOrUpdateCourseSectionResult = {
+  __typename?: 'CreateOrUpdateCourseSectionResult';
+  /** The created or updated course section. */
+  courseSection?: Maybe<CourseSection>;
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
+};
+
+/** The result of the creating or updating mutation. */
+export type CreateOrUpdateLessonResult = {
+  __typename?: 'CreateOrUpdateLessonResult';
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** The created or updated lesson. */
+  lesson?: Maybe<Lesson>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
+};
+
 /** An object type that wraps an error */
 export type Error = {
   __typename?: 'Error';
@@ -287,22 +342,61 @@ export type Language = {
   id: Scalars['ID']['output'];
 };
 
+/** The lesson info */
+export type Lesson = {
+  __typename?: 'Lesson';
+  /** The content components of this lesson. */
+  components: Array<ContentComponent>;
+  /** The denomination of this lesson. */
+  denomination: Scalars['String']['output'];
+  /** The duration of this lesson. */
+  duration: Scalars['Int']['output'];
+  /** A unique id of this lesson. */
+  id: Scalars['ID']['output'];
+  /** A flag to indicate whether this lesson is published or not */
+  is_published: Scalars['Boolean']['output'];
+};
+
+/** Input for createing a lesson record. */
+export type LessonInfoInput = {
+  /** The ID of the course. */
+  courseId: Scalars['ID']['input'];
+  /** The denomination of this lesson. */
+  denomination: Scalars['String']['input'];
+  /** The duration of the lesson in minutes. */
+  duration: Scalars['Int']['input'];
+  /** A flag to indicate whether this lesson is published or not. */
+  is_published: Scalars['Boolean']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Change the profile picture of a user. */
   changeProfilePicture?: Maybe<ChangeProfilePictureResult>;
   /** Creates a course. */
   createCourse?: Maybe<CreateOrUpdateCourseResult>;
+  /** Creates a course section. */
+  createCourseSection?: Maybe<CreateOrUpdateCourseSectionResult>;
+  /** Creates a lesson. */
+  createLesson?: Maybe<CreateOrUpdateLessonResult>;
   /** Deletes a course. */
   deleteCourse?: Maybe<MutationResult>;
+  /** Deletes a course section. */
+  deleteCourseSection?: Maybe<MutationResult>;
+  /** Deletes a lesson. */
+  deleteLesson?: Maybe<MutationResult>;
   /** Remove the profile picture of a user. */
   removeProfilePicture?: Maybe<ChangeProfilePictureResult>;
   /** Updates a user account information. */
   updateAccountInfo?: Maybe<MutationResult>;
   /** Updates a course. */
   updateCourse?: Maybe<CreateOrUpdateCourseResult>;
+  /** Updates a course section. */
+  updateCourseSection?: Maybe<CreateOrUpdateCourseSectionResult>;
   /** Updates the status of a course. */
   updateCourseStatus?: Maybe<UpdateCourseStatusResult>;
+  /** Updates a lesson. */
+  updateLesson?: Maybe<CreateOrUpdateLessonResult>;
   /** Updates a user profile details. */
   updateProfile?: Maybe<UpdateProfileResult>;
 };
@@ -318,7 +412,27 @@ export type MutationCreateCourseArgs = {
 };
 
 
+export type MutationCreateCourseSectionArgs = {
+  courseSectionInfo: CourseSectionInfoInput;
+};
+
+
+export type MutationCreateLessonArgs = {
+  lessonInfo: LessonInfoInput;
+};
+
+
 export type MutationDeleteCourseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteCourseSectionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteLessonArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -333,8 +447,18 @@ export type MutationUpdateCourseArgs = {
 };
 
 
+export type MutationUpdateCourseSectionArgs = {
+  courseSectionInfo: UpdateCourseSectionInfo;
+};
+
+
 export type MutationUpdateCourseStatusArgs = {
   courseStatusInput: CourseStatusInput;
+};
+
+
+export type MutationUpdateLessonArgs = {
+  lessonInfo: UpdateLessonInfoInput;
 };
 
 
@@ -456,6 +580,27 @@ export type Subject = {
   id: Scalars['ID']['output'];
 };
 
+/** A text content component. */
+export type TextContent = {
+  __typename?: 'TextContent';
+  /** The id of the component this text content belongs to. */
+  component_id: Scalars['ID']['output'];
+  /** The text content. */
+  content: Scalars['String']['output'];
+  /** The denomination of the component. */
+  denomination: Scalars['String']['output'];
+  /** A unique id of this text content component. */
+  id: Scalars['ID']['output'];
+  /** A flag indicating whether the component is published */
+  is_published: Scalars['Boolean']['output'];
+  /** A flag indicating whether the component is required to continue. */
+  is_required: Scalars['Boolean']['output'];
+  /** The rank of the component */
+  rank: Scalars['Int']['output'];
+  /** The type of the component. */
+  type: Scalars['String']['output'];
+};
+
 /** Input for updating a course record. */
 export type UpdateCourseInfoInput = {
   /** The denomination of this course */
@@ -492,6 +637,16 @@ export type UpdateCourseInfoInput = {
   subtitle?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** Input for updating a course section record. */
+export type UpdateCourseSectionInfo = {
+  /** The denomination of this course section. */
+  denomination?: InputMaybe<Scalars['String']['input']>;
+  /** The ID of the course section. */
+  id: Scalars['ID']['input'];
+  /** A flag to indicate whether this course section is published or not. */
+  is_published?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 /** The result of the updateCourseStatus mutation. */
 export type UpdateCourseStatusResult = {
   __typename?: 'UpdateCourseStatusResult';
@@ -503,6 +658,18 @@ export type UpdateCourseStatusResult = {
   success: Scalars['Boolean']['output'];
 };
 
+/** Input for updating a lesson record. */
+export type UpdateLessonInfoInput = {
+  /** The denomination of this lesson. */
+  denomination?: InputMaybe<Scalars['String']['input']>;
+  /** The duration of the lesson in minutes. */
+  duration?: InputMaybe<Scalars['Int']['input']>;
+  /** The ID of the lesson. */
+  id: Scalars['ID']['input'];
+  /** A flag to indicate whether this lesson is published or not. */
+  is_published?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 /** The result of the updateProfile mutation. */
 export type UpdateProfileResult = {
   __typename?: 'UpdateProfileResult';
@@ -512,6 +679,27 @@ export type UpdateProfileResult = {
   success: Scalars['Boolean']['output'];
   /** The updated user information. */
   user?: Maybe<Account>;
+};
+
+/** A video content component. */
+export type VideoContent = {
+  __typename?: 'VideoContent';
+  /** The id of the component this video content belongs to. */
+  component_id: Scalars['ID']['output'];
+  /** The denomination of the component. */
+  denomination: Scalars['String']['output'];
+  /** A unique id of this video content component. */
+  id: Scalars['ID']['output'];
+  /** A flag indicating whether the component is published */
+  is_published: Scalars['Boolean']['output'];
+  /** A flag indicating whether the component is required to continue. */
+  is_required: Scalars['Boolean']['output'];
+  /** The rank of the component */
+  rank: Scalars['Int']['output'];
+  /** The type of the component. */
+  type: Scalars['String']['output'];
+  /** The URL of the video. */
+  url: Scalars['String']['output'];
 };
 
 export type OpenidClientFragment = { __typename?: 'OpenidClient', id: string, button_text?: string | null, button_icon?: string | null, button_background_color?: string | null, identity_provider: string };
@@ -579,21 +767,50 @@ export type CreateCourseMutationVariables = Exact<{
 
 export type CreateCourseMutation = { __typename?: 'Mutation', createCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, slug: string } | null } | null };
 
-export type EditableCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }> };
+export type CreateCourseSectionMutationVariables = Exact<{
+  courseSectionInfo: CourseSectionInfoInput;
+}>;
+
+
+export type CreateCourseSectionMutation = { __typename?: 'Mutation', createCourseSection?: { __typename?: 'CreateOrUpdateCourseSectionResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, courseSection?: { __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean } | null } | null };
+
+export type UpdateCourseSectionMutationVariables = Exact<{
+  courseSectionInfo: UpdateCourseSectionInfo;
+}>;
+
+
+export type UpdateCourseSectionMutation = { __typename?: 'Mutation', updateCourseSection?: { __typename?: 'CreateOrUpdateCourseSectionResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, courseSection?: { __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean } | null } | null };
+
+export type DeleteCourseSectionMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteCourseSectionMutation = { __typename?: 'Mutation', deleteCourseSection?: { __typename?: 'MutationResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }> } | null };
+
+type EditableContentComponent_TextContent_Fragment = { __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string };
+
+type EditableContentComponent_VideoContent_Fragment = { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string };
+
+export type EditableContentComponentFragment = EditableContentComponent_TextContent_Fragment | EditableContentComponent_VideoContent_Fragment;
+
+export type EditableLessonFragment = { __typename?: 'Lesson', id: string, denomination: string, duration: number, components: Array<{ __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string } | { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string }> };
+
+export type EditableCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean, items: Array<{ __typename?: 'Lesson', id: string, denomination: string, duration: number, components: Array<{ __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string } | { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string }> }> }> };
 
 export type EditableCourseQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type EditableCourseQuery = { __typename?: 'Query', editableCourse?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }> } | null, languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }> };
+export type EditableCourseQuery = { __typename?: 'Query', editableCourse?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean, items: Array<{ __typename?: 'Lesson', id: string, denomination: string, duration: number, components: Array<{ __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string } | { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string }> }> }> } | null, languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }> };
 
 export type UpdateCourseMutationVariables = Exact<{
   updateCourseInfo: UpdateCourseInfoInput;
 }>;
 
 
-export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }> } | null } | null };
+export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean, items: Array<{ __typename?: 'Lesson', id: string, denomination: string, duration: number, components: Array<{ __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string } | { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string }> }> }> } | null } | null };
 
 export type DeleteCourseMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -723,6 +940,32 @@ export const LanguageFragmentDoc = gql`
   code
 }
     `;
+export const EditableContentComponentFragmentDoc = gql`
+    fragment EditableContentComponent on ContentComponent {
+  ... on TextContent {
+    id
+    denomination
+    is_required
+    content
+  }
+  ... on VideoContent {
+    id
+    denomination
+    is_required
+    url
+  }
+}
+    `;
+export const EditableLessonFragmentDoc = gql`
+    fragment EditableLesson on Lesson {
+  id
+  denomination
+  duration
+  components {
+    ...EditableContentComponent
+  }
+}
+    ${EditableContentComponentFragmentDoc}`;
 export const EditableCourseFragmentDoc = gql`
     fragment EditableCourse on Course {
   id
@@ -750,8 +993,18 @@ export const EditableCourseFragmentDoc = gql`
     id
     requirement
   }
+  sections {
+    id
+    denomination
+    is_published
+    items {
+      ... on Lesson {
+        ...EditableLesson
+      }
+    }
+  }
 }
-    `;
+    ${EditableLessonFragmentDoc}`;
 export const TeacherCourseFragmentDoc = gql`
     fragment TeacherCourse on Course {
   id
@@ -1163,6 +1416,124 @@ export function useCreateCourseMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateCourseMutationHookResult = ReturnType<typeof useCreateCourseMutation>;
 export type CreateCourseMutationResult = Apollo.MutationResult<CreateCourseMutation>;
 export type CreateCourseMutationOptions = Apollo.BaseMutationOptions<CreateCourseMutation, CreateCourseMutationVariables>;
+export const CreateCourseSectionDocument = gql`
+    mutation CreateCourseSection($courseSectionInfo: CourseSectionInfoInput!) {
+  createCourseSection(courseSectionInfo: $courseSectionInfo) {
+    success
+    errors {
+      message
+    }
+    courseSection {
+      id
+      denomination
+      is_published
+    }
+  }
+}
+    `;
+export type CreateCourseSectionMutationFn = Apollo.MutationFunction<CreateCourseSectionMutation, CreateCourseSectionMutationVariables>;
+
+/**
+ * __useCreateCourseSectionMutation__
+ *
+ * To run a mutation, you first call `useCreateCourseSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCourseSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCourseSectionMutation, { data, loading, error }] = useCreateCourseSectionMutation({
+ *   variables: {
+ *      courseSectionInfo: // value for 'courseSectionInfo'
+ *   },
+ * });
+ */
+export function useCreateCourseSectionMutation(baseOptions?: Apollo.MutationHookOptions<CreateCourseSectionMutation, CreateCourseSectionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCourseSectionMutation, CreateCourseSectionMutationVariables>(CreateCourseSectionDocument, options);
+      }
+export type CreateCourseSectionMutationHookResult = ReturnType<typeof useCreateCourseSectionMutation>;
+export type CreateCourseSectionMutationResult = Apollo.MutationResult<CreateCourseSectionMutation>;
+export type CreateCourseSectionMutationOptions = Apollo.BaseMutationOptions<CreateCourseSectionMutation, CreateCourseSectionMutationVariables>;
+export const UpdateCourseSectionDocument = gql`
+    mutation UpdateCourseSection($courseSectionInfo: UpdateCourseSectionInfo!) {
+  updateCourseSection(courseSectionInfo: $courseSectionInfo) {
+    success
+    errors {
+      message
+    }
+    courseSection {
+      id
+      denomination
+      is_published
+    }
+  }
+}
+    `;
+export type UpdateCourseSectionMutationFn = Apollo.MutationFunction<UpdateCourseSectionMutation, UpdateCourseSectionMutationVariables>;
+
+/**
+ * __useUpdateCourseSectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateCourseSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCourseSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCourseSectionMutation, { data, loading, error }] = useUpdateCourseSectionMutation({
+ *   variables: {
+ *      courseSectionInfo: // value for 'courseSectionInfo'
+ *   },
+ * });
+ */
+export function useUpdateCourseSectionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCourseSectionMutation, UpdateCourseSectionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCourseSectionMutation, UpdateCourseSectionMutationVariables>(UpdateCourseSectionDocument, options);
+      }
+export type UpdateCourseSectionMutationHookResult = ReturnType<typeof useUpdateCourseSectionMutation>;
+export type UpdateCourseSectionMutationResult = Apollo.MutationResult<UpdateCourseSectionMutation>;
+export type UpdateCourseSectionMutationOptions = Apollo.BaseMutationOptions<UpdateCourseSectionMutation, UpdateCourseSectionMutationVariables>;
+export const DeleteCourseSectionDocument = gql`
+    mutation DeleteCourseSection($id: ID!) {
+  deleteCourseSection(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type DeleteCourseSectionMutationFn = Apollo.MutationFunction<DeleteCourseSectionMutation, DeleteCourseSectionMutationVariables>;
+
+/**
+ * __useDeleteCourseSectionMutation__
+ *
+ * To run a mutation, you first call `useDeleteCourseSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCourseSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCourseSectionMutation, { data, loading, error }] = useDeleteCourseSectionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCourseSectionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCourseSectionMutation, DeleteCourseSectionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCourseSectionMutation, DeleteCourseSectionMutationVariables>(DeleteCourseSectionDocument, options);
+      }
+export type DeleteCourseSectionMutationHookResult = ReturnType<typeof useDeleteCourseSectionMutation>;
+export type DeleteCourseSectionMutationResult = Apollo.MutationResult<DeleteCourseSectionMutation>;
+export type DeleteCourseSectionMutationOptions = Apollo.BaseMutationOptions<DeleteCourseSectionMutation, DeleteCourseSectionMutationVariables>;
 export const EditableCourseDocument = gql`
     query EditableCourse($id: ID!) {
   editableCourse(id: $id) {

@@ -15,6 +15,8 @@ import { DashboardRoutes } from './routes/DashboardRoutes';
 import {
   Course,
   Courses,
+  CourseSection,
+  CourseSections,
   CreateCourse,
   Dashboard,
   Explore,
@@ -127,15 +129,32 @@ const PrivatePagesView = () => {
               </RouteWrapper>
             }
           />
+          <Route
+            path="/dashboard/courses/update/:id"
+            element={
+              <RouteWrapper>
+                <UpdateCourse />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/dashboard/courses/update/:id/sections"
+            element={
+              <RouteWrapper>
+                <CourseSections />
+              </RouteWrapper>
+            }
+          />
+
+          <Route
+            path="/dashboard/courses/update/:id/sections/:id"
+            element={
+              <RouteWrapper>
+                <CourseSection />
+              </RouteWrapper>
+            }
+          />
         </Route>
-        <Route
-          path="/dashboard/courses/update/:id"
-          element={
-            <RouteWrapper>
-              <UpdateCourse />
-            </RouteWrapper>
-          }
-        />
 
         <Route path="/login" element={<Navigate to="/explore" />} />
         <Route path="/register" element={<Navigate to="/explore" />} />

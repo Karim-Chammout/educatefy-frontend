@@ -1,4 +1,13 @@
-import { Box, Chip, Container, Paper, Typography } from '@mui/material';
+import {
+  Box,
+  Chip,
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography,
+} from '@mui/material';
 import { format } from 'date-fns';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -105,6 +114,34 @@ const Course = ({ courseInfo }: { courseInfo: CourseFragment }) => {
                 <strong>Meeting Link:</strong>{' '}
                 <a href={courseInfo.external_meeting_link}>{courseInfo.external_meeting_link}</a>
               </Typography>
+            )}
+            {courseInfo.objectives.length > 0 && (
+              <>
+                <Typography variant="body2">
+                  <strong>Course Objectives</strong>
+                </Typography>
+                <List>
+                  {courseInfo.objectives.map((item, index) => (
+                    <ListItem key={item.id} divider>
+                      <ListItemText primary={`${index + 1}. ${item.objective}`} />
+                    </ListItem>
+                  ))}
+                </List>
+              </>
+            )}
+            {courseInfo.requirements.length > 0 && (
+              <>
+                <Typography variant="body2">
+                  <strong>Course Requirements</strong>
+                </Typography>
+                <List>
+                  {courseInfo.requirements.map((item, index) => (
+                    <ListItem key={item.id} divider>
+                      <ListItemText primary={`${index + 1}. ${item.requirement}`} />
+                    </ListItem>
+                  ))}
+                </List>
+              </>
             )}
           </CourseDetails>
           <CourseSubjects>

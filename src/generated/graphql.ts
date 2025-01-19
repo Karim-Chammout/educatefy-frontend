@@ -737,14 +737,14 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename?: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } };
 
-export type CourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> };
+export type CourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }> };
 
 export type CourseQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type CourseQuery = { __typename?: 'Query', course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }> } | null };
+export type CourseQuery = { __typename?: 'Query', course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }> } | null };
 
 export type UpdateCourseStatusMutationVariables = Exact<{
   courseStatusInput: CourseStatusInput;
@@ -930,6 +930,14 @@ export const CourseFragmentDoc = gql`
   subjects {
     id
     denomination
+  }
+  objectives {
+    id
+    objective
+  }
+  requirements {
+    id
+    requirement
   }
 }
     `;

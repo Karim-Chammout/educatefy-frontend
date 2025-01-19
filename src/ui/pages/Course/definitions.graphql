@@ -18,6 +18,14 @@ fragment Course on Course {
     id
     denomination
   }
+  objectives {
+    id
+    objective
+  }
+  requirements {
+    id
+    requirement
+  }
 }
 
 query Course($slug: String!) {

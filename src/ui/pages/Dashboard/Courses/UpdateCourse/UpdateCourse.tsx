@@ -693,7 +693,7 @@ const UpdateCourse = ({
               LinkComponent={Link}
               to={`/dashboard/courses/update/${course.id}/sections`}
             >
-              {t('course.manageSections')}
+              {t('course.manageSectionsBtn')}
             </Button>
           </Paper>
 

@@ -782,6 +782,15 @@ export type CreateCourseMutationVariables = Exact<{
 
 export type CreateCourseMutation = { __typename?: 'Mutation', createCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, slug: string } | null } | null };
 
+export type EditableCourseSectionFragment = { __typename?: 'Course', id: string, sections: Array<{ __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean }> };
+
+export type EditableCourseSectionsQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EditableCourseSectionsQuery = { __typename?: 'Query', editableCourse?: { __typename?: 'Course', id: string, sections: Array<{ __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean }> } | null };
+
 export type CreateCourseSectionMutationVariables = Exact<{
   courseSectionInfo: CourseSectionInfoInput;
 }>;
@@ -810,29 +819,21 @@ export type UpdateCourseSectionRanksMutationVariables = Exact<{
 
 export type UpdateCourseSectionRanksMutation = { __typename?: 'Mutation', updateCourseSectionRanks?: { __typename?: 'MutationResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }> } | null };
 
-type EditableContentComponent_TextContent_Fragment = { __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string };
-
-type EditableContentComponent_VideoContent_Fragment = { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string };
-
-export type EditableContentComponentFragment = EditableContentComponent_TextContent_Fragment | EditableContentComponent_VideoContent_Fragment;
-
-export type EditableLessonFragment = { __typename?: 'Lesson', id: string, denomination: string, duration: number, components: Array<{ __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string } | { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string }> };
-
-export type EditableCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean, items: Array<{ __typename?: 'Lesson', id: string, denomination: string, duration: number, components: Array<{ __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string } | { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string }> }> }> };
+export type EditableCourseFragment = { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }> };
 
 export type EditableCourseQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type EditableCourseQuery = { __typename?: 'Query', editableCourse?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean, items: Array<{ __typename?: 'Lesson', id: string, denomination: string, duration: number, components: Array<{ __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string } | { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string }> }> }> } | null, languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }> };
+export type EditableCourseQuery = { __typename?: 'Query', editableCourse?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }> } | null, languages: Array<{ __typename?: 'Language', id: string, denomination: string, code: string }> };
 
 export type UpdateCourseMutationVariables = Exact<{
   updateCourseInfo: UpdateCourseInfoInput;
 }>;
 
 
-export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename?: 'CourseSection', id: string, denomination: string, is_published: boolean, items: Array<{ __typename?: 'Lesson', id: string, denomination: string, duration: number, components: Array<{ __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string } | { __typename?: 'VideoContent', id: string, denomination: string, is_required: boolean, url: string }> }> }> } | null } | null };
+export type UpdateCourseMutation = { __typename?: 'Mutation', updateCourse?: { __typename?: 'CreateOrUpdateCourseResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }>, course?: { __typename?: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, language: string, external_resource_link?: string | null, external_meeting_link?: string | null, is_published: boolean, start_date?: any | null, end_date?: any | null, subjects: Array<{ __typename?: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename?: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename?: 'CourseRequirement', id: string, requirement: string }> } | null } | null };
 
 export type DeleteCourseMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -970,32 +971,16 @@ export const LanguageFragmentDoc = gql`
   code
 }
     `;
-export const EditableContentComponentFragmentDoc = gql`
-    fragment EditableContentComponent on ContentComponent {
-  ... on TextContent {
+export const EditableCourseSectionFragmentDoc = gql`
+    fragment EditableCourseSection on Course {
+  id
+  sections {
     id
     denomination
-    is_required
-    content
-  }
-  ... on VideoContent {
-    id
-    denomination
-    is_required
-    url
+    is_published
   }
 }
     `;
-export const EditableLessonFragmentDoc = gql`
-    fragment EditableLesson on Lesson {
-  id
-  denomination
-  duration
-  components {
-    ...EditableContentComponent
-  }
-}
-    ${EditableContentComponentFragmentDoc}`;
 export const EditableCourseFragmentDoc = gql`
     fragment EditableCourse on Course {
   id
@@ -1023,18 +1008,8 @@ export const EditableCourseFragmentDoc = gql`
     id
     requirement
   }
-  sections {
-    id
-    denomination
-    is_published
-    items {
-      ... on Lesson {
-        ...EditableLesson
-      }
-    }
-  }
 }
-    ${EditableLessonFragmentDoc}`;
+    `;
 export const TeacherCourseFragmentDoc = gql`
     fragment TeacherCourse on Course {
   id
@@ -1446,6 +1421,46 @@ export function useCreateCourseMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateCourseMutationHookResult = ReturnType<typeof useCreateCourseMutation>;
 export type CreateCourseMutationResult = Apollo.MutationResult<CreateCourseMutation>;
 export type CreateCourseMutationOptions = Apollo.BaseMutationOptions<CreateCourseMutation, CreateCourseMutationVariables>;
+export const EditableCourseSectionsDocument = gql`
+    query EditableCourseSections($id: ID!) {
+  editableCourse(id: $id) {
+    ...EditableCourseSection
+  }
+}
+    ${EditableCourseSectionFragmentDoc}`;
+
+/**
+ * __useEditableCourseSectionsQuery__
+ *
+ * To run a query within a React component, call `useEditableCourseSectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEditableCourseSectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEditableCourseSectionsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEditableCourseSectionsQuery(baseOptions: Apollo.QueryHookOptions<EditableCourseSectionsQuery, EditableCourseSectionsQueryVariables> & ({ variables: EditableCourseSectionsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EditableCourseSectionsQuery, EditableCourseSectionsQueryVariables>(EditableCourseSectionsDocument, options);
+      }
+export function useEditableCourseSectionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EditableCourseSectionsQuery, EditableCourseSectionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EditableCourseSectionsQuery, EditableCourseSectionsQueryVariables>(EditableCourseSectionsDocument, options);
+        }
+export function useEditableCourseSectionsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EditableCourseSectionsQuery, EditableCourseSectionsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EditableCourseSectionsQuery, EditableCourseSectionsQueryVariables>(EditableCourseSectionsDocument, options);
+        }
+export type EditableCourseSectionsQueryHookResult = ReturnType<typeof useEditableCourseSectionsQuery>;
+export type EditableCourseSectionsLazyQueryHookResult = ReturnType<typeof useEditableCourseSectionsLazyQuery>;
+export type EditableCourseSectionsSuspenseQueryHookResult = ReturnType<typeof useEditableCourseSectionsSuspenseQuery>;
+export type EditableCourseSectionsQueryResult = Apollo.QueryResult<EditableCourseSectionsQuery, EditableCourseSectionsQueryVariables>;
 export const CreateCourseSectionDocument = gql`
     mutation CreateCourseSection($courseSectionInfo: CourseSectionInfoInput!) {
   createCourseSection(courseSectionInfo: $courseSectionInfo) {

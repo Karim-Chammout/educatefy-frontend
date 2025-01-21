@@ -15,6 +15,7 @@ type ModalType = {
   title?: string;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   fullWidth?: boolean;
+  disableRestoreFocus?: boolean;
 };
 
 const Modal = ({
@@ -25,6 +26,7 @@ const Modal = ({
   CTAs,
   maxWidth = 'sm',
   fullWidth = true,
+  disableRestoreFocus,
 }: ModalType) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -37,6 +39,7 @@ const Modal = ({
       fullWidth={fullWidth}
       fullScreen={isMobile}
       aria-labelledby={title}
+      disableRestoreFocus={disableRestoreFocus}
     >
       {title && (
         <DialogTitle id={title} sx={{ fontWeight: 'bold', paddingRight: '48px' }}>

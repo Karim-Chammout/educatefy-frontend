@@ -39,11 +39,7 @@ const CourseSectionsContainer = () => {
     );
   }
 
-  return (
-    <div>
-      <CourseSections course={data.editableCourse} />
-    </div>
-  );
+  return <CourseSections course={data.editableCourse} />;
 };
 
 export default CourseSectionsContainer;

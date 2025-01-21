@@ -1,22 +1,18 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Container from '@mui/material/Container';
 import DialogActions from '@mui/material/DialogActions';
-import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import withScrolling from 'react-dnd-scrolling';
+import { TouchBackend } from 'react-dnd-touch-backend';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router';
 
 import {
   EditableCourseDocument,
@@ -25,26 +21,36 @@ import {
   useCreateCourseSectionMutation,
   useDeleteCourseSectionMutation,
   useUpdateCourseSectionMutation,
+  useUpdateCourseSectionRanksMutation,
 } from '@/generated/graphql';
 import { Button, Modal, Typography } from '@/ui/components';
 
 import { StyledLink } from './CourseSections.style';
+import { DraggableSectionItem } from './composition';
+import { InfoState } from '@/ui/compositions';
+
+type CourseSectionType = EditableCourseFragment['sections'][0];
+
+const ScrollingComponent = withScrolling('div');
 
 const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
   const { t } = useTranslation();
+
   const [sectionDenomination, setSectionDenomination] = useState('');
   const [isPublished, setIsPublished] = useState(true);
   const [editingSection, setEditingSection] = useState<{ id: null | string; isEditing: boolean }>({
     id: null,
     isEditing: false,
   });
+  const [sections, setSections] = useState(course.sections);
   const [isCourseSectionModalOpen, setIsCourseSectionModalOpen] = useState(false);
   const [sectionIdToDelete, setSectionIdToDelete] = useState<null | string>(null);
   const [isDeleteCourseSectionModalOpen, setIsDeleteCourseSectionModalOpen] = useState(false);
 
   const [createCourseSection, { loading: loadingCreateSection }] = useCreateCourseSectionMutation();
-  const [updateCourseSection, { loading: loadingUpateSection }] = useUpdateCourseSectionMutation();
+  const [updateCourseSection, { loading: loadingUpdateSection }] = useUpdateCourseSectionMutation();
   const [deleteCourseSection] = useDeleteCourseSectionMutation();
+  const [updateCourseSectionRanks] = useUpdateCourseSectionRanksMutation();
 
   const resetForm = () => {
     setSectionDenomination('');
@@ -56,6 +62,20 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
     setIsDeleteCourseSectionModalOpen(false);
     setSectionIdToDelete(null);
   };
+
+  const moveSection = useCallback((dragIndex: number, hoverIndex: number) => {
+    setSections((prevSections) => {
+      const newSections = [...prevSections];
+      const [removed] = newSections.splice(dragIndex, 1);
+      newSections.splice(hoverIndex, 0, removed);
+
+      // Update ranks after reordering
+      return newSections.map((section, index) => ({
+        ...section,
+        rank: index + 1,
+      }));
+    });
+  }, []);
 
   const handleCourseSectionSave = async () => {
     if (!sectionDenomination.trim()) return;
@@ -70,6 +90,13 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
           },
         },
       });
+
+      const updatedSections = sections.map((section) =>
+        section.id === editingSection.id
+          ? { ...section, denomination: sectionDenomination, is_published: isPublished }
+          : section,
+      );
+      setSections(updatedSections);
     } else {
       await createCourseSection({
         variables: {
@@ -99,6 +126,11 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
                 },
               },
             });
+
+            setSections((prevSections) => [
+              ...prevSections,
+              data.courseSection as CourseSectionType,
+            ]);
           }
         },
       });
@@ -140,11 +172,34 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
     });
 
     handleCloseDeleteModal();
+
+    setSections((prevSections) =>
+      prevSections.filter((section) => section.id !== sectionIdToDelete),
+    );
   };
 
-  const handleCloseModal = () => {
-    resetForm();
+  const handleDragEnd = useCallback(async () => {
+    const updates = sections.map((section, index) => ({
+      id: section.id,
+      rank: index + 1,
+    }));
+
+    await updateCourseSectionRanks({
+      variables: {
+        sectionRanks: updates,
+      },
+    });
+  }, [sections, updateCourseSectionRanks]);
+
+  const handleEdit = (section: CourseSectionType) => {
+    setEditingSection({ id: section.id, isEditing: true });
+    setSectionDenomination(section.denomination);
+    setIsPublished(section.is_published);
+    setIsCourseSectionModalOpen(true);
   };
+
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const backend = isTouchDevice ? TouchBackend : HTML5Backend;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
@@ -177,55 +232,40 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
         </Button>
       </Box>
 
-      <Box sx={{ mt: 2 }}>
-        <List>
-          {course.sections.map((section, index) => (
-            <Box key={section.id}>
-              <ListItem sx={{ flexWrap: 'wrap', gap: 1 }}>
-                <ListItemText
-                  primary={`${index + 1}. ${section.denomination}`}
-                  color="text.secondary"
-                />
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <IconButton
-                    color="error"
-                    size="small"
-                    onClick={() => {
-                      setSectionIdToDelete(section.id);
+      {sections.length > 0 ? (
+        <DndProvider backend={backend}>
+          <ScrollingComponent>
+            <Box sx={{ mt: 2 }}>
+              <List>
+                {sections.map((section, index) => (
+                  <DraggableSectionItem
+                    key={section.id}
+                    section={section}
+                    index={index}
+                    moveSection={moveSection}
+                    handleDelete={(id) => {
+                      setSectionIdToDelete(id);
                       setIsDeleteCourseSectionModalOpen(true);
                     }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                  <IconButton
-                    color="primary"
-                    size="small"
-                    onClick={() => {
-                      setEditingSection({ id: section.id, isEditing: true });
-                      setSectionDenomination(section.denomination);
-                      setIsPublished(section.is_published);
-                      setIsCourseSectionModalOpen(true);
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    startIcon={<OpenInNewIcon />}
-                    size="small"
-                    LinkComponent={Link}
-                    to={`/dashboard/courses/update/${course.id}/sections/${section.id}`}
-                  >
-                    {t('common.open')}
-                  </Button>
-                </div>
-              </ListItem>
-              <Divider />
+                    handleEdit={handleEdit}
+                    courseId={course.id}
+                    onDragEnd={handleDragEnd}
+                  />
+                ))}
+              </List>
             </Box>
-          ))}
-        </List>
-      </Box>
+          </ScrollingComponent>
+        </DndProvider>
+      ) : (
+        <InfoState
+          btnLabel="Create"
+          btnOnClick={() => setIsCourseSectionModalOpen(true)}
+          subtitle="Create sections to organize your course content"
+          title="No sections created yet"
+          icon={<AddCircleOutlineIcon />}
+        />
+      )}
+
       <Modal
         title={
           editingSection.isEditing
@@ -233,22 +273,23 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
             : t('courseSection.createSection')
         }
         open={isCourseSectionModalOpen}
-        onClose={handleCloseModal}
+        onClose={resetForm}
         maxWidth="xs"
         CTAs={
           <DialogActions>
-            <Button onClick={handleCloseModal} variant="outlined" fullWidth>
+            <Button onClick={resetForm} variant="outlined" fullWidth>
               {t('common.cancel')}
             </Button>
             <Button
               onClick={handleCourseSectionSave}
-              disabled={!sectionDenomination.trim() || loadingUpateSection || loadingCreateSection}
+              disabled={!sectionDenomination.trim() || loadingUpdateSection || loadingCreateSection}
               fullWidth
             >
               {t('common.confirm')}
             </Button>
           </DialogActions>
         }
+        disableRestoreFocus
       >
         <TextField
           label={t('courseSection.sectionName')}
@@ -256,6 +297,7 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
           onChange={(e) => setSectionDenomination(e.target.value)}
           fullWidth
           required
+          autoFocus
         />
         <FormControlLabel
           control={

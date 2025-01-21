@@ -1,27 +1,3 @@
-fragment EditableContentComponent on ContentComponent {
-  ... on TextContent {
-    id
-    denomination
-    is_required
-    content
-  }
-  ... on VideoContent {
-    id
-    denomination
-    is_required
-    url
-  }
-}
-
-fragment EditableLesson on Lesson {
-  id
-  denomination
-  duration
-  components {
-    ...EditableContentComponent
-  }
-}
-
 fragment EditableCourse on Course {
   id
   denomination
@@ -47,16 +23,6 @@ fragment EditableCourse on Course {
   requirements {
     id
     requirement
-  }
-  sections {
-    id
-    denomination
-    is_published
-    items {
-      ... on Lesson {
-        ...EditableLesson
-      }
-    }
   }
 }
 

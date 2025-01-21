@@ -15,9 +15,9 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 import { useTranslation } from 'react-i18next';
 
 import {
-  EditableCourseDocument,
-  EditableCourseFragment,
-  EditableCourseQuery,
+  EditableCourseSectionFragment,
+  EditableCourseSectionsDocument,
+  EditableCourseSectionsQuery,
   useCreateCourseSectionMutation,
   useDeleteCourseSectionMutation,
   useUpdateCourseSectionMutation,
@@ -29,11 +29,11 @@ import { StyledLink } from './CourseSections.style';
 import { DraggableSectionItem } from './composition';
 import { InfoState } from '@/ui/compositions';
 
-type CourseSectionType = EditableCourseFragment['sections'][0];
+type CourseSectionType = EditableCourseSectionFragment['sections'][0];
 
 const ScrollingComponent = withScrolling('div');
 
-const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
+const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) => {
   const { t } = useTranslation();
 
   const [sectionDenomination, setSectionDenomination] = useState('');
@@ -109,15 +109,15 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
         update(cache, res) {
           const data = res.data?.createCourseSection;
           if (data) {
-            const existingCourseQuery = cache.readQuery<EditableCourseQuery>({
-              query: EditableCourseDocument,
+            const existingCourseQuery = cache.readQuery<EditableCourseSectionsQuery>({
+              query: EditableCourseSectionsDocument,
               variables: { id: course.id },
             });
 
             if (!existingCourseQuery?.editableCourse) return null;
 
             cache.writeQuery({
-              query: EditableCourseDocument,
+              query: EditableCourseSectionsDocument,
               variables: { id: course.id },
               data: {
                 editableCourse: {
@@ -148,15 +148,15 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
       },
       update(cache, res) {
         if (res.data?.deleteCourseSection?.success) {
-          const existingCourseQuery = cache.readQuery<EditableCourseQuery>({
-            query: EditableCourseDocument,
+          const existingCourseQuery = cache.readQuery<EditableCourseSectionsQuery>({
+            query: EditableCourseSectionsDocument,
             variables: { id: course.id },
           });
 
           if (!existingCourseQuery?.editableCourse) return null;
 
           cache.writeQuery({
-            query: EditableCourseDocument,
+            query: EditableCourseSectionsDocument,
             variables: { id: course.id },
             data: {
               editableCourse: {

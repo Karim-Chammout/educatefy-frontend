@@ -1,3 +1,18 @@
+fragment EditableCourseSection on Course {
+  id
+  sections {
+    id
+    denomination
+    is_published
+  }
+}
+
+query EditableCourseSections($id: ID!) {
+  editableCourse(id: $id) {
+    ...EditableCourseSection
+  }
+}
+
 mutation CreateCourseSection($courseSectionInfo: CourseSectionInfoInput!) {
   createCourseSection(courseSectionInfo: $courseSectionInfo) {
     success

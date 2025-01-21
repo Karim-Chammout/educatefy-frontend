@@ -10,11 +10,11 @@ import ListItemText from '@mui/material/ListItemText';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 
-import { EditableCourseFragment } from '@/generated/graphql';
+import { EditableCourseSectionFragment } from '@/generated/graphql';
 import { useDND } from '@/hooks';
 import { Button } from '@/ui/components';
 
-type CourseSectionType = EditableCourseFragment['sections'][0];
+type CourseSectionType = EditableCourseSectionFragment['sections'][0];
 
 type DraggableSectionItemType = {
   section: CourseSectionType;

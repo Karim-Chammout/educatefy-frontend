@@ -258,10 +258,10 @@ const CourseSections = ({ course }: { course: EditableCourseFragment }) => {
         </DndProvider>
       ) : (
         <InfoState
-          btnLabel="Create"
+          btnLabel={t('common.create')}
           btnOnClick={() => setIsCourseSectionModalOpen(true)}
-          subtitle="Create sections to organize your course content"
-          title="No sections created yet"
+          subtitle={t('courseSection.noSectionYetSubtitle')}
+          title={t('courseSection.noSectionYetTitle')}
           icon={<AddCircleOutlineIcon />}
         />
       )}

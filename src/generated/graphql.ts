@@ -393,6 +393,8 @@ export type Mutation = {
   updateCourse?: Maybe<CreateOrUpdateCourseResult>;
   /** Updates a course section. */
   updateCourseSection?: Maybe<CreateOrUpdateCourseSectionResult>;
+  /** Updates the ranks of multiple course sections. */
+  updateCourseSectionRanks?: Maybe<MutationResult>;
   /** Updates the status of a course. */
   updateCourseStatus?: Maybe<UpdateCourseStatusResult>;
   /** Updates a lesson. */
@@ -449,6 +451,11 @@ export type MutationUpdateCourseArgs = {
 
 export type MutationUpdateCourseSectionArgs = {
   courseSectionInfo: UpdateCourseSectionInfo;
+};
+
+
+export type MutationUpdateCourseSectionRanksArgs = {
+  sectionRanks: Array<UpdateCourseSectionRankInput>;
 };
 
 
@@ -647,6 +654,14 @@ export type UpdateCourseSectionInfo = {
   is_published?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/** Input for updating a course section rank */
+export type UpdateCourseSectionRankInput = {
+  /** The ID of the course section */
+  id: Scalars['String']['input'];
+  /** The new rank of the course section */
+  rank: Scalars['Int']['input'];
+};
+
 /** The result of the updateCourseStatus mutation. */
 export type UpdateCourseStatusResult = {
   __typename?: 'UpdateCourseStatusResult';
@@ -787,6 +802,13 @@ export type DeleteCourseSectionMutationVariables = Exact<{
 
 
 export type DeleteCourseSectionMutation = { __typename?: 'Mutation', deleteCourseSection?: { __typename?: 'MutationResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }> } | null };
+
+export type UpdateCourseSectionRanksMutationVariables = Exact<{
+  sectionRanks: Array<UpdateCourseSectionRankInput> | UpdateCourseSectionRankInput;
+}>;
+
+
+export type UpdateCourseSectionRanksMutation = { __typename?: 'Mutation', updateCourseSectionRanks?: { __typename?: 'MutationResult', success: boolean, errors: Array<{ __typename?: 'Error', message: string }> } | null };
 
 type EditableContentComponent_TextContent_Fragment = { __typename?: 'TextContent', id: string, denomination: string, is_required: boolean, content: string };
 
@@ -1542,6 +1564,42 @@ export function useDeleteCourseSectionMutation(baseOptions?: Apollo.MutationHook
 export type DeleteCourseSectionMutationHookResult = ReturnType<typeof useDeleteCourseSectionMutation>;
 export type DeleteCourseSectionMutationResult = Apollo.MutationResult<DeleteCourseSectionMutation>;
 export type DeleteCourseSectionMutationOptions = Apollo.BaseMutationOptions<DeleteCourseSectionMutation, DeleteCourseSectionMutationVariables>;
+export const UpdateCourseSectionRanksDocument = gql`
+    mutation UpdateCourseSectionRanks($sectionRanks: [UpdateCourseSectionRankInput!]!) {
+  updateCourseSectionRanks(sectionRanks: $sectionRanks) {
+    success
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type UpdateCourseSectionRanksMutationFn = Apollo.MutationFunction<UpdateCourseSectionRanksMutation, UpdateCourseSectionRanksMutationVariables>;
+
+/**
+ * __useUpdateCourseSectionRanksMutation__
+ *
+ * To run a mutation, you first call `useUpdateCourseSectionRanksMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCourseSectionRanksMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCourseSectionRanksMutation, { data, loading, error }] = useUpdateCourseSectionRanksMutation({
+ *   variables: {
+ *      sectionRanks: // value for 'sectionRanks'
+ *   },
+ * });
+ */
+export function useUpdateCourseSectionRanksMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCourseSectionRanksMutation, UpdateCourseSectionRanksMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCourseSectionRanksMutation, UpdateCourseSectionRanksMutationVariables>(UpdateCourseSectionRanksDocument, options);
+      }
+export type UpdateCourseSectionRanksMutationHookResult = ReturnType<typeof useUpdateCourseSectionRanksMutation>;
+export type UpdateCourseSectionRanksMutationResult = Apollo.MutationResult<UpdateCourseSectionRanksMutation>;
+export type UpdateCourseSectionRanksMutationOptions = Apollo.BaseMutationOptions<UpdateCourseSectionRanksMutation, UpdateCourseSectionRanksMutationVariables>;
 export const EditableCourseDocument = gql`
     query EditableCourse($id: ID!) {
   editableCourse(id: $id) {

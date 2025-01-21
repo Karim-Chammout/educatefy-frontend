@@ -174,5 +174,7 @@
   "courseSection.createSection": "إنشاء قسم جديد للدورة",
   "courseSection.sectionName": "اسم القسم",
   "courseSection.isPublished": "منشور؟",
-  "courseSection.confirmDeleteSection": "هل أنت متأكد أنك تريد حذف هذا القسم من الدورة؟"
+  "courseSection.confirmDeleteSection": "هل أنت متأكد أنك تريد حذف هذا القسم من الدورة؟",
+  "courseSection.noSectionYetTitle": "لم يتم إنشاء أي أقسام",
+  "courseSection.noSectionYetSubtitle": "أنشئ أقسام لتنظيم محتوى الدورة التدريبية"
 }

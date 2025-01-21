@@ -174,5 +174,7 @@
   "courseSection.createSection": "Create a new course section",
   "courseSection.sectionName": "Section name",
   "courseSection.isPublished": "Is published?",
-  "courseSection.confirmDeleteSection": "Are you sure you want to delete this course section?"
+  "courseSection.confirmDeleteSection": "Are you sure you want to delete this course section?",
+  "courseSection.noSectionYetTitle": "No sections created yet",
+  "courseSection.noSectionYetSubtitle": "Create sections to organize your course content"
 }

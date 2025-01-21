@@ -34,3 +34,12 @@ mutation DeleteCourseSection($id: ID!) {
     }
   }
 }
+
+mutation UpdateCourseSectionRanks($sectionRanks: [UpdateCourseSectionRankInput!]!) {
+  updateCourseSectionRanks(sectionRanks: $sectionRanks) {
+    success
+    errors {
+      message
+    }
+  }
+}

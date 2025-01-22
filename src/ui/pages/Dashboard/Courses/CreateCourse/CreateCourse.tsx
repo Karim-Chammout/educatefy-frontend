@@ -292,6 +292,10 @@ const CreateCourse = ({
 
   const hasDescription = removeHtmlTags(descriptionContent);
 
+  const sortedSubjectsList = [...subjectsList].sort((a, b) =>
+    a.denomination.localeCompare(b.denomination),
+  );
+
   return (
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
       <Box
@@ -374,6 +378,9 @@ const CreateCourse = ({
                   id: lang.code,
                   label: lang.denomination,
                 }))}
+                autocompleteProps={{
+                  groupBy: (option) => option.label[0].toUpperCase(),
+                }}
                 required
               />
               <AutocompleteElement
@@ -383,10 +390,13 @@ const CreateCourse = ({
                   helperText: t('course.subjectsHelperText'),
                 }}
                 control={control}
-                options={subjectsList.map((s) => ({
+                options={sortedSubjectsList.map((s) => ({
                   id: s.id,
                   label: s.denomination,
                 }))}
+                autocompleteProps={{
+                  groupBy: (option) => option.label[0].toUpperCase(),
+                }}
                 multiple
                 required
               />

@@ -38,7 +38,13 @@ const UpdateCourseContainer = () => {
     );
   }
 
-  return <UpdateCourse course={data.editableCourse} languages={data.languages} />;
+  return (
+    <UpdateCourse
+      course={data.editableCourse}
+      languages={data.languages}
+      subjectsList={data.subjects}
+    />
+  );
 };
 
 export default UpdateCourseContainer;

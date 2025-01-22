@@ -26,6 +26,11 @@ fragment EditableCourse on Course {
   }
 }
 
+fragment Subject on Subject {
+  id
+  denomination
+}
+
 query EditableCourse($id: ID!) {
   editableCourse(id: $id) {
     ...EditableCourse
@@ -34,6 +39,9 @@ query EditableCourse($id: ID!) {
     id
     denomination
     code
+  }
+  subjects {
+    ...Subject
   }
 }
 

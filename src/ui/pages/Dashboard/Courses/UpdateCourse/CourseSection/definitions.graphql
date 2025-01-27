@@ -1,0 +1,95 @@
+fragment EditableTextContentComponent on TextContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  content
+  component_id
+}
+
+fragment EditableVideoContentComponent on VideoContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  url
+  component_id
+}
+
+fragment EditableContentComponent on ContentComponent {
+  ... on TextContent {
+    ...EditableTextContentComponent
+  }
+  ... on VideoContent {
+    ...EditableVideoContentComponent
+  }
+}
+
+fragment EditableLesson on Lesson {
+  id
+  itemId
+  denomination
+  duration
+  is_published
+  components {
+    ...EditableContentComponent
+  }
+}
+
+fragment Section on CourseSection {
+  id
+  denomination
+  items {
+    ... on Lesson {
+      ...EditableLesson
+    }
+  }
+}
+
+fragment EditableCourseSectionItem on Course {
+  id
+  sections {
+    ...Section
+  }
+}
+
+query EditableCourseSection($id: ID!) {
+  editableCourse(id: $id) {
+    ...EditableCourseSectionItem
+  }
+}
+
+mutation CreateLesson($lessonInfo: LessonInfoInput!) {
+  createLesson(lessonInfo: $lessonInfo) {
+    success
+    errors {
+      message
+    }
+    lesson {
+      id
+      denomination
+      duration
+      is_published
+    }
+  }
+}
+
+mutation DeleteCourseSectionItem($id: ID!) {
+  deleteCourseSectionItem(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}
+
+mutation UpdateCourseSectionItemRanks($sectionItemRanks: [UpdateCourseSectionItemRankInput!]!) {
+  updateCourseSectionItemRanks(sectionItemRanks: $sectionItemRanks) {
+    success
+    errors {
+      message
+    }
+  }
+}

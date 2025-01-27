@@ -42,14 +42,13 @@ const CourseSectionContainer = () => {
     (section) => section.id === sectionId,
   );
 
-  /* TODO: Add translation keys */
   if (!currentCourseSection) {
     return (
       <InfoState
-        btnLabel="Back to sections"
+        btnLabel={t('courseSection.backToSectionsBtn')}
         btnOnClick={() => navigate(`/dashboard/courses/update/${courseId}/sections`)}
-        subtitle="This course section does not exist"
-        title="Section not found"
+        subtitle={t('courseSection.noSectionsSubtitle')}
+        title={t('courseSection.sectionNotFound')}
         icon={<CloseIcon />}
       />
     );

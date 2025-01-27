@@ -47,14 +47,13 @@ const CourseSectionItemContainer = () => {
     (section) => section.id === sectionId,
   );
 
-  /* TODO: Replace hard-coded strings with translation keys */
   if (!currentCourseSection) {
     return (
       <InfoState
-        btnLabel="Back to sections"
+        btnLabel={t('courseSection.backToSectionsBtn')}
         btnOnClick={() => navigate(`/dashboard/courses/update/${courseId}/sections`)}
-        subtitle="This course section does not exist"
-        title="Section not found"
+        subtitle={t('courseSection.noSectionsSubtitle')}
+        title={t('courseSection.sectionNotFound')}
         icon={<CloseIcon />}
       />
     );
@@ -64,14 +63,13 @@ const CourseSectionItemContainer = () => {
     (item) => item.itemId === itemId,
   );
 
-  /* TODO: Replace hard-coded strings with translation keys */
   if (!currentCourseSectionItem) {
     return (
       <InfoState
-        btnLabel="Back to section"
+        btnLabel={t('sectionItem.backToSectionBtn')}
         btnOnClick={() => navigate(`/dashboard/courses/update/${courseId}/sections/${sectionId}`)}
-        subtitle="This section item does not exist"
-        title="Item not found"
+        subtitle={t('sectionItem.noSectionItemSubtitle')}
+        title={t('sectionItem.itemNotFound')}
         icon={<CloseIcon />}
       />
     );

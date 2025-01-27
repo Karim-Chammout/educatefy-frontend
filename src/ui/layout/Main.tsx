@@ -16,6 +16,7 @@ import {
   Course,
   Courses,
   CourseSection,
+  CourseSectionItem,
   CourseSections,
   CreateCourse,
   Dashboard,
@@ -147,10 +148,18 @@ const PrivatePagesView = () => {
           />
 
           <Route
-            path="/dashboard/courses/update/:id/sections/:id"
+            path="/dashboard/courses/update/:id/sections/:sectionId"
             element={
               <RouteWrapper>
                 <CourseSection />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/dashboard/courses/update/:id/sections/:sectionId/item/:itemId"
+            element={
+              <RouteWrapper>
+                <CourseSectionItem />
               </RouteWrapper>
             }
           />

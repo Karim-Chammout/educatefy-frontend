@@ -8,6 +8,9 @@ export const CourseSection = lazy(
 export const CourseSections = lazy(
   () => import('@/ui/pages/Dashboard/Courses/UpdateCourse/CourseSections'),
 );
+export const CourseSectionItem = lazy(
+  () => import('@/ui/pages/Dashboard/Courses/UpdateCourse/CourseSectionItem'),
+);
 export const CreateCourse = lazy(() => import('@/ui/pages/Dashboard/Courses/CreateCourse'));
 export const Dashboard = lazy(() => import('@/ui/pages/Dashboard'));
 export const Explore = lazy(() => import('@/ui/pages/Explore'));

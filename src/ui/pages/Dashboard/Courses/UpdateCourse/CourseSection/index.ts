@@ -1,3 +1,3 @@
-import CourseSection from './CourseSection';
+import CourseSectionContainer from './CourseSectionContainer';
 
-export default CourseSection;
+export default CourseSectionContainer;

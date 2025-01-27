@@ -176,5 +176,11 @@
   "courseSection.isPublished": "Is published?",
   "courseSection.confirmDeleteSection": "Are you sure you want to delete this course section?",
   "courseSection.noSectionYetTitle": "No sections created yet",
-  "courseSection.noSectionYetSubtitle": "Create sections to organize your course content"
+  "courseSection.noSectionYetSubtitle": "Create sections to organize your course content",
+  "courseSection.backToSectionsBtn": "Back to sections",
+  "courseSection.noSectionsSubtitle": "This course section does not exist",
+  "courseSection.sectionNotFound": "Section not found",
+  "sectionItem.backToSectionBtn": "Back to section",
+  "sectionItem.noSectionItemSubtitle": "This section item does not exist",
+  "sectionItem.itemNotFound": "Item not found"
 }

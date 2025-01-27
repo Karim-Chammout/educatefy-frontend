@@ -176,5 +176,11 @@
   "courseSection.isPublished": "منشور؟",
   "courseSection.confirmDeleteSection": "هل أنت متأكد أنك تريد حذف هذا القسم من الدورة؟",
   "courseSection.noSectionYetTitle": "لم يتم إنشاء أي أقسام",
-  "courseSection.noSectionYetSubtitle": "أنشئ أقسام لتنظيم محتوى الدورة التدريبية"
+  "courseSection.noSectionYetSubtitle": "أنشئ أقسام لتنظيم محتوى الدورة التدريبية",
+  "courseSection.backToSectionsBtn": "العودة إلى الأقسام",
+  "courseSection.noSectionsSubtitle": "هذا القسم من الدورة غير موجود",
+  "courseSection.sectionNotFound": "لم يتم العثور على القسم",
+  "sectionItem.backToSectionBtn": "العودة إلى القسم",
+  "sectionItem.noSectionItemSubtitle": "لا يوجد هذا العنصر في القسم",
+  "sectionItem.itemNotFound": "لم يتم العثور على العنصر"
 }

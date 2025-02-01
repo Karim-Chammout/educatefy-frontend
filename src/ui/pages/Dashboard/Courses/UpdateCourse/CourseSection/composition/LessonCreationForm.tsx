@@ -61,7 +61,7 @@ const LessonCreationForm = ({
         if (data.createLesson?.success) {
           setToasterVisibility({
             newDuration: 5000,
-            newText: 'Lesson created successfully',
+            newText: t('sectionItem.lessonCreated'),
             newType: 'success',
           });
 
@@ -81,26 +81,32 @@ const LessonCreationForm = ({
     // @ts-expect-error FIXME: Check why the onSuccess prop is throwing type error
     <FormContainer onSuccess={handleSubmit(onSubmit)}>
       <Typography sx={{ my: 2 }} component="h3" variant="h5">
-        Lesson form
+        {t('sectionItem.lessonForm')}
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         <TextFieldElement
           name="denomination"
-          label="Lesson name"
+          label={t('sectionItem.lessonName')}
           control={control}
           required
           fullWidth
         />
         <TextFieldElement
           name="duration"
-          label="Lesson duration in minutes"
+          label={t('sectionItem.lessonDuration')}
           type="number"
           control={control}
           required
           fullWidth
         />
         <FormControlLabel
-          control={<SwitchElement name="isPublished" control={control} label="Publish lesson" />}
+          control={
+            <SwitchElement
+              name="isPublished"
+              control={control}
+              label={t('sectionItem.publishLesson')}
+            />
+          }
           label=""
           sx={{ ml: 2 }}
         />

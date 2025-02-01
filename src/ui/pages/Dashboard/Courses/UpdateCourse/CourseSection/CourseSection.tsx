@@ -149,10 +149,10 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
         }}
       >
         <Typography component="h1" variant="h4">
-          Curriculum items
+          {t('courseSection.curriculumItems')}
         </Typography>
         <Button onClick={() => setIsCreateItemModalOpen(true)} startIcon={<AddCircleOutlineIcon />}>
-          Create
+          {t('common.create')}
         </Button>
       </Box>
 
@@ -182,20 +182,26 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
         </DndProvider>
       ) : (
         <InfoState
-          btnLabel="Create an item"
+          btnLabel={t('courseSection.createItem')}
           btnOnClick={() => setIsCreateItemModalOpen(true)}
-          subtitle="Create your first item"
-          title="No items created yet"
+          subtitle={t('courseSection.createFirstItem')}
+          title={t('courseSection.noItemsYet')}
           icon={<AddCircleOutlineIcon />}
         />
       )}
 
-      <Modal title="Create an item" open={isCreateItemModalOpen} onClose={handleCloseModal}>
+      <Modal
+        title={t('courseSection.createItem')}
+        open={isCreateItemModalOpen}
+        onClose={handleCloseModal}
+      >
         <Autocomplete
           options={contentOptions}
           value={contentType}
           onChange={(_event, newValue: any) => setContentType(newValue)}
-          renderInput={(params) => <TextField {...params} label="Select content type" />}
+          renderInput={(params) => (
+            <TextField {...params} label={t('courseSection.selectItemType')} />
+          )}
         />
 
         {contentType && (
@@ -209,7 +215,7 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
       </Modal>
 
       <Modal
-        title="Are you sure you want to delete this item?"
+        title={t('courseSection.deleteItemConfirmation')}
         open={isDeleteSectionItemModalOpen}
         onClose={handleCloseDeleteModal}
         maxWidth="xs"

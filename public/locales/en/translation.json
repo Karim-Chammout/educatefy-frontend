@@ -180,7 +180,19 @@
   "courseSection.backToSectionsBtn": "Back to sections",
   "courseSection.noSectionsSubtitle": "This course section does not exist",
   "courseSection.sectionNotFound": "Section not found",
+  "courseSection.curriculumItems": "Curriculum items",
+  "courseSection.createItem": "Create an item",
+  "courseSection.selectItemType": "Select content type",
+  "courseSection.createFirstItem": "Create your first item",
+  "courseSection.noItemsYet": "No items created yet",
+  "courseSection.deleteItemConfirmation": "Are you sure you want to delete this item?",
+  "courseSection.itemDeleted": "Item deleted successfully",
   "sectionItem.backToSectionBtn": "Back to section",
   "sectionItem.noSectionItemSubtitle": "This section item does not exist",
-  "sectionItem.itemNotFound": "Item not found"
+  "sectionItem.itemNotFound": "Item not found",
+  "sectionItem.lessonForm": "Lesson form",
+  "sectionItem.lessonName": "Lesson name",
+  "sectionItem.lessonDuration": "Lesson duration in minutes",
+  "sectionItem.publishLesson": "Publish lesson",
+  "sectionItem.lessonCreated": "Lesson created successfully"
 }

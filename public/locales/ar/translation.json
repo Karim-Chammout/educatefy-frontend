@@ -180,7 +180,19 @@
   "courseSection.backToSectionsBtn": "العودة إلى الأقسام",
   "courseSection.noSectionsSubtitle": "هذا القسم من الدورة غير موجود",
   "courseSection.sectionNotFound": "لم يتم العثور على القسم",
+  "courseSection.curriculumItems": "عناصر المنهج",
+  "courseSection.createItem": "إنشاء عنصر",
+  "courseSection.selectItemType": "اختر نوع المحتوى",
+  "courseSection.createFirstItem": "أنشئ عنصرك الأول",
+  "courseSection.noItemsYet": "لا توجد عناصر حتى الآن",
+  "courseSection.deleteItemConfirmation": "هل أنت متأكد أنك تريد حذف هذا العنصر؟",
+  "courseSection.itemDeleted": "تم حذف العنصر بنجاح",
   "sectionItem.backToSectionBtn": "العودة إلى القسم",
   "sectionItem.noSectionItemSubtitle": "لا يوجد هذا العنصر في القسم",
-  "sectionItem.itemNotFound": "لم يتم العثور على العنصر"
+  "sectionItem.itemNotFound": "لم يتم العثور على العنصر",
+  "sectionItem.lessonForm": "نموذج الدرس",
+  "sectionItem.lessonName": "اسم الدرس",
+  "sectionItem.lessonDuration": "مدة الدرس بالدقائق",
+  "sectionItem.publishLesson": "نشر الدرس",
+  "sectionItem.lessonCreated": "تم إنشاء الدرس بنجاح"
 }

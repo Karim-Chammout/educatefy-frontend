@@ -6,7 +6,7 @@ import Container from '@mui/material/Container';
 import DialogActions from '@mui/material/DialogActions';
 import List from '@mui/material/List';
 import TextField from '@mui/material/TextField';
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import withScrolling from 'react-dnd-scrolling';
@@ -22,6 +22,7 @@ import {
 } from '@/generated/graphql';
 import { Button, Modal, Typography } from '@/ui/components';
 import { InfoState } from '@/ui/compositions';
+import { ToasterContext } from '@/ui/context';
 
 import { StyledLink } from '../CourseSections/CourseSections.style';
 import { DraggableItem, ItemCreationForm } from './composition';
@@ -34,6 +35,8 @@ const ScrollingComponent = withScrolling('div');
 
 const CourseSection = ({ courseId, section }: { courseId: string; section: SectionFragment }) => {
   const { t } = useTranslation();
+  const { setToasterVisibility } = useContext(ToasterContext);
+
   const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false);
   const [contentType, setContentType] = useState<{ id: ItemType; label: string } | null>(null);
   const [sectionItems, setSectionItems] = useState(section.items);
@@ -95,6 +98,12 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
             prevItems.filter((item) => item.itemId !== sectionItemIdToDelete),
           );
         }
+
+        setToasterVisibility({
+          newDuration: 5000,
+          newText: t('courseSection.itemDeleted'),
+          newType: 'success',
+        });
       },
       update(cache, res) {
         if (res.data?.deleteCourseSectionItem?.success) {

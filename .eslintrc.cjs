@@ -70,5 +70,11 @@ module.exports = {
       },
       { '   ': false },
     ],
+    'no-underscore-dangle': [
+      'error',
+      {
+        allow: ['__typename'],
+      },
+    ],
   },
 };

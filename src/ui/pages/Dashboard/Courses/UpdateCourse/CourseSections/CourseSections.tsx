@@ -274,7 +274,6 @@ const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) =
         }
         open={isCourseSectionModalOpen}
         onClose={resetForm}
-        maxWidth="xs"
         CTAs={
           <DialogActions>
             <Button onClick={resetForm} variant="outlined" fullWidth>

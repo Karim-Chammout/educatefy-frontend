@@ -812,12 +812,6 @@ export type EditableTextContentComponentFragment = { __typename?: 'TextContent',
 
 export type EditableVideoContentComponentFragment = { __typename?: 'VideoContent', id: string, type: string, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string };
 
-type EditableContentComponent_TextContent_Fragment = { __typename?: 'TextContent', id: string, type: string, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string };
-
-type EditableContentComponent_VideoContent_Fragment = { __typename?: 'VideoContent', id: string, type: string, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string };
-
-export type EditableContentComponentFragment = EditableContentComponent_TextContent_Fragment | EditableContentComponent_VideoContent_Fragment;
-
 export type EditableLessonFragment = { __typename?: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename?: 'TextContent', id: string, type: string, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename?: 'VideoContent', id: string, type: string, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> };
 
 export type SectionFragment = { __typename?: 'CourseSection', id: string, denomination: string, items: Array<{ __typename?: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename?: 'TextContent', id: string, type: string, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename?: 'VideoContent', id: string, type: string, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> };
@@ -1063,17 +1057,6 @@ export const EditableVideoContentComponentFragmentDoc = gql`
   component_id
 }
     `;
-export const EditableContentComponentFragmentDoc = gql`
-    fragment EditableContentComponent on ContentComponent {
-  ... on TextContent {
-    ...EditableTextContentComponent
-  }
-  ... on VideoContent {
-    ...EditableVideoContentComponent
-  }
-}
-    ${EditableTextContentComponentFragmentDoc}
-${EditableVideoContentComponentFragmentDoc}`;
 export const EditableLessonFragmentDoc = gql`
     fragment EditableLesson on Lesson {
   id
@@ -1082,10 +1065,16 @@ export const EditableLessonFragmentDoc = gql`
   duration
   is_published
   components {
-    ...EditableContentComponent
+    ... on TextContent {
+      ...EditableTextContentComponent
+    }
+    ... on VideoContent {
+      ...EditableVideoContentComponent
+    }
   }
 }
-    ${EditableContentComponentFragmentDoc}`;
+    ${EditableTextContentComponentFragmentDoc}
+${EditableVideoContentComponentFragmentDoc}`;
 export const SectionFragmentDoc = gql`
     fragment Section on CourseSection {
   id

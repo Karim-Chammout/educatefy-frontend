@@ -18,15 +18,6 @@ fragment EditableVideoContentComponent on VideoContent {
   component_id
 }
 
-fragment EditableContentComponent on ContentComponent {
-  ... on TextContent {
-    ...EditableTextContentComponent
-  }
-  ... on VideoContent {
-    ...EditableVideoContentComponent
-  }
-}
-
 fragment EditableLesson on Lesson {
   id
   itemId
@@ -34,7 +25,12 @@ fragment EditableLesson on Lesson {
   duration
   is_published
   components {
-    ...EditableContentComponent
+    ... on TextContent {
+      ...EditableTextContentComponent
+    }
+    ... on VideoContent {
+      ...EditableVideoContentComponent
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import DialogActions from '@mui/material/DialogActions';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { useContext } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 import {
   FieldValues,
   FormContainer,
@@ -12,23 +12,31 @@ import {
 } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
 
-import { EditableCourseSectionDocument, useCreateLessonMutation } from '@/generated/graphql';
+import {
+  SectionFragment,
+  useCreateLessonMutation,
+  useEditableCourseSectionLazyQuery,
+} from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
 
 const LessonCreationForm = ({
   courseId,
   sectionId,
+  setSectionItems,
   handleCloseModalCallback,
 }: {
   courseId: string;
   sectionId: string;
+  setSectionItems: Dispatch<SetStateAction<SectionFragment['items']>>;
   handleCloseModalCallback: () => void;
 }) => {
   const { t } = useTranslation();
   const { setToasterVisibility } = useContext(ToasterContext);
 
-  const [createLesson] = useCreateLessonMutation();
+  const [createLesson, { loading }] = useCreateLessonMutation();
+  const [updatedCourseSection, { loading: isLoadingNewCourseSection }] =
+    useEditableCourseSectionLazyQuery();
 
   const { handleSubmit, control } = useForm();
   const [denomination, duration] = useWatch({
@@ -57,7 +65,7 @@ const LessonCreationForm = ({
           duration: values.duration,
         },
       },
-      onCompleted(data) {
+      async onCompleted(data) {
         if (data.createLesson?.success) {
           setToasterVisibility({
             newDuration: 5000,
@@ -65,15 +73,22 @@ const LessonCreationForm = ({
             newType: 'success',
           });
 
+          const refetchResult = await updatedCourseSection({
+            variables: { id: courseId },
+            fetchPolicy: 'network-only',
+          });
+
+          const updatedSection = refetchResult.data?.editableCourse?.sections.find(
+            (section) => section.id === sectionId,
+          );
+
+          if (updatedSection) {
+            setSectionItems(updatedSection.items);
+          }
+
           handleCloseModalCallback();
         }
       },
-      refetchQueries: [
-        {
-          query: EditableCourseSectionDocument,
-          variables: { id: courseId },
-        },
-      ],
     });
   };
 
@@ -115,7 +130,11 @@ const LessonCreationForm = ({
         <Button onClick={handleCloseModalCallback} variant="outlined" fullWidth>
           {t('common.cancel')}
         </Button>
-        <Button type="submit" disabled={!denomination || !duration} fullWidth>
+        <Button
+          type="submit"
+          disabled={!denomination || !duration || loading || isLoadingNewCourseSection}
+          fullWidth
+        >
           {t('common.confirm')}
         </Button>
       </DialogActions>

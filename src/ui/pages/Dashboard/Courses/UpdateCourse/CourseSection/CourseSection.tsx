@@ -219,6 +219,7 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
             courseId={courseId}
             sectionId={section.id}
             handleCloseModalCallback={handleCloseModal}
+            setSectionItems={setSectionItems}
           />
         )}
       </Modal>

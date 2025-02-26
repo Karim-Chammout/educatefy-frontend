@@ -7,6 +7,7 @@ type FileDropzoneType = {
   maxFiles?: number;
   accept?: Accept;
   disabled?: boolean;
+  isUploading?: boolean;
 } & DropzoneOptions;
 
 const FileDropzone = ({
@@ -16,6 +17,7 @@ const FileDropzone = ({
     'image/*': ['.png', '.jpg', '.jpeg'],
   },
   disabled = false,
+  isUploading = false,
   ...rest
 }: FileDropzoneType) => {
   const { t } = useTranslation();
@@ -49,9 +51,9 @@ const FileDropzone = ({
         border: `2px dashed ${getBorderColor()}`,
         padding: '20px',
         textAlign: 'center',
-        cursor: disabled ? 'not-allowed' : 'pointer',
+        cursor: disabled || isUploading ? 'not-allowed' : 'pointer',
         backgroundColor: isDragActive ? '#f0f8ff' : '#fafafa',
-        opacity: disabled ? 0.5 : 1,
+        opacity: disabled || isUploading ? 0.5 : 1,
       }}
     >
       <input {...getInputProps()} />
@@ -60,7 +62,13 @@ const FileDropzone = ({
       ) : isDragReject ? (
         <p>{t('fileDropzone.unsupportedFileType')}</p>
       ) : (
-        <p>{disabled ? t('fileDropzone.disabled') : t('fileDropzone.dragOrClick')}</p>
+        <p>
+          {disabled
+            ? t('fileDropzone.disabled')
+            : isUploading
+              ? t('common.uploading')
+              : t('fileDropzone.dragOrClick')}
+        </p>
       )}
     </div>
   );

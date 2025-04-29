@@ -1,0 +1,67 @@
+mutation DeleteContentComponent($componentId: ID!, $componentType: ComponentType!) {
+  deleteContentComponent(componentId: $componentId, componentType: $componentType) {
+    success
+    errors {
+      message
+    }
+  }
+}
+
+mutation UpdateContentComponentRanks($componentRanks: [UpdateContentComponentRankInput!]!) {
+  updateContentComponentRanks(componentRanks: $componentRanks) {
+    success
+    errors {
+      message
+    }
+  }
+}
+
+mutation CreateContentComponent(
+  $baseComponentInfo: ContentComponentBaseInput!
+  $textContent: TextContentInput
+  $videoContent: VideoContentInput
+) {
+  createContentComponent(
+    baseComponentInfo: $baseComponentInfo
+    textContent: $textContent
+    videoContent: $videoContent
+  ) {
+    success
+    errors {
+      message
+    }
+    component {
+      ... on TextContent {
+        ...EditableTextContentComponent
+      }
+      ... on VideoContent {
+        ...EditableVideoContentComponent
+      }
+    }
+  }
+}
+
+mutation UpdateContentComponent(
+  $baseComponentInfo: UpdateContentComponentBaseInput!
+  $textContent: TextContentInput
+  $videoContent: VideoContentInput
+) {
+  updateContentComponent(
+    baseComponentInfo: $baseComponentInfo
+    textContent: $textContent
+    videoContent: $videoContent
+  ) {
+    success
+    errors {
+      message
+    }
+    component {
+      ... on TextContent {
+        ...EditableTextContentComponent
+      }
+      ... on VideoContent {
+        ...EditableVideoContentComponent
+      }
+    }
+  }
+}

@@ -121,7 +121,12 @@ const UpdateCourse = ({
       return;
     }
 
-    const newObjective = {
+    const newObjective: {
+      __typename: 'CourseObjective';
+      id: string;
+      objective: string;
+    } = {
+      __typename: 'CourseObjective',
       id: `${Date.now() * Math.floor(Math.random() * 1000)}`,
       objective: objectiveItem,
     };
@@ -144,7 +149,12 @@ const UpdateCourse = ({
       return;
     }
 
-    const newRequirement = {
+    const newRequirement: {
+      __typename: 'CourseRequirement';
+      id: string;
+      requirement: string;
+    } = {
+      __typename: 'CourseRequirement',
       id: `${Date.now() * Math.floor(Math.random() * 1000)}`,
       requirement: requirementItem,
     };

@@ -7,3 +7,6 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+    config:
+      addTypenameToSelectionSets: true
+      nonOptionalTypename: true

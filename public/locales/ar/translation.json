@@ -170,6 +170,7 @@
   "courseSection.sections": "الأقسام",
   "common.create": "إنشاء",
   "common.open": "فتح",
+  "common.uploading": "جاري التحميل...",
   "courseSection.updateSection": "تحديث قسم الدورة",
   "courseSection.createSection": "إنشاء قسم جديد للدورة",
   "courseSection.sectionName": "اسم القسم",
@@ -194,5 +195,19 @@
   "sectionItem.lessonName": "اسم الدرس",
   "sectionItem.lessonDuration": "مدة الدرس بالدقائق",
   "sectionItem.publishLesson": "نشر الدرس",
-  "sectionItem.lessonCreated": "تم إنشاء الدرس بنجاح"
+  "sectionItem.lessonCreated": "تم إنشاء الدرس بنجاح",
+  "sectionItem.createComponent": "إنشاء عنصر",
+  "sectionItem.createComponentTitle": "لم يتم إنشاء أي عناصر بعد",
+  "sectionItem.createComponentSubtitle": "قم بإنشاء أول عنصر لك",
+  "sectionItem.textComponentOption": "نص",
+  "sectionItem.videoComponentOption": "فيديو",
+  "sectionItem.componentsHeader": "العناصر",
+  "sectionItem.selectComponentType": "اختر نوع العنصر",
+  "sectionItem.editItem": "تعديل العنصر",
+  "sectionItem.deleteComponentConfirmation": "هل أنت متأكد أنك تريد حذف هذا العنصر",
+  "contentComponent.title": "عنوان العنصر",
+  "contentComponent.isPublished": "هل هذا العنصر منشور؟",
+  "contentComponent.updatedSuccessfully": "تم تحديث العنصر بنجاح",
+  "contentComponent.deletedSuccessfully": "تم حذف العنصر بنجاح",
+  "contentComponent.preview": "معاينة"
 }

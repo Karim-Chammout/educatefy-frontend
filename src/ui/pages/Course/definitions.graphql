@@ -1,3 +1,61 @@
+fragment TextContentComponent on TextContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  content
+  component_id
+}
+
+fragment VideoContentComponent on VideoContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  url
+  component_id
+}
+
+fragment CourseSection on CourseSection {
+  id
+  denomination
+  is_published
+  rank
+  items {
+    ... on Lesson {
+      id
+      itemId
+      denomination
+      duration
+      is_published
+      components {
+        ... on TextContent {
+          ...TextContentComponent
+        }
+        ... on VideoContent {
+          ...VideoContentComponent
+        }
+      }
+    }
+  }
+}
+
+fragment CourseReview on CourseReview {
+  id
+  rating
+  review
+  created_at
+  reviewer {
+    id
+    first_name
+    last_name
+    avatar_url
+  }
+  isEditable
+}
+
 fragment Course on Course {
   id
   denomination
@@ -25,6 +83,17 @@ fragment Course on Course {
   requirements {
     id
     requirement
+  }
+  sections {
+    ...CourseSection
+  }
+  rating
+  ratingsCount
+  reviews {
+    ...CourseReview
+  }
+  viewerReview {
+    ...CourseReview
   }
 }
 

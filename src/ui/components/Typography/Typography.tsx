@@ -11,6 +11,7 @@ const Typography = ({
   sx,
   color,
   dangerouslySetInnerHTML,
+  className,
 }: {
   children?: ReactNode;
   variant?: Variant;
@@ -29,6 +30,7 @@ const Typography = ({
   dangerouslySetInnerHTML?: {
     __html: string;
   };
+  className?: string;
 }) => {
   return (
     <MuiTypography
@@ -38,6 +40,7 @@ const Typography = ({
       color={color}
       sx={{ ...sx }}
       dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+      className={className}
     >
       {children}
     </MuiTypography>

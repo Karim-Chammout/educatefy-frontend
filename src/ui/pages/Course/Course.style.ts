@@ -1,46 +1,69 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Typography } from '@mui/material';
+import Box from '@mui/material/Box';
 
-const courseImageStyles = css`
-  width: 100%;
-  max-height: 400px;
-  object-fit: cover;
-  border-radius: 8px;
+import { Typography } from '@/ui/components';
+import { max, min } from '@/utils/mediaQuery';
+
+export const CourseHeaderWrapper = styled(Box)`
+  display: flex;
+  gap: 32px;
+  flex-direction: column;
+
+  ${min(
+    'sm',
+    `
+      flex-direction: row;
+    `,
+  )}
 `;
 
-const courseTitleStyles = css`
-  margin-top: 16px;
-  font-weight: bold;
-`;
-
-const courseSubtitleStyles = css`
-  margin-top: 8px;
-  color: gray;
-`;
-
-const courseDescriptionStyles = css`
-  margin-top: 16px;
-  line-height: 1.6;
-`;
-
-const courseDetailsStyles = css`
-  margin-top: 16px;
+export const CourseInfo = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+  flex: 1;
+
+  ${max(
+    'sm',
+    `
+      order: 1;
+    `,
+  )}
 `;
 
-const courseSubjectsStyles = css`
-  margin-top: 16px;
+export const CourseImage = styled.img`
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 4px;
+  object-fit: cover;
+`;
+
+export const CourseMeta = styled(Box)`
   display: flex;
+  gap: 24px;
   flex-wrap: wrap;
+`;
+
+export const MetaItem = styled(Box)`
+  display: flex;
+  align-items: center;
   gap: 8px;
 `;
 
-export const CourseImage = styled('img')(courseImageStyles);
-export const CourseTitle = styled(Typography)(courseTitleStyles);
-export const CourseSubtitle = styled(Typography)(courseSubtitleStyles);
-export const CourseDescription = styled('div')(courseDescriptionStyles);
-export const CourseDetails = styled('div')(courseDetailsStyles);
-export const CourseSubjects = styled('div')(courseSubjectsStyles);
+export const SectionTitle = styled(Typography)`
+  font-weight: 600;
+`;
+
+export const SubjectsContainer = styled(Box)`
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+`;
+
+export const RatingContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;

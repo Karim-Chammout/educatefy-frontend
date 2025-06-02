@@ -24,6 +24,7 @@ import {
   Home,
   NotFound,
   Profile,
+  Section,
   UpdateCourse,
 } from './routes/LazyComponent';
 import PublicRoutes from './routes/PublicRoutes';
@@ -101,6 +102,22 @@ const PrivatePagesView = () => {
             </RouteWrapper>
           }
         />
+        <Route
+          path="/course/:slug/section/:sectionId"
+          element={
+            <RouteWrapper>
+              <Section />
+            </RouteWrapper>
+          }
+        >
+          {/* Nested routes for items and components */}
+          <Route path="/course/:slug/section/:sectionId/item/:itemId" element={<Section />}>
+            <Route
+              path="/course/:slug/section/:sectionId/item/:itemId/component/:componentId"
+              element={<Section />}
+            />
+          </Route>
+        </Route>
 
         <Route
           path="/dashboard"

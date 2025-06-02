@@ -87,7 +87,7 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
   };
 
   return (
-    <AppBar position="sticky" color="inherit">
+    <AppBar position="sticky" color="inherit" elevation={0} variant="outlined">
       <Container maxWidth={false}>
         <Toolbar disableGutters>
           <LogoWrapper>

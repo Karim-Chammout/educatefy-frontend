@@ -1,157 +1,115 @@
-import {
-  Box,
-  Chip,
-  Container,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Typography,
-} from '@mui/material';
-import { format } from 'date-fns';
-import { useContext } from 'react';
+import CheckIcon from '@mui/icons-material/Check';
+import LinkIcon from '@mui/icons-material/Link';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Paper from '@mui/material/Paper';
 import { useTranslation } from 'react-i18next';
 
-import fallbackImage from '@/assets/background_logo.png';
-import { CourseFragment, CourseStatus, useUpdateCourseStatusMutation } from '@/generated/graphql';
-import { Button } from '@/ui/components';
-import { AuthContext, ToasterContext } from '@/ui/context';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
+import { CourseFragment } from '@/generated/graphql';
+import { Typography } from '@/ui/components';
 
-import {
-  CourseDescription,
-  CourseDetails,
-  CourseImage,
-  CourseSubjects,
-  CourseSubtitle,
-  CourseTitle,
-} from './Course.style';
+import { CourseHeader, CourseSections, ReviewsList } from './composition';
+import { MetaItem, SectionTitle } from './Course.style';
 
 const Course = ({ courseInfo }: { courseInfo: CourseFragment }) => {
   const { t } = useTranslation();
-  const {
-    authModal: { setAuthModalVisibility },
-  } = useContext(AuthContext);
-  const { setToasterVisibility } = useContext(ToasterContext);
-
-  const [updateStatus, { loading }] = useUpdateCourseStatusMutation();
-
-  const isCourseAvailable = courseInfo.status === CourseStatus.Available;
-
-  const handleUpdateCourseStatus = async () => {
-    if (!isLoggedIn()) {
-      setAuthModalVisibility('login');
-
-      return;
-    }
-
-    await updateStatus({
-      variables: {
-        courseStatusInput: {
-          id: courseInfo.id,
-          status: isCourseAvailable ? CourseStatus.Enrolled : CourseStatus.Unenrolled,
-        },
-      },
-      onCompleted(data) {
-        if (data.updateCourseStatus && data.updateCourseStatus.errors.length > 0) {
-          setToasterVisibility({
-            newDuration: 5000,
-            newText: t('error.message'),
-            newType: 'error',
-          });
-        }
-      },
-      onError() {
-        setToasterVisibility({
-          newDuration: 5000,
-          newText: t('error.message'),
-          newType: 'error',
-        });
-      },
-    });
-  };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Paper elevation={3} sx={{ p: 3 }}>
-        <CourseImage src={courseInfo.image || fallbackImage} alt={courseInfo.denomination} />
-        <Box sx={{ mt: 3 }}>
-          <CourseTitle variant="h4">{courseInfo.denomination}</CourseTitle>
-          <CourseSubtitle variant="subtitle1">{courseInfo.subtitle}</CourseSubtitle>
-          <CourseDescription dangerouslySetInnerHTML={{ __html: courseInfo.description }} />
-          <Button
-            variant={isCourseAvailable ? 'contained' : 'outlined'}
-            onClick={handleUpdateCourseStatus}
-            disabled={loading}
-          >
-            {isCourseAvailable ? t('course.enroll') : t('course.unenroll')}
-          </Button>
-          <CourseDetails>
-            <Typography variant="body2">
-              <strong>Level:</strong> {courseInfo.level}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Language:</strong> {courseInfo.language}
-            </Typography>
-            {courseInfo.start_date && (
-              <Typography variant="body2">
-                <strong>Start Date:</strong> {format(new Date(courseInfo.start_date), 'PPP')}
-              </Typography>
-            )}
-            {courseInfo.end_date && (
-              <Typography variant="body2">
-                <strong>End Date:</strong> {format(new Date(courseInfo.end_date), 'PPP')}
-              </Typography>
-            )}
-            {courseInfo.external_resource_link && (
-              <Typography variant="body2">
-                <strong>Resource Link:</strong>{' '}
-                <a href={courseInfo.external_resource_link}>{courseInfo.external_resource_link}</a>
-              </Typography>
-            )}
-            {courseInfo.external_meeting_link && (
-              <Typography variant="body2">
-                <strong>Meeting Link:</strong>{' '}
-                <a href={courseInfo.external_meeting_link}>{courseInfo.external_meeting_link}</a>
-              </Typography>
-            )}
-            {courseInfo.objectives.length > 0 && (
-              <>
-                <Typography variant="body2">
-                  <strong>Course Objectives</strong>
-                </Typography>
-                <List>
-                  {courseInfo.objectives.map((item, index) => (
-                    <ListItem key={item.id} divider>
-                      <ListItemText primary={`${index + 1}. ${item.objective}`} />
-                    </ListItem>
-                  ))}
-                </List>
-              </>
-            )}
-            {courseInfo.requirements.length > 0 && (
-              <>
-                <Typography variant="body2">
-                  <strong>Course Requirements</strong>
-                </Typography>
-                <List>
-                  {courseInfo.requirements.map((item, index) => (
-                    <ListItem key={item.id} divider>
-                      <ListItemText primary={`${index + 1}. ${item.requirement}`} />
-                    </ListItem>
-                  ))}
-                </List>
-              </>
-            )}
-          </CourseDetails>
-          <CourseSubjects>
-            {courseInfo.subjects.map((subject) => (
-              <Chip key={subject.id} label={subject.denomination} />
-            ))}
-          </CourseSubjects>
-        </Box>
+    <div style={{ margin: '16px' }}>
+      <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
+        <CourseHeader courseInfo={courseInfo} />
       </Paper>
-    </Container>
+
+      <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
+        <SectionTitle component="h3" variant="h6">
+          {t('course.description')}
+        </SectionTitle>
+        <Typography dangerouslySetInnerHTML={{ __html: courseInfo.description }} />
+      </Paper>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
+        {courseInfo.objectives.length > 0 && (
+          <Paper variant="outlined" sx={{ p: 3, flex: '1 1 auto' }}>
+            <SectionTitle component="h3" variant="h6">
+              {t('course.courseObjectives')}
+            </SectionTitle>
+            <List>
+              {courseInfo.objectives.map((item) => (
+                <ListItem
+                  key={item.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                  disablePadding
+                >
+                  <ListItemIcon sx={{ minWidth: 'auto' }}>
+                    <CheckIcon sx={{ fontSize: '16px' }} color="success" />
+                  </ListItemIcon>
+                  <ListItemText primary={item.objective} />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        )}
+        {courseInfo.requirements.length > 0 && (
+          <Paper variant="outlined" sx={{ p: 3, flex: '1 1 auto' }}>
+            <SectionTitle component="h3" variant="h6">
+              {t('course.courseRequirements')}
+            </SectionTitle>
+            <List>
+              {courseInfo.requirements.map((item) => (
+                <ListItem
+                  key={item.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                  disablePadding
+                >
+                  <ListItemIcon sx={{ minWidth: 'auto' }}>
+                    <PriorityHighIcon sx={{ fontSize: '16px' }} color="error" />
+                  </ListItemIcon>
+                  <ListItemText primary={item.requirement} />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        )}
+      </div>
+
+      {courseInfo.external_resource_link && (
+        <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
+          <SectionTitle component="h3" variant="h6" gutterBottom>
+            External resource{/* 🚨 TRANSLATIONS 🚨 */}
+          </SectionTitle>
+          <MetaItem>
+            <LinkIcon color="action" />
+            <Typography variant="body1">
+              <a
+                href={courseInfo.external_resource_link}
+                style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {courseInfo.external_resource_link}
+              </a>
+            </Typography>
+          </MetaItem>
+        </Paper>
+      )}
+
+      <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
+        {courseInfo.sections.length > 0 && (
+          <CourseSections sections={courseInfo.sections} slug={courseInfo.slug} />
+        )}
+      </Paper>
+
+      <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
+        <ReviewsList
+          reviews={courseInfo.reviews}
+          averageRating={courseInfo.rating}
+          ratingsCount={courseInfo.ratingsCount}
+        />
+      </Paper>
+    </div>
   );
 };
 

@@ -1,18 +1,25 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import ListItemButton from '@mui/material/ListItemButton';
-import { css } from '@emotion/react';
 
 import { Typography } from '@/ui/components';
+import { min } from '@/utils/mediaQuery';
 
 export const SectionContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   height: calc(100vh - 64px);
+  margin-left: -16px;
+  margin-right: -16px;
 
-  @media (min-width: 900px) {
-    flex-direction: row;
-  }
+  ${min(
+    'md',
+    `
+      margin: 0;
+      flex-direction: row;
+    `,
+  )}
 `;
 
 export const NavigationPanel = styled(Box, {
@@ -23,11 +30,14 @@ export const NavigationPanel = styled(Box, {
   overflow-y: auto;
   display: ${({ mobileOpen }) => (mobileOpen === false ? 'none' : 'block')};
 
-  @media (min-width: 900px) {
-    width: 300px;
-    display: block;
-    flex-shrink: 0;
-  }
+  ${min(
+    'md',
+    `
+      width: 300px;
+      display: block;
+      flex-shrink: 0;
+    `,
+  )}
 `;
 
 export const ItemButton = styled(ListItemButton, {
@@ -54,16 +64,15 @@ export const ContentArea = styled(Box, {
   overflow-y: auto;
   width: 100%;
 
-  @media (min-width: 600px) {
-    padding: 24px;
-  }
-
   ${({ fullWidth }) =>
     fullWidth &&
     css`
-      @media (max-width: 899px) {
+      ${min(
+        'md',
+        `
         display: none;
-      }
+      `,
+      )}
     `}
 `;
 
@@ -85,7 +94,10 @@ export const MobileMenuButton = styled(Box)`
   background-color: #f5f5f5;
   border-bottom: 1px solid #e0e0e0;
 
-  @media (min-width: 900px) {
-    display: none;
-  }
+  ${min(
+    'md',
+    `
+      display: none;
+    `,
+  )}
 `;

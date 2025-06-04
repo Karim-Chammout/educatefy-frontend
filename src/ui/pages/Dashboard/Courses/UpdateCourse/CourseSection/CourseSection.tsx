@@ -25,9 +25,10 @@ import { InfoState } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 
 import { StyledLink } from '../CourseSections/CourseSections.style';
-import { DraggableItem, ItemCreationForm } from './composition';
+import { DraggableItem, ItemCreationForm, ItemEditForm } from './composition';
 
 type ItemType = 'lesson';
+type SectionItemType = SectionFragment['items'][0];
 
 const contentOptions = [{ id: 'lesson', label: 'Lesson' }];
 
@@ -38,7 +39,9 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
   const { setToasterVisibility } = useContext(ToasterContext);
 
   const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false);
+  const [isEditItemModalOpen, setIsEditItemModalOpen] = useState(false);
   const [contentType, setContentType] = useState<{ id: ItemType; label: string } | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<SectionItemType | null>(null);
   const [sectionItems, setSectionItems] = useState(section.items);
   const [sectionItemIdToDelete, setSectionItemIdToDelete] = useState<null | string>(null);
   const [isDeleteSectionItemModalOpen, setIsDeleteSectionItemModalOpen] = useState(false);
@@ -78,9 +81,19 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
     setContentType(null);
   };
 
+  const handleCloseEditModal = () => {
+    setIsEditItemModalOpen(false);
+    setItemToEdit(null);
+  };
+
   const handleCloseDeleteModal = () => {
     setIsDeleteSectionItemModalOpen(false);
     setSectionItemIdToDelete(null);
+  };
+
+  const handleEditItem = (item: SectionItemType) => {
+    setItemToEdit(item);
+    setIsEditItemModalOpen(true);
   };
 
   const handleDeleteCourseSectionItem = async () => {
@@ -180,6 +193,7 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
                       setSectionItemIdToDelete(itemId);
                       setIsDeleteSectionItemModalOpen(true);
                     }}
+                    handleEdit={handleEditItem}
                     courseId={courseId}
                     sectionId={section.id}
                     onDragEnd={handleDragEnd}
@@ -199,6 +213,7 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
         />
       )}
 
+      {/* Create Item Modal */}
       <Modal
         title={t('courseSection.createItem')}
         open={isCreateItemModalOpen}
@@ -224,6 +239,24 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
         )}
       </Modal>
 
+      {/* Edit Item Modal */}
+      <Modal
+        title={t('sectionItem.editCurriculumItem')}
+        open={isEditItemModalOpen}
+        onClose={handleCloseEditModal}
+      >
+        {itemToEdit && (
+          <ItemEditForm
+            item={itemToEdit}
+            courseId={courseId}
+            sectionId={section.id}
+            handleCloseModalCallback={handleCloseEditModal}
+            setSectionItems={setSectionItems}
+          />
+        )}
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
       <Modal
         title={t('courseSection.deleteItemConfirmation')}
         open={isDeleteSectionItemModalOpen}

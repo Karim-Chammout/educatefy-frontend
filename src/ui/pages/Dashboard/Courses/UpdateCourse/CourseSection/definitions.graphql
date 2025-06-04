@@ -72,6 +72,21 @@ mutation CreateLesson($lessonInfo: LessonInfoInput!) {
   }
 }
 
+mutation UpdateLesson($lessonInfo: UpdateLessonInfoInput!) {
+  updateLesson(lessonInfo: $lessonInfo) {
+    success
+    errors {
+      message
+    }
+    lesson {
+      id
+      denomination
+      duration
+      is_published
+    }
+  }
+}
+
 mutation DeleteCourseSectionItem($id: ID!) {
   deleteCourseSectionItem(id: $id) {
     success

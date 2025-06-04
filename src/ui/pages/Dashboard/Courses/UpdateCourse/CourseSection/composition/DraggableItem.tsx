@@ -1,5 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import EditIcon from '@mui/icons-material/Edit';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -20,6 +21,7 @@ type DraggableItemType = {
   index: number;
   moveSectionItem: (dragIndex: number, hoverIndex: number) => void;
   handleDelete: (itemId: string) => void;
+  handleEdit: (item: SectionItemType) => void;
   courseId: string;
   sectionId: string;
   onDragEnd: () => Promise<void>;
@@ -30,6 +32,7 @@ const DraggableItem = ({
   index,
   moveSectionItem,
   handleDelete,
+  handleEdit,
   courseId,
   sectionId,
   onDragEnd,
@@ -60,6 +63,9 @@ const DraggableItem = ({
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <IconButton color="error" size="small" onClick={() => handleDelete(sectionItem.itemId)}>
             <DeleteIcon />
+          </IconButton>
+          <IconButton color="primary" size="small" onClick={() => handleEdit(sectionItem)}>
+            <EditIcon />
           </IconButton>
           <Button
             variant="outlined"

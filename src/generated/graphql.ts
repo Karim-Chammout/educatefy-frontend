@@ -999,6 +999,13 @@ export type CreateLessonMutationVariables = Exact<{
 
 export type CreateLessonMutation = { __typename: 'Mutation', createLesson?: { __typename: 'CreateOrUpdateLessonResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, lesson?: { __typename: 'Lesson', id: string, denomination: string, duration: number, is_published: boolean } | null } | null };
 
+export type UpdateLessonMutationVariables = Exact<{
+  lessonInfo: UpdateLessonInfoInput;
+}>;
+
+
+export type UpdateLessonMutation = { __typename: 'Mutation', updateLesson?: { __typename: 'CreateOrUpdateLessonResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, lesson?: { __typename: 'Lesson', id: string, denomination: string, duration: number, is_published: boolean } | null } | null };
+
 export type DeleteCourseSectionItemMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -1901,6 +1908,48 @@ export function useCreateLessonMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateLessonMutationHookResult = ReturnType<typeof useCreateLessonMutation>;
 export type CreateLessonMutationResult = Apollo.MutationResult<CreateLessonMutation>;
 export type CreateLessonMutationOptions = Apollo.BaseMutationOptions<CreateLessonMutation, CreateLessonMutationVariables>;
+export const UpdateLessonDocument = gql`
+    mutation UpdateLesson($lessonInfo: UpdateLessonInfoInput!) {
+  updateLesson(lessonInfo: $lessonInfo) {
+    success
+    errors {
+      message
+    }
+    lesson {
+      id
+      denomination
+      duration
+      is_published
+    }
+  }
+}
+    `;
+export type UpdateLessonMutationFn = Apollo.MutationFunction<UpdateLessonMutation, UpdateLessonMutationVariables>;
+
+/**
+ * __useUpdateLessonMutation__
+ *
+ * To run a mutation, you first call `useUpdateLessonMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLessonMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLessonMutation, { data, loading, error }] = useUpdateLessonMutation({
+ *   variables: {
+ *      lessonInfo: // value for 'lessonInfo'
+ *   },
+ * });
+ */
+export function useUpdateLessonMutation(baseOptions?: Apollo.MutationHookOptions<UpdateLessonMutation, UpdateLessonMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateLessonMutation, UpdateLessonMutationVariables>(UpdateLessonDocument, options);
+      }
+export type UpdateLessonMutationHookResult = ReturnType<typeof useUpdateLessonMutation>;
+export type UpdateLessonMutationResult = Apollo.MutationResult<UpdateLessonMutation>;
+export type UpdateLessonMutationOptions = Apollo.BaseMutationOptions<UpdateLessonMutation, UpdateLessonMutationVariables>;
 export const DeleteCourseSectionItemDocument = gql`
     mutation DeleteCourseSectionItem($id: ID!) {
   deleteCourseSectionItem(id: $id) {

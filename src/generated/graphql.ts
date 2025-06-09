@@ -161,6 +161,8 @@ export type Course = {
   id: Scalars['ID']['output'];
   /** The image of this course */
   image?: Maybe<Scalars['String']['output']>;
+  /** The name of the instructor for this course */
+  instructor: Teacher;
   /** A flag to indicate whether this course is published or not */
   is_published: Scalars['Boolean']['output'];
   /** The language of this course */
@@ -169,6 +171,8 @@ export type Course = {
   level: CourseLevel;
   /** The objectives of this course. */
   objectives: Array<CourseObjective>;
+  /** The number of participants enrolled in this course (or completed it) */
+  participationCount: Scalars['Int']['output'];
   /** Average star rating for this course */
   rating: Scalars['Float']['output'];
   /** Total number of ratings for this course */
@@ -733,6 +737,27 @@ export type Subject = {
   id: Scalars['ID']['output'];
 };
 
+/** The properties of a teacher account */
+export type Teacher = {
+  __typename: 'Teacher';
+  /** The avatar url of this teacher */
+  avatar_url?: Maybe<Scalars['String']['output']>;
+  /** A short biography of the teacher */
+  bio?: Maybe<Scalars['String']['output']>;
+  /** A detailed description of the teacher */
+  description?: Maybe<Scalars['String']['output']>;
+  /** The first name of the teacher */
+  first_name?: Maybe<Scalars['String']['output']>;
+  /** A unique id of this account */
+  id: Scalars['ID']['output'];
+  /** The last name of the teacher */
+  last_name?: Maybe<Scalars['String']['output']>;
+  /** The name of the teacher */
+  name?: Maybe<Scalars['String']['output']>;
+  /** The nickname of the teacher */
+  nickname?: Maybe<Scalars['String']['output']>;
+};
+
 /** A text content component. */
 export type TextContent = {
   __typename: 'TextContent';
@@ -945,14 +970,14 @@ export type CourseSectionFragment = { __typename: 'CourseSection', id: string, d
 
 export type CourseReviewFragment = { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } };
 
-export type CourseFragment = { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null };
+export type CourseFragment = { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null } };
 
 export type CourseQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type CourseQuery = { __typename: 'Query', course?: { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null } | null };
+export type CourseQuery = { __typename: 'Query', course?: { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null } } | null };
 
 export type UpdateCourseStatusMutationVariables = Exact<{
   courseStatusInput: CourseStatusInput;
@@ -1120,12 +1145,12 @@ export type TeacherCoursesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TeacherCoursesQuery = { __typename: 'Query', teacherCourses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, is_published: boolean, created_at: any, updated_at: any }> };
 
-export type ExploreCourseFragment = { __typename: 'Course', id: string, denomination: string, description: string, slug: string, level: CourseLevel, image?: string | null };
+export type ExploreCourseFragment = { __typename: 'Course', id: string, denomination: string, description: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } };
 
 export type ExploreQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ExploreQuery = { __typename: 'Query', subjectsListWithLinkedCourses: Array<{ __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, description: string, slug: string, level: CourseLevel, image?: string | null }> }> };
+export type ExploreQuery = { __typename: 'Query', subjectsListWithLinkedCourses: Array<{ __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, description: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> }> };
 
 export type UserFragment = { __typename: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
 
@@ -1307,6 +1332,13 @@ export const CourseFragmentDoc = gql`
   viewerReview {
     ...CourseReview
   }
+  instructor {
+    first_name
+    last_name
+    avatar_url
+    description
+  }
+  participationCount
 }
     ${CourseSectionFragmentDoc}
 ${CourseReviewFragmentDoc}`;
@@ -1434,6 +1466,13 @@ export const ExploreCourseFragmentDoc = gql`
   slug
   level
   image
+  rating
+  participationCount
+  instructor {
+    first_name
+    last_name
+    avatar_url
+  }
 }
     `;
 export const UserFragmentDoc = gql`

@@ -1,4 +1,5 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Menu from '@mui/icons-material/Menu';
@@ -8,6 +9,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import { CourseSectionFragment } from '@/generated/graphql';
@@ -27,16 +29,17 @@ import {
 
 const Section = ({ section }: { section: CourseSectionFragment }) => {
   const { slug, itemId, componentId } = useParams();
+  const { t } = useTranslation();
+  const i18n = localStorage.getItem('i18nextLng') || 'en';
   const navigate = useNavigate();
-  const [openItems, setOpenItems] = useState<Record<string, boolean>>({ [itemId as string]: true });
+
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({
+    [itemId ?? section.items[0].id]: true,
+  });
 
   // Find the initially selected item and component from URL params
   const selectedItem = section.items.find((item) => item.id === itemId) || section.items[0];
-
-  if (!selectedItem) {
-    return <Typography>No content found</Typography>;
-  }
 
   const selectedComponent =
     selectedItem.components.find((comp) => comp.component_id === componentId) ||
@@ -70,9 +73,15 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
       </MobileMenuButton>
 
       <NavigationPanel mobileOpen={mobileOpen}>
-        <Typography variant="h6" sx={{ p: 2, fontWeight: 'bold' }}>
-          {section.denomination}
-        </Typography>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton edge="end" color="inherit" onClick={() => navigate(`/course/${slug}`)}>
+            <ArrowBackIcon sx={{ transform: i18n === 'ar' ? 'scaleX(-1)' : undefined }} />
+          </IconButton>
+          <Typography variant="h6" sx={{ p: 2, fontWeight: 'bold' }}>
+            {section.denomination}
+          </Typography>
+        </div>
+
         <Divider />
         <List component="nav">
           {section.items.map((item) => (
@@ -90,7 +99,9 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
                     sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                   >
                     <AccessTimeIcon sx={{ fontSize: '16px' }} />
-                    <span>{item.duration} mins</span>
+                    <span>
+                      {item.duration} {t('common.minutes')}
+                    </span>
                   </Typography>
                 </Box>
                 {openItems[item.id] ? <ExpandLess /> : <ExpandMore />}

@@ -1,4 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
+import ContentPasteOffIcon from '@mui/icons-material/ContentPasteOff';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
@@ -49,6 +50,18 @@ const SectionContainer = () => {
         subtitle={t('courseSection.noSectionsSubtitle')}
         title={t('courseSection.sectionNotFound')}
         icon={<CloseIcon />}
+      />
+    );
+  }
+
+  if (!section.items || section.items.length === 0) {
+    return (
+      <InfoState
+        btnLabel={t('courseSection.backToCourse')}
+        btnOnClick={() => navigate(`/course/${slug}`)}
+        subtitle={t('courseSection.noItemsSubtitle')}
+        title={t('courseSection.noItems')}
+        icon={<ContentPasteOffIcon />}
       />
     );
   }

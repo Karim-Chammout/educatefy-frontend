@@ -5,6 +5,13 @@ fragment ExploreCourse on Course {
   slug
   level
   image
+  rating
+  participationCount
+  instructor {
+    first_name
+    last_name
+    avatar_url
+  }
 }
 
 query Explore {

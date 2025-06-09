@@ -95,6 +95,13 @@ fragment Course on Course {
   viewerReview {
     ...CourseReview
   }
+  instructor {
+    first_name
+    last_name
+    avatar_url
+    description
+  }
+  participationCount
 }
 
 query Course($slug: String!) {

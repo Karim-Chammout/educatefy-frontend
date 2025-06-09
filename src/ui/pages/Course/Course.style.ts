@@ -55,11 +55,26 @@ export const SectionTitle = styled(Typography)`
   font-weight: 600;
 `;
 
+export const SectionWrapper = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
 export const SubjectsContainer = styled(Box)`
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   margin: 1rem 0;
+`;
+
+export const InstructorInfoWrapper = styled('div')`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 `;
 
 export const RatingContainer = styled(Box)`

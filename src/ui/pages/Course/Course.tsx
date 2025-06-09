@@ -1,6 +1,7 @@
 import CheckIcon from '@mui/icons-material/Check';
 import LinkIcon from '@mui/icons-material/Link';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -8,11 +9,12 @@ import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import { useTranslation } from 'react-i18next';
 
+import person from '@/assets/person.png';
 import { CourseFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 
 import { CourseHeader, CourseSections, ReviewsList } from './composition';
-import { MetaItem, SectionTitle } from './Course.style';
+import { InstructorInfoWrapper, MetaItem, SectionTitle } from './Course.style';
 
 const Course = ({ courseInfo }: { courseInfo: CourseFragment }) => {
   const { t } = useTranslation();
@@ -78,7 +80,7 @@ const Course = ({ courseInfo }: { courseInfo: CourseFragment }) => {
       {courseInfo.external_resource_link && (
         <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
           <SectionTitle component="h3" variant="h6" gutterBottom>
-            External resource{/* 🚨 TRANSLATIONS 🚨 */}
+            {t('course.externalResourceLink')}
           </SectionTitle>
           <MetaItem>
             <LinkIcon color="action" />
@@ -99,6 +101,24 @@ const Course = ({ courseInfo }: { courseInfo: CourseFragment }) => {
       <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
         {courseInfo.sections.length > 0 && (
           <CourseSections sections={courseInfo.sections} slug={courseInfo.slug} />
+        )}
+      </Paper>
+
+      <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
+        <SectionTitle component="h3" variant="h6" gutterBottom>
+          {t('course.instructor')}
+        </SectionTitle>
+        <InstructorInfoWrapper>
+          <Avatar
+            src={courseInfo.instructor.avatar_url || person}
+            sx={{ height: '96px', width: '96px' }}
+          />
+          <Typography variant="h6" gutterBottom>
+            {courseInfo.instructor.first_name} {courseInfo.instructor.last_name}
+          </Typography>
+        </InstructorInfoWrapper>
+        {courseInfo.instructor.description && (
+          <Typography dangerouslySetInnerHTML={{ __html: courseInfo.instructor.description }} />
         )}
       </Paper>
 

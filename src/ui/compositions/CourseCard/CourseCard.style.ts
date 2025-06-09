@@ -87,7 +87,7 @@ const starIconStyles = ({ theme }: { theme: Theme }) => css`
 const teacherContainerStyles = css`
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 `;
 
 export const CardActionArea = styled(MuiCardActionArea)<{ to: string }>();

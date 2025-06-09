@@ -64,24 +64,18 @@ const CourseCard = ({
                   {studentsCount}
                 </Typography>
               </Statistic>
-              <Statistic>
-                <StarIcon />
-                <Typography variant="body2" color="text.secondary">
-                  {rating.toFixed(1)}
-                </Typography>
-              </Statistic>
+              {rating > 0 && (
+                <Statistic>
+                  <StarIcon />
+                  <Typography variant="body2" color="text.secondary">
+                    {rating.toFixed(1)}
+                  </Typography>
+                </Statistic>
+              )}
             </StatsContainer>
           </MetadataContainer>
 
-          <Typography
-            variant="h6"
-            component="h2"
-            sx={{
-              fontSize: '1rem',
-              fontWeight: 600,
-              lineHeight: 1.2,
-            }}
-          >
+          <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
             {title}
           </Typography>
 

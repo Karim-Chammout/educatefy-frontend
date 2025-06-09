@@ -1,6 +1,7 @@
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import LanguageIcon from '@mui/icons-material/Language';
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import SchoolIcon from '@mui/icons-material/School';
 import StarIcon from '@mui/icons-material/Star';
 import Chip from '@mui/material/Chip';
@@ -36,12 +37,21 @@ const CourseHeader = ({ courseInfo }: { courseInfo: CourseFragment }) => {
         </Typography>
 
         <CourseMeta>
-          <RatingContainer>
-            <StarIcon color="warning" />
+          {courseInfo.rating > 0 && courseInfo.ratingsCount > 0 && (
+            <RatingContainer>
+              <StarIcon color="warning" />
+              <Typography variant="body1">
+                {courseInfo.rating.toFixed(1)} ({courseInfo.ratingsCount} {t('course.reviews')})
+              </Typography>
+            </RatingContainer>
+          )}
+
+          <MetaItem>
+            <PersonOutlineIcon />
             <Typography variant="body1">
-              {courseInfo.rating.toFixed(1)} ({courseInfo.ratingsCount} {t('course.ratings')})
+              {courseInfo.participationCount} {t('course.students')}
             </Typography>
-          </RatingContainer>
+          </MetaItem>
 
           <MetaItem>
             <SchoolIcon />
@@ -67,7 +77,7 @@ const CourseHeader = ({ courseInfo }: { courseInfo: CourseFragment }) => {
           <MetaItem>
             <NewReleasesIcon />
             <Typography variant="body1">
-              Last updated {format(new Date(courseInfo.updated_at), 'M/yyyy')}
+              {t('course.lastUpdated')} {format(new Date(courseInfo.updated_at), 'M/yyyy')}
             </Typography>
           </MetaItem>
         </CourseMeta>

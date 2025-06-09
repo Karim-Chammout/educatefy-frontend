@@ -1,11 +1,11 @@
-import { Paper, Typography } from '@mui/material';
+import Paper from '@mui/material/Paper';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 
 import { CourseSectionFragment } from '@/generated/graphql';
-import { Button } from '@/ui/components';
+import { Button, Typography } from '@/ui/components';
 
-import { SectionTitle } from '../Course.style';
+import { SectionTitle, SectionWrapper } from '../Course.style';
 
 const CourseSections = ({
   slug,
@@ -16,23 +16,47 @@ const CourseSections = ({
 }) => {
   const { t } = useTranslation();
 
+  const calculateSectionDuration = (section: CourseSectionFragment) => {
+    const totalMinutes = section.items.reduce((total, item) => total + item.duration, 0);
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    const parts = [];
+
+    if (hours > 0) {
+      parts.push(t('courseSection.duration.hours', { count: hours }));
+    }
+
+    if (minutes > 0) {
+      parts.push(t('courseSection.duration.minutes', { count: minutes }));
+    }
+
+    if (parts.length === 0) {
+      return t('courseSection.duration.minutes', { count: 0 });
+    }
+
+    return parts.join(' ');
+  };
+
   return (
     <>
       <SectionTitle component="h3" variant="h6" gutterBottom>
-        Curriculum{/* 🚨 TRANSLATIONS 🚨 */}
+        {t('course.sections')}
       </SectionTitle>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
         {sections.map((section) => (
           <Paper key={section.id} variant="outlined" sx={{ p: 2, flex: '1 1 auto' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: '16px',
-                alignItems: 'center',
-              }}
-            >
-              <Typography variant="h6">{section.denomination}</Typography>
+            <SectionWrapper>
+              <div>
+                <Typography variant="h6">{section.denomination}</Typography>
+                <Typography variant="body2">
+                  {t('courseSection.itemInfo', {
+                    count: section.items.length,
+                    duration: calculateSectionDuration(section),
+                  })}
+                </Typography>
+              </div>
               <Button
                 variant="outlined"
                 LinkComponent={Link}
@@ -40,7 +64,7 @@ const CourseSections = ({
               >
                 {t('common.open')}
               </Button>
-            </div>
+            </SectionWrapper>
           </Paper>
         ))}
       </div>

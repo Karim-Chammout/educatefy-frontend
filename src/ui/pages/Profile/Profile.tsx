@@ -146,7 +146,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
       </div>
 
       <Paper
-        elevation={4}
+        variant="outlined"
         sx={{
           my: 4,
           p: 4,
@@ -167,7 +167,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
         </div>
       </Paper>
 
-      <Paper elevation={4} sx={{ my: 4, p: 4 }}>
+      <Paper variant="outlined" sx={{ my: 4, p: 4 }}>
         <div
           style={{
             marginBottom: '32px',
@@ -229,14 +229,16 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
             </Typography>
           </InfoItem>
         </div>
+      </Paper>
+      <Paper variant="outlined" sx={{ my: 4, p: 4 }}>
         {userInfo.accountRole === AccountRole.Teacher && (
-          <div>
-            <Typography variant="h5" component="h1" sx={{ my: 4, fontWeight: 'bold' }}>
+          <>
+            <Typography variant="h5" component="h1" sx={{ mb: 4, fontWeight: 'bold' }}>
               {t('profile.teacherInformation')}
             </Typography>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               <div>
-                <Typography>{t('profile.specialty')}:</Typography>
+                <Typography gutterBottom>{t('profile.specialty')}:</Typography>
                 {userInfo.subjects.map((subject) => (
                   <Chip key={subject.id} label={subject.denomination} sx={{ mr: 1 }} />
                 ))}
@@ -256,7 +258,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
                 />
               </div>
             </div>
-          </div>
+          </>
         )}
       </Paper>
       <Modal

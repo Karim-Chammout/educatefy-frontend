@@ -54,7 +54,11 @@ const SectionContainer = () => {
     );
   }
 
-  if (!section.items || section.items.length === 0) {
+  if (
+    !section.items ||
+    section.items.length === 0 ||
+    section.items.every((item) => item.components.length === 0)
+  ) {
     return (
       <InfoState
         btnLabel={t('courseSection.backToCourse')}

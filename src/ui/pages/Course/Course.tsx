@@ -98,11 +98,11 @@ const Course = ({ courseInfo }: { courseInfo: CourseFragment }) => {
         </Paper>
       )}
 
-      <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
-        {courseInfo.sections.length > 0 && (
+      {courseInfo.sections.length > 0 && (
+        <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
           <CourseSections sections={courseInfo.sections} slug={courseInfo.slug} />
-        )}
-      </Paper>
+        </Paper>
+      )}
 
       <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
         <SectionTitle component="h3" variant="h6" gutterBottom>

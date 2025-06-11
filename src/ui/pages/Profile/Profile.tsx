@@ -230,8 +230,9 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
           </InfoItem>
         </div>
       </Paper>
-      <Paper variant="outlined" sx={{ my: 4, p: 4 }}>
-        {userInfo.accountRole === AccountRole.Teacher && (
+
+      {userInfo.accountRole === AccountRole.Teacher && (
+        <Paper variant="outlined" sx={{ my: 4, p: 4 }}>
           <>
             <Typography variant="h5" component="h1" sx={{ mb: 4, fontWeight: 'bold' }}>
               {t('profile.teacherInformation')}
@@ -259,8 +260,9 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
               </div>
             </div>
           </>
-        )}
-      </Paper>
+        </Paper>
+      )}
+
       <Modal
         open={isChangePicModalOpen}
         onClose={() => setIsChangePicModalOpen(false)}

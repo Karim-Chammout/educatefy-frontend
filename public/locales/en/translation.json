@@ -202,7 +202,7 @@
   "courseSection.duration.hours_one": "{{count}} hour",
   "courseSection.duration.hours_other": "{{count}} hours",
   "courseSection.duration.minutes_zero": "0 minutes",
-  "courseSection.duration.minutes_one": "{{count}} minute", 
+  "courseSection.duration.minutes_one": "{{count}} minute",
   "courseSection.duration.minutes_other": "{{count}} minutes",
   "courseSection.itemInfo_one": "{{count}} lecture • {{duration}}",
   "courseSection.itemInfo_other": "{{count}} lectures • {{duration}}",
@@ -229,5 +229,7 @@
   "contentComponent.isPublished": "Is this component published",
   "contentComponent.updatedSuccessfully": "Component updated successfully",
   "contentComponent.deletedSuccessfully": "Component deleted successfully",
-  "contentComponent.preview": "Preview"
+  "contentComponent.preview": "Preview",
+  "instructor.follow": "Follow",
+  "instructor.unfollow": "Unfollow"
 }

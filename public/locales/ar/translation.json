@@ -240,5 +240,7 @@
   "contentComponent.isPublished": "هل هذا العنصر منشور؟",
   "contentComponent.updatedSuccessfully": "تم تحديث العنصر بنجاح",
   "contentComponent.deletedSuccessfully": "تم حذف العنصر بنجاح",
-  "contentComponent.preview": "معاينة"
+  "contentComponent.preview": "معاينة",
+  "instructor.follow": "متابعة",
+  "instructor.unfollow": "إلغاء المتابعة"
 }

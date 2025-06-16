@@ -96,15 +96,20 @@ fragment Course on Course {
     ...CourseReview
   }
   instructor {
+    id
     first_name
     last_name
     avatar_url
     description
+    isFollowed
   }
   participationCount
 }
 
 query Course($slug: String!) {
+  me {
+    id
+  }
   course(slug: $slug) {
     ...Course
   }
@@ -120,5 +125,15 @@ mutation UpdateCourseStatus($courseStatusInput: CourseStatusInput!) {
       id
       status
     }
+  }
+}
+
+mutation FollowTeacher($followTeacherInfo: FollowTeacherInput!) {
+  followTeacher(followTeacherInfo: $followTeacherInfo) {
+    success
+    errors {
+      message
+    }
+    isFollowing
   }
 }

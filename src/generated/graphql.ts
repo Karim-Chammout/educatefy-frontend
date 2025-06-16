@@ -389,6 +389,23 @@ export type Error = {
   message: Scalars['String']['output'];
 };
 
+/** Input for following/unfollowing a teacher */
+export type FollowTeacherInput = {
+  /** The ID of the teacher to follow/unfollow */
+  teacherId: Scalars['String']['input'];
+};
+
+/** Result of following/unfollowing a teacher */
+export type FollowTeacherResult = {
+  __typename: 'FollowTeacherResult';
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** Whether the student is now following the teacher */
+  isFollowing?: Maybe<Scalars['Boolean']['output']>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
+};
+
 /** Gender of the account. */
 export enum Gender {
   Female = 'female',
@@ -460,6 +477,8 @@ export type Mutation = {
   deleteCourseSectionItem?: Maybe<MutationResult>;
   /** Deletes a lesson. */
   deleteLesson?: Maybe<MutationResult>;
+  /** Follow or unfollow a teacher. Toggles the follow status. */
+  followTeacher?: Maybe<FollowTeacherResult>;
   /** Rate a course. */
   rateCourse?: Maybe<MutationResult>;
   /** Remove the profile picture of a user. */
@@ -537,6 +556,11 @@ export type MutationDeleteCourseSectionItemArgs = {
 
 export type MutationDeleteLessonArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationFollowTeacherArgs = {
+  followTeacherInfo: FollowTeacherInput;
 };
 
 
@@ -750,6 +774,8 @@ export type Teacher = {
   first_name?: Maybe<Scalars['String']['output']>;
   /** A unique id of this account */
   id: Scalars['ID']['output'];
+  /** Indicates if the current user is following this teacher */
+  isFollowed: Scalars['Boolean']['output'];
   /** The last name of the teacher */
   last_name?: Maybe<Scalars['String']['output']>;
   /** The name of the teacher */
@@ -970,14 +996,14 @@ export type CourseSectionFragment = { __typename: 'CourseSection', id: string, d
 
 export type CourseReviewFragment = { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } };
 
-export type CourseFragment = { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null } };
+export type CourseFragment = { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean } };
 
 export type CourseQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type CourseQuery = { __typename: 'Query', course?: { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null } } | null };
+export type CourseQuery = { __typename: 'Query', me: { __typename: 'Account', id: string }, course?: { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, external_meeting_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating: number, review: string, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean } } | null };
 
 export type UpdateCourseStatusMutationVariables = Exact<{
   courseStatusInput: CourseStatusInput;
@@ -985,6 +1011,13 @@ export type UpdateCourseStatusMutationVariables = Exact<{
 
 
 export type UpdateCourseStatusMutation = { __typename: 'Mutation', updateCourseStatus?: { __typename: 'UpdateCourseStatusResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, course?: { __typename: 'Course', id: string, status: CourseStatus } | null } | null };
+
+export type FollowTeacherMutationVariables = Exact<{
+  followTeacherInfo: FollowTeacherInput;
+}>;
+
+
+export type FollowTeacherMutation = { __typename: 'Mutation', followTeacher?: { __typename: 'FollowTeacherResult', success: boolean, isFollowing?: boolean | null, errors: Array<{ __typename: 'Error', message: string }> } | null };
 
 export type LanguageFragment = { __typename: 'Language', id: string, denomination: string, code: string };
 
@@ -1333,10 +1366,12 @@ export const CourseFragmentDoc = gql`
     ...CourseReview
   }
   instructor {
+    id
     first_name
     last_name
     avatar_url
     description
+    isFollowed
   }
   participationCount
 }
@@ -1704,6 +1739,9 @@ export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const CourseDocument = gql`
     query Course($slug: String!) {
+  me {
+    id
+  }
   course(slug: $slug) {
     ...Course
   }
@@ -1782,6 +1820,43 @@ export function useUpdateCourseStatusMutation(baseOptions?: Apollo.MutationHookO
 export type UpdateCourseStatusMutationHookResult = ReturnType<typeof useUpdateCourseStatusMutation>;
 export type UpdateCourseStatusMutationResult = Apollo.MutationResult<UpdateCourseStatusMutation>;
 export type UpdateCourseStatusMutationOptions = Apollo.BaseMutationOptions<UpdateCourseStatusMutation, UpdateCourseStatusMutationVariables>;
+export const FollowTeacherDocument = gql`
+    mutation FollowTeacher($followTeacherInfo: FollowTeacherInput!) {
+  followTeacher(followTeacherInfo: $followTeacherInfo) {
+    success
+    errors {
+      message
+    }
+    isFollowing
+  }
+}
+    `;
+export type FollowTeacherMutationFn = Apollo.MutationFunction<FollowTeacherMutation, FollowTeacherMutationVariables>;
+
+/**
+ * __useFollowTeacherMutation__
+ *
+ * To run a mutation, you first call `useFollowTeacherMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFollowTeacherMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [followTeacherMutation, { data, loading, error }] = useFollowTeacherMutation({
+ *   variables: {
+ *      followTeacherInfo: // value for 'followTeacherInfo'
+ *   },
+ * });
+ */
+export function useFollowTeacherMutation(baseOptions?: Apollo.MutationHookOptions<FollowTeacherMutation, FollowTeacherMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<FollowTeacherMutation, FollowTeacherMutationVariables>(FollowTeacherDocument, options);
+      }
+export type FollowTeacherMutationHookResult = ReturnType<typeof useFollowTeacherMutation>;
+export type FollowTeacherMutationResult = Apollo.MutationResult<FollowTeacherMutation>;
+export type FollowTeacherMutationOptions = Apollo.BaseMutationOptions<FollowTeacherMutation, FollowTeacherMutationVariables>;
 export const CreateCoursePageDocument = gql`
     query CreateCoursePage {
   languages {

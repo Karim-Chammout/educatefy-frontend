@@ -1,4 +1,4 @@
-import fallbackImage from '@/assets/background_logo.png';
+import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';
 import { ExploreQuery } from '@/generated/graphql';
 import { CourseCard } from '@/ui/compositions';

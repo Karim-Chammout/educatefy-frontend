@@ -7,7 +7,7 @@ import Toolbar from '@mui/material/Toolbar';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router';
 
-import logo from '@/assets/logo.svg';
+import logo from '@/assets/logo.png';
 import { Button } from '@/ui/components';
 
 import { LogoWrapper, StyledNavLink } from './PublicNavigation.style';

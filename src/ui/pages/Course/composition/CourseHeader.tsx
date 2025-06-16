@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import fallbackImage from '@/assets/background_logo.png';
+import fallbackImage from '@/assets/educatefy_background.png';
 import { CourseFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 

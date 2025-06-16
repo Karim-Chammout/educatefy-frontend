@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid2';
 import { ReactNode } from 'react';
 
-import sideImage from '@/assets/background_logo.png';
+import sideImage from '@/assets/educatefy_background.png';
 import muiCustomTheme from '@/ui/theme/muiTheme';
 
 import { ContainerGrid, Wrapper } from './AuthView.style';

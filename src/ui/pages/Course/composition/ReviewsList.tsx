@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
 import { useTranslation } from 'react-i18next';
 
 import { CourseReviewFragment } from '@/generated/graphql';
@@ -19,7 +20,7 @@ const ReviewsList = ({
   const { t } = useTranslation();
 
   return (
-    <Box>
+    <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
       <Typography variant="h5" gutterBottom>
         {t('course.reviews')}
       </Typography>
@@ -39,7 +40,7 @@ const ReviewsList = ({
       ) : (
         reviews.map((review) => <ReviewItem key={review.id} review={review} />)
       )}
-    </Box>
+    </Paper>
   );
 };
 

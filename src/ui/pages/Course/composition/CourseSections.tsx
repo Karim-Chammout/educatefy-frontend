@@ -1,3 +1,4 @@
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Paper from '@mui/material/Paper';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
@@ -61,6 +62,7 @@ const CourseSections = ({
                 variant="outlined"
                 LinkComponent={Link}
                 to={`/course/${slug}/section/${section.id}`}
+                startIcon={<OpenInNewIcon />}
               >
                 {t('common.open')}
               </Button>

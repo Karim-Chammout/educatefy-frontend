@@ -10,7 +10,7 @@ export const CourseHeaderWrapper = styled(Box)`
   flex-direction: column;
 
   ${min(
-    'sm',
+    'md',
     `
       flex-direction: row;
     `,
@@ -24,7 +24,7 @@ export const CourseInfo = styled(Box)`
   flex: 1;
 
   ${max(
-    'sm',
+    'md',
     `
       order: 1;
     `,

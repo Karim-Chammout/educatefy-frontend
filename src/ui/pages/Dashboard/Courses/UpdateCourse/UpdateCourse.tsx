@@ -531,7 +531,7 @@ const UpdateCourse = ({
                       label={t('course.startDate')}
                       control={control}
                       sx={{ width: '100%' }}
-                      disablePast
+                      disablePast={!course.start_date}
                     />
                   </Box>
                   <Box sx={{ flex: 1 }}>
@@ -540,7 +540,7 @@ const UpdateCourse = ({
                       label={t('course.endDate')}
                       control={control}
                       sx={{ width: '100%' }}
-                      disablePast
+                      disablePast={!course.end_date}
                     />
                   </Box>
                 </LocalizationProvider>

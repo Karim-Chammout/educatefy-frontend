@@ -21,7 +21,9 @@ const PageTemplate = ({ children }: { children: ReactNode }) => {
       <Navigation />
       <Suspense fallback={<Loader />}>
         <main>
-          <Container maxWidth={false}>{children}</Container>
+          <Container maxWidth={false} sx={{ mb: 8 }}>
+            {children}
+          </Container>
         </main>
       </Suspense>
     </>

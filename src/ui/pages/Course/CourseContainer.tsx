@@ -39,7 +39,7 @@ const CourseContainer = () => {
     );
   }
 
-  return <Course courseInfo={data.course} userId={data.me.id} />;
+  return <Course courseInfo={data.course} />;
 };
 
 export default CourseContainer;

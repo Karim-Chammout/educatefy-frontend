@@ -102,14 +102,12 @@ fragment Course on Course {
     avatar_url
     description
     isFollowed
+    isAllowedToFollow
   }
   participationCount
 }
 
 query Course($slug: String!) {
-  me {
-    id
-  }
   course(slug: $slug) {
     ...Course
   }

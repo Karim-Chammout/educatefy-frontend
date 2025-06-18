@@ -8,14 +8,10 @@ import { Button, Typography } from '@/ui/components';
 
 import { InstructorInfoWrapper, SectionTitle } from '../Course.style';
 
-const CourseInstructor = ({
-  courseInfo,
-  userId,
-}: {
-  courseInfo: CourseFragment;
-  userId: string;
-}) => {
+const CourseInstructor = ({ courseInfo }: { courseInfo: CourseFragment }) => {
   const { t } = useTranslation();
+  const { id, first_name, last_name, description, avatar_url, isFollowed, isAllowedToFollow } =
+    courseInfo.instructor;
 
   const [followTeacher, { loading: updatingFollow }] = useFollowTeacherMutation();
 
@@ -23,7 +19,7 @@ const CourseInstructor = ({
     await followTeacher({
       variables: {
         followTeacherInfo: {
-          teacherId: courseInfo.instructor.id,
+          teacherId: id,
         },
       },
       update: (cache) => {
@@ -43,27 +39,22 @@ const CourseInstructor = ({
         {t('course.instructor')}
       </SectionTitle>
       <InstructorInfoWrapper>
-        <Avatar
-          src={courseInfo.instructor.avatar_url || person}
-          sx={{ height: '96px', width: '96px' }}
-        />
+        <Avatar src={avatar_url || person} sx={{ height: '96px', width: '96px' }} />
         <Typography variant="h6" gutterBottom>
-          {courseInfo.instructor.first_name} {courseInfo.instructor.last_name}
+          {first_name} {last_name}
         </Typography>
       </InstructorInfoWrapper>
-      {userId !== courseInfo.instructor.id && (
+      {isAllowedToFollow && (
         <Button
           sx={{ my: 2 }}
           onClick={handleFollowTeacher}
-          variant={courseInfo.instructor.isFollowed ? 'outlined' : 'contained'}
+          variant={isFollowed ? 'outlined' : 'contained'}
           disabled={updatingFollow}
         >
-          {courseInfo.instructor.isFollowed ? t('instructor.unfollow') : t('instructor.follow')}
+          {isFollowed ? t('instructor.unfollow') : t('instructor.follow')}
         </Button>
       )}
-      {courseInfo.instructor.description && (
-        <Typography dangerouslySetInnerHTML={{ __html: courseInfo.instructor.description }} />
-      )}
+      {description && <Typography dangerouslySetInnerHTML={{ __html: description }} />}
     </Paper>
   );
 };

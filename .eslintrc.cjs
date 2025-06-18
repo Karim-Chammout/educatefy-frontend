@@ -42,6 +42,7 @@ module.exports = {
     'no-plusplus': 0,
     'dot-notation': 0,
     '@typescript-eslint/dot-notation': 0,
+    '@typescript-eslint/naming-convention': 0,
     'jsx-a11y/media-has-caption': 0,
     '@typescript-eslint/no-unused-vars': [
       'error',

@@ -5,10 +5,11 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 
 import logo from '@/assets/logo.png';
 import { Button } from '@/ui/components';
+import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
 import { LogoWrapper, StyledNavLink } from './PublicNavigation.style';
 
@@ -23,10 +24,11 @@ const navItems = [
 const PublicNavigation = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const shouldShowCTA = !['/login', '/register'].includes(window.location.pathname);
+  const shouldShowCTA = !['/login', '/register'].includes(location.pathname);
 
   return (
     <AppBar position="sticky" color="inherit">
@@ -52,15 +54,30 @@ const PublicNavigation = () => {
           <Box sx={{ flexGrow: 0 }}>
             {shouldShowCTA &&
               (isMobile ? (
-                <Button variant="contained" LinkComponent={Link} to="/login">
+                <Button
+                  variant="contained"
+                  LinkComponent={Link}
+                  to="/login"
+                  onClick={() => savePostLoginRedirectPath(location.pathname)}
+                >
                   {t('publicNavigation.continue')}
                 </Button>
               ) : (
                 <Box sx={{ display: 'flex', gap: 2 }}>
-                  <Button variant="outlined" LinkComponent={Link} to="/login">
+                  <Button
+                    variant="outlined"
+                    LinkComponent={Link}
+                    to="/login"
+                    onClick={() => savePostLoginRedirectPath(location.pathname)}
+                  >
                     {t('publicNavigation.login')}
                   </Button>
-                  <Button variant="contained" LinkComponent={Link} to="/register">
+                  <Button
+                    variant="contained"
+                    LinkComponent={Link}
+                    to="/register"
+                    onClick={() => savePostLoginRedirectPath(location.pathname)}
+                  >
                     {t('publicNavigation.register')}
                   </Button>
                 </Box>

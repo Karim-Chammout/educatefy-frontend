@@ -1,8 +1,7 @@
-import { Navigate, Route, Routes } from 'react-router';
-
-import { ACCESS_DENIED } from '@/utils/constants';
+import { Route, Routes } from 'react-router';
 
 import { Course, Explore, Login, LoginCallback, NotFound, Register } from './LazyComponent';
+import Redirect from './Redirect';
 import RouteWrapper from './RouteWrapper';
 
 /* 
@@ -56,11 +55,7 @@ const PublicRoutes = () => {
       />
 
       {privateRoutes.map((r) => (
-        <Route
-          key={r}
-          path={r}
-          element={<Navigate to="/login" replace state={{ action: ACCESS_DENIED }} />}
-        />
+        <Route key={r} path={r} element={<Redirect from={r} />} />
       ))}
       <Route path="*" element={<NotFound />} />
     </Routes>

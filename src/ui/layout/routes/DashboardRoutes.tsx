@@ -37,7 +37,7 @@ export const DashboardRoutes = ({ hasPermission }: { hasPermission: boolean }) =
   const navigate = useNavigate();
 
   if (!hasPermission) {
-    return <Navigate to="/explore" replace state={{ from: location, action: PERMISSION_DENIED }} />;
+    return <Navigate to="/explore" state={{ action: PERMISSION_DENIED }} />;
   }
 
   const handleNavigation = (path: string) => {

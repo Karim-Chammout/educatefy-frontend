@@ -1,13 +1,16 @@
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router';
 
 import { CourseFragment, CourseStatus, useUpdateCourseStatusMutation } from '@/generated/graphql';
+import { Button } from '@/ui/components';
 import { AuthContext, ToasterContext } from '@/ui/context';
 import { isLoggedIn } from '@/ui/layout/apolloClient';
-import { Button } from '@/ui/components';
+import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
 const CourseCTA = ({ course }: { course: CourseFragment }) => {
   const { t } = useTranslation();
+  const location = useLocation();
 
   const {
     authModal: { setAuthModalVisibility },
@@ -22,6 +25,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
 
   const handleUpdateCourseStatus = async () => {
     if (!isLoggedIn()) {
+      savePostLoginRedirectPath(location.pathname);
       setAuthModalVisibility('login');
 
       return;

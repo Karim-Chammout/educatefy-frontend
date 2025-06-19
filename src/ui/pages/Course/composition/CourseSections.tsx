@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router';
 
 import { CourseSectionFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
-
 import { AuthContext } from '@/ui/context';
 import { isLoggedIn } from '@/ui/layout/apolloClient';
+import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
+
 import { SectionTitle, SectionWrapper } from '../Course.style';
 
 const CourseSections = ({
@@ -50,6 +51,7 @@ const CourseSections = ({
 
   const handleSectionClick = (sectionId: string) => {
     if (!isLoggedIn()) {
+      savePostLoginRedirectPath(`/course/${slug}/section/${sectionId}`);
       setAuthModalVisibility('login');
 
       return;

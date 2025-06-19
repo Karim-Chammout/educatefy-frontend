@@ -54,7 +54,11 @@ const LoginCallback = () => {
         localStorage.setItem('refreshToken', data.refreshToken);
         isLoggedIn(true);
 
-        navigate('/explore');
+        const redirectPath = sessionStorage.getItem('postLoginRedirect') || '/explore';
+
+        navigate(redirectPath, { replace: true });
+
+        sessionStorage.removeItem('postLoginRedirect');
       } catch (error) {
         if ((error as Error).message === SIGN_UP_FIRST) {
           setToasterVisibility({

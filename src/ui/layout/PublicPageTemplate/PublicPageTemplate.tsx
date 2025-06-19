@@ -26,7 +26,9 @@ const PublicPageTemplate = ({ children }: { children: ReactNode }) => {
       <PublicNavigation />
       <Suspense fallback={<Loader />}>
         <main>
-          <Container maxWidth={false}>{children}</Container>
+          <Container maxWidth={false} sx={{ mb: 8 }}>
+            {children}
+          </Container>
         </main>
         <Modal open={isAuthModalVisible} onClose={() => setModalVisibility(false)} maxWidth="xs">
           {isAuthModalVisible && authModalType === 'login' ? (

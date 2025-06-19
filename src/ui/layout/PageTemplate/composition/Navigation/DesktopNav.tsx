@@ -13,15 +13,13 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import { TFunction } from 'i18next';
-import { MouseEvent, useContext, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import logo from '@/assets/logo.png';
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
-import { AuthContext } from '@/ui/context';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { logout } from '@/utils/logout';
 
 import { LogoWrapper, StyledNavLink } from './Navigation.style';
@@ -68,17 +66,7 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
-  const {
-    authModal: { setAuthModalVisibility },
-  } = useContext(AuthContext);
-
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
-    if (!isLoggedIn()) {
-      setAuthModalVisibility('login');
-
-      return;
-    }
-
     setAnchorElUser(event.currentTarget);
   };
 

@@ -10,14 +10,12 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
-import { MouseEvent, SyntheticEvent, useContext, useEffect, useState } from 'react';
+import { MouseEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
-import { AuthContext } from '@/ui/context';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { logout } from '@/utils/logout';
 
 const navItems = [
@@ -46,10 +44,6 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
   const navigate = useNavigate();
   const location = useLocation();
 
-  const {
-    authModal: { setAuthModalVisibility },
-  } = useContext(AuthContext);
-
   const [value, setValue] = useState(location.pathname);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -61,12 +55,6 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
   }, [value, location.pathname]);
 
   const handleAvatarClick = (event: MouseEvent<HTMLElement>) => {
-    if (!isLoggedIn()) {
-      setAuthModalVisibility('login');
-
-      return;
-    }
-
     setValue(location.pathname); // Tricky way to handle the avatar click
     setAnchorEl(event.currentTarget);
   };

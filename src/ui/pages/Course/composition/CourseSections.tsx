@@ -1,11 +1,14 @@
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Paper from '@mui/material/Paper';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { CourseSectionFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 
+import { AuthContext } from '@/ui/context';
+import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { SectionTitle, SectionWrapper } from '../Course.style';
 
 const CourseSections = ({
@@ -16,6 +19,11 @@ const CourseSections = ({
   sections: CourseSectionFragment[];
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const {
+    authModal: { setAuthModalVisibility },
+  } = useContext(AuthContext);
 
   const calculateSectionDuration = (section: CourseSectionFragment) => {
     const totalMinutes = section.items.reduce((total, item) => total + item.duration, 0);
@@ -40,6 +48,16 @@ const CourseSections = ({
     return parts.join(' ');
   };
 
+  const handleSectionClick = (sectionId: string) => {
+    if (!isLoggedIn()) {
+      setAuthModalVisibility('login');
+
+      return;
+    }
+
+    navigate(`/course/${slug}/section/${sectionId}`);
+  };
+
   return (
     <>
       <SectionTitle component="h3" variant="h6" gutterBottom>
@@ -60,8 +78,7 @@ const CourseSections = ({
               </div>
               <Button
                 variant="outlined"
-                LinkComponent={Link}
-                to={`/course/${slug}/section/${section.id}`}
+                onClick={() => handleSectionClick(section.id)}
                 startIcon={<OpenInNewIcon />}
               >
                 {t('common.open')}

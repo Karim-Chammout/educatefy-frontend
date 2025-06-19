@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint src/",
+    "lint:error": "eslint src/ --quiet",
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
     "gql-codegen": "graphql-codegen --config codegen.yml"

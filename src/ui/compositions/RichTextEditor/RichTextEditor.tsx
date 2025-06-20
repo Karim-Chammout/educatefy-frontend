@@ -211,6 +211,8 @@ const RichTextEditor = ({
 
     if (initialValue) {
       quill.clipboard.dangerouslyPasteHTML(initialValue);
+      // Remove focus after setting initial content
+      quill.blur();
     }
 
     quill.on('text-change', () => {

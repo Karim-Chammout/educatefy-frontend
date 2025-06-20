@@ -2,7 +2,11 @@ import { ApolloProvider } from '@apollo/client';
 import createCache from '@emotion/cache';
 import { CacheProvider, ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
-import { ThemeProvider as MUIThemeProvider, createTheme } from '@mui/material/styles';
+import {
+  ThemeProvider as MUIThemeProvider,
+  createTheme,
+  responsiveFontSizes,
+} from '@mui/material/styles';
 import { prefixer } from 'stylis';
 import rtlPlugin from 'stylis-plugin-rtl';
 
@@ -24,7 +28,7 @@ const cacheLtr = createCache({
 
 const App = () => {
   const { languageDirection } = useLanguageSelection();
-  const muiTheme = createTheme(muiCustomTheme(languageDirection));
+  const muiTheme = responsiveFontSizes(createTheme(muiCustomTheme(languageDirection)));
 
   return (
     <CacheProvider value={languageDirection === 'rtl' ? cacheRtl : cacheLtr}>

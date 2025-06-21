@@ -13,7 +13,7 @@ const cardStyles = css`
   min-width: 280px;
   width: 100%;
   max-width: 420px;
-  border-radius: 16px;
+  border-radius: 4px;
 
   & .MuiCardActionArea-root {
     height: 100%;
@@ -22,7 +22,7 @@ const cardStyles = css`
 `;
 
 const mediaWrapperStyles = css`
-  border-radius: 16px;
+  border-radius: 4px;
   overflow: hidden;
 `;
 

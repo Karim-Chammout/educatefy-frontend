@@ -44,14 +44,7 @@ const CourseCard = ({
     <StyledCard variant="outlined">
       <CardActionArea LinkComponent={Link} to={`/course/${slug}`}>
         <StyledMediaWrapper>
-          <CardMedia
-            component="img"
-            loading="lazy"
-            height="200"
-            image={image}
-            alt={title}
-            sx={{ borderRadius: 3 }}
-          />
+          <CardMedia component="img" loading="lazy" height="200" image={image} alt={title} />
         </StyledMediaWrapper>
 
         <StyledCardContent>

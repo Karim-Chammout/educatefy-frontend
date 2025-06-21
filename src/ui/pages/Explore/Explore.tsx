@@ -30,7 +30,7 @@ const Explore = ({ subjects }: { subjects: ExploreSubjectFragment[] }) => {
           );
 
           return (
-            <Grid key={subject.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+            <Grid key={subject.id} size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}>
               <Link to={`/subject/${subject.id}`} style={{ textDecoration: 'none' }}>
                 <StyledPaper variant="outlined">
                   <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold' }} gutterBottom>

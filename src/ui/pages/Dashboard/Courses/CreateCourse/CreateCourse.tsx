@@ -488,7 +488,7 @@ const CreateCourse = ({
                 sx={{
                   display: 'flex',
                   gap: 2,
-                  flexDirection: { xs: 'column', md: 'row' },
+                  flexDirection: { xxs: 'column', md: 'row' },
                 }}
               >
                 <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -4,7 +4,6 @@ fragment SubjectCourse on Subject {
   courses {
     id
     denomination
-    description
     slug
     level
     image

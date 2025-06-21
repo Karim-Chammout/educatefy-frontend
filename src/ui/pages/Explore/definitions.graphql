@@ -1,25 +1,14 @@
-fragment ExploreCourse on Course {
+fragment ExploreSubject on Subject {
   id
   denomination
-  description
-  slug
-  level
-  image
-  rating
-  participationCount
-  instructor {
-    first_name
-    last_name
-    avatar_url
+  courses {
+    id
+    participationCount
   }
 }
 
 query Explore {
   subjectsListWithLinkedCourses {
-    id
-    denomination
-    courses {
-      ...ExploreCourse
-    }
+    ...ExploreSubject
   }
 }

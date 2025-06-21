@@ -1,20 +1,32 @@
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import LanguageIcon from '@mui/icons-material/Language';
+import PersonIcon from '@mui/icons-material/Person';
+import SchoolIcon from '@mui/icons-material/School';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
 import DialogActions from '@mui/material/DialogActions';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid2';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
+import Tooltip from '@mui/material/Tooltip';
+import { useTheme } from '@mui/material/styles';
 import { format } from 'date-fns';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import api from '@/api';
+import person from '@/assets/person.png';
 import {
   AccountRole,
   useChangeProfilePictureMutation,
   useRemoveProfilePictureMutation,
+  UserFragment,
   UserProfileQuery,
 } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
@@ -22,17 +34,17 @@ import { Button, Modal, Typography } from '@/ui/components';
 import { FileDropzone, LanguageSelector } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 
-import { EditProfile } from './compositions';
-import { InfoItem } from './Profile.style';
+import { EditProfile, InfoSection, ProfileField } from './compositions';
 
 type ProfileType = {
-  userInfo: UserProfileQuery['me'];
+  userInfo: UserFragment;
   countries: UserProfileQuery['countries'];
   subjects: UserProfileQuery['subjects'];
 };
 
 const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { setToasterVisibility } = useContext(ToasterContext);
 
   const [isChangePicModalOpen, setIsChangePicModalOpen] = useState(false);
@@ -106,168 +118,192 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
     setIsConfirmRemoveModalOpen(false);
   };
 
-  const dateOfBirth = format(new Date(userInfo?.date_of_birth), 'yyyy MMMM dd');
+  const dateOfBirth = format(new Date(userInfo.date_of_birth), 'yyyy MMMM dd');
 
   return (
-    <Container maxWidth="md" style={{ marginTop: '32px' }}>
-      <div
-        style={{
-          margin: '16px 0',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '32px',
-          flexWrap: 'wrap',
-        }}
-      >
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <Avatar
-            src={userInfo.avatar_url || undefined}
-            alt={userInfo.nickname || t('profile.profileImage')}
-            sx={{ width: 96, height: 96 }}
-          />
-          <Typography variant="h4" component="p">
-            {userInfo.name}
-          </Typography>
-        </div>
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-          <Button startIcon={<EditIcon />} onClick={() => setIsChangePicModalOpen(true)}>
-            {t('profile.changePicture')}
-          </Button>
-          <Button
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={() => setIsConfirmRemoveModalOpen(true)}
-            disabled={userInfo.avatar_url === null}
-          >
-            {t('profile.deletePicture')}
-          </Button>
-        </div>
-      </div>
-
+    <Container maxWidth="lg" sx={{ mt: 2 }}>
+      {/* Header Section */}
       <Paper
         variant="outlined"
         sx={{
-          my: 4,
-          p: 4,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '16px',
-          flexWrap: 'wrap',
+          mb: 3,
+          border: `1px solid ${theme.palette.divider}`,
         }}
       >
-        <div style={{ flex: 3 }}>
-          <Typography variant="h5" component="h5">
-            {t('language.selector.label')}
-          </Typography>
-        </div>
-        <div style={{ flex: 1 }}>
-          <LanguageSelector />
-        </div>
+        <Box sx={{ p: 3 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xxs: 'column', md: 'row' },
+              alignItems: { xxs: 'center', md: 'flex-start' },
+              gap: 3,
+              textAlign: { xxs: 'center', md: 'left' },
+            }}
+          >
+            {/* Avatar Section */}
+            <Box sx={{ position: 'relative' }}>
+              <Avatar
+                src={userInfo.avatar_url || person}
+                alt={userInfo.nickname || t('profile.profileImage')}
+                sx={{
+                  width: 120,
+                  height: 120,
+                  border: `4px solid ${theme.palette.background.paper}`,
+                  boxShadow: theme.shadows[8],
+                }}
+              />
+              <Tooltip title={t('profile.changePicture')}>
+                <IconButton
+                  onClick={() => setIsChangePicModalOpen(true)}
+                  sx={{
+                    position: 'absolute',
+                    bottom: -4,
+                    right: -4,
+                    bgcolor: theme.palette.primary.main,
+                    color: 'white',
+                    width: 40,
+                    height: 40,
+                    '&:hover': {
+                      bgcolor: theme.palette.primary.dark,
+                      transform: 'scale(1.1)',
+                    },
+                    transition: 'all 0.2s ease-in-out',
+                    boxShadow: theme.shadows[4],
+                  }}
+                >
+                  <CameraAltIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+
+            {/* User Info */}
+            <Box sx={{ flex: 1, alignSelf: 'center' }}>
+              <Typography variant="h3" component="h1" sx={{ fontWeight: 700 }}>
+                {userInfo.name}
+              </Typography>
+            </Box>
+
+            {/* Action Buttons */}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xxs: 'row', md: 'column' },
+                gap: 2,
+                alignSelf: 'center',
+                flexWrap: 'wrap',
+              }}
+            >
+              <Button
+                startIcon={<EditIcon />}
+                onClick={() => setIsEditModalOpen(true)}
+                variant="contained"
+                fullWidth
+              >
+                {t('profile.edit')}
+              </Button>
+              <Button
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={() => setIsConfirmRemoveModalOpen(true)}
+                disabled={userInfo.avatar_url === null}
+                variant="outlined"
+                fullWidth
+              >
+                {t('profile.deletePicture')}
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       </Paper>
 
-      <Paper variant="outlined" sx={{ my: 4, p: 4 }}>
-        <div
-          style={{
-            marginBottom: '32px',
-            display: 'flex',
-            gap: '32px',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-          }}
-        >
-          <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold' }}>
-            {t('profile.profileInformation')}
-          </Typography>
-          <Button startIcon={<EditIcon />} onClick={() => setIsEditModalOpen(true)}>
-            {t('profile.edit')}
-          </Button>
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px' }}>
-          <InfoItem>
-            <Typography>{t('profile.firstName')}:</Typography>
-            <Typography variant="h5" component="p">
-              {userInfo.first_name}
-            </Typography>
-          </InfoItem>
-          <InfoItem>
-            <Typography>{t('profile.lastName')}:</Typography>
-            <Typography variant="h5" component="p">
-              {userInfo.last_name}
-            </Typography>
-          </InfoItem>
-          <InfoItem>
-            <Typography>{t('profile.nickname')}:</Typography>
-            <Typography variant="h5" component="p">
-              {userInfo.nickname}
-            </Typography>
-          </InfoItem>
-          <InfoItem>
-            <Typography>{t('profile.gender')}:</Typography>
-            <Typography variant="h5" component="p">
-              {userInfo.gender?.toLowerCase()}
-            </Typography>
-          </InfoItem>
-          <InfoItem>
-            <Typography>{t('profile.country')}:</Typography>
-            <Typography variant="h5" component="p">
-              {userInfo.country?.denomination}
-            </Typography>
-          </InfoItem>
-          <InfoItem>
-            <Typography>{t('profile.nationality')}:</Typography>
-            <Typography variant="h5" component="p">
-              {userInfo.nationality?.denomination}
-            </Typography>
-          </InfoItem>
-          <InfoItem>
-            <Typography>{t('profile.dateOfBirth')}:</Typography>
-            <Typography variant="h5" component="p">
-              {dateOfBirth}
-            </Typography>
-          </InfoItem>
-        </div>
-      </Paper>
+      <Grid container spacing={3}>
+        {/* Language Settings */}
+        <Grid size={{ xxs: 12 }}>
+          <InfoSection icon={<LanguageIcon color="primary" />} title={t('language.selector.label')}>
+            <Box sx={{ maxWidth: 300 }}>
+              <LanguageSelector />
+            </Box>
+          </InfoSection>
+        </Grid>
 
-      {userInfo.accountRole === AccountRole.Teacher && (
-        <Paper variant="outlined" sx={{ my: 4, p: 4 }}>
-          <>
-            <Typography variant="h5" component="h1" sx={{ mb: 4, fontWeight: 'bold' }}>
-              {t('profile.teacherInformation')}
-            </Typography>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-              <div>
-                <Typography gutterBottom>{t('profile.specialty')}:</Typography>
-                {userInfo.subjects.map((subject) => (
-                  <Chip key={subject.id} label={subject.denomination} sx={{ mr: 1 }} />
-                ))}
-              </div>
-              <div>
-                <Typography>{t('profile.bio')}:</Typography>
-                <Typography variant="h5" component="p">
+        {/* Personal Information */}
+        <Grid size={{ xxs: 12 }}>
+          <InfoSection
+            icon={<PersonIcon color="primary" />}
+            title={t('profile.profileInformation')}
+          >
+            <Grid container spacing={3}>
+              <ProfileField label={t('profile.firstName')} value={userInfo.first_name} />
+              <ProfileField label={t('profile.lastName')} value={userInfo.last_name} />
+              <ProfileField label={t('profile.nickname')} value={userInfo.nickname} />
+              <ProfileField label={t('profile.gender')} value={userInfo.gender?.toLowerCase()} />
+              <ProfileField label={t('profile.country')} value={userInfo.country?.denomination} />
+              <ProfileField
+                label={t('profile.nationality')}
+                value={userInfo.nationality?.denomination}
+              />
+              <ProfileField label={t('profile.dateOfBirth')} value={dateOfBirth} />
+            </Grid>
+          </InfoSection>
+        </Grid>
+
+        {/* Teacher Information */}
+        {userInfo.accountRole === AccountRole.Teacher && (
+          <Grid size={{ xxs: 12 }}>
+            <InfoSection
+              icon={<SchoolIcon color="primary" />}
+              title={t('profile.teacherInformation')}
+            >
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  {t('profile.specialty')}:
+                </Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  {userInfo.subjects.map((subject) => (
+                    <Chip
+                      key={subject.id}
+                      label={subject.denomination}
+                      variant="outlined"
+                      sx={{ borderRadius: 1 }}
+                    />
+                  ))}
+                </Box>
+              </Box>
+
+              <Divider sx={{ my: 3 }} />
+
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  {t('profile.bio')}:
+                </Typography>
+                <Typography variant="body1" color="text.primary">
                   {userInfo.bio}
                 </Typography>
-              </div>
-              <div>
-                <Typography>{t('profile.description')}:</Typography>
+              </Box>
+
+              <Divider sx={{ my: 3 }} />
+
+              <Box>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  {t('profile.description')}:
+                </Typography>
                 <Typography
                   dangerouslySetInnerHTML={{
                     __html: userInfo.description || '',
                   }}
                 />
-              </div>
-            </div>
-          </>
-        </Paper>
-      )}
+              </Box>
+            </InfoSection>
+          </Grid>
+        )}
+      </Grid>
 
+      {/* Modals */}
       <Modal
         open={isChangePicModalOpen}
         onClose={() => setIsChangePicModalOpen(false)}
         title={t('profile.uploadPicture')}
-        maxWidth="xs"
+        maxWidth="sm"
         CTAs={
           <DialogActions>
             <Button variant="outlined" onClick={() => setIsChangePicModalOpen(false)}>
@@ -282,6 +318,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
           <FileDropzone onFilesSelected={onFilesSelected} />
         )}
       </Modal>
+
       <Modal
         open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
@@ -294,6 +331,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
           setIsEditModalOpen={setIsEditModalOpen}
         />
       </Modal>
+
       <Modal
         open={isConfirmRemoveModalOpen}
         onClose={() => setIsConfirmRemoveModalOpen(false)}

@@ -4,7 +4,7 @@ import { CourseHeader, CourseInstructor, CourseOverview, ReviewsList } from './c
 
 const Course = ({ courseInfo }: { courseInfo: CourseFragment }) => {
   return (
-    <div style={{ margin: '16px' }}>
+    <div style={{ marginTop: '16px' }}>
       <CourseHeader courseInfo={courseInfo} />
 
       <CourseOverview courseInfo={courseInfo} />

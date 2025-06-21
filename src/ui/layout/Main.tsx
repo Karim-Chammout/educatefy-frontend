@@ -25,6 +25,7 @@ import {
   NotFound,
   Profile,
   Section,
+  Subject,
   UpdateCourse,
 } from './routes/LazyComponent';
 import PublicRoutes from './routes/PublicRoutes';
@@ -91,6 +92,14 @@ const PrivatePagesView = () => {
           element={
             <RouteWrapper>
               <Profile />
+            </RouteWrapper>
+          }
+        />
+        <Route
+          path="/subject/:id"
+          element={
+            <RouteWrapper>
+              <Subject />
             </RouteWrapper>
           }
         />

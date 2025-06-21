@@ -21,4 +21,5 @@ export const NotFound = lazy(() => import('@/ui/pages/NotFound'));
 export const Profile = lazy(() => import('@/ui/pages/Profile'));
 export const Register = lazy(() => import('@/ui/pages/Register'));
 export const Section = lazy(() => import('@/ui/pages/Course/Section'));
+export const Subject = lazy(() => import('@/ui/pages/Subject'));
 export const UpdateCourse = lazy(() => import('@/ui/pages/Dashboard/Courses/UpdateCourse'));

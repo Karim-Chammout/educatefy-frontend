@@ -1213,6 +1213,15 @@ export type RemoveProfilePictureMutationVariables = Exact<{ [key: string]: never
 
 export type RemoveProfilePictureMutation = { __typename: 'Mutation', removeProfilePicture?: { __typename: 'ChangeProfilePictureResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, user?: { __typename: 'Account', id: string, avatar_url?: string | null } | null } | null };
 
+export type SubjectCourseFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, description: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> };
+
+export type SubjectQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type SubjectQuery = { __typename: 'Query', subject?: { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, description: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } | null };
+
 export const OpenidClientFragmentDoc = gql`
     fragment OpenidClient on OpenidClient {
   id
@@ -1538,6 +1547,27 @@ export const UserFragmentDoc = gql`
   subjects {
     id
     denomination
+  }
+}
+    `;
+export const SubjectCourseFragmentDoc = gql`
+    fragment SubjectCourse on Subject {
+  id
+  denomination
+  courses {
+    id
+    denomination
+    description
+    slug
+    level
+    image
+    rating
+    participationCount
+    instructor {
+      first_name
+      last_name
+      avatar_url
+    }
   }
 }
     `;
@@ -2876,3 +2906,43 @@ export function useRemoveProfilePictureMutation(baseOptions?: Apollo.MutationHoo
 export type RemoveProfilePictureMutationHookResult = ReturnType<typeof useRemoveProfilePictureMutation>;
 export type RemoveProfilePictureMutationResult = Apollo.MutationResult<RemoveProfilePictureMutation>;
 export type RemoveProfilePictureMutationOptions = Apollo.BaseMutationOptions<RemoveProfilePictureMutation, RemoveProfilePictureMutationVariables>;
+export const SubjectDocument = gql`
+    query Subject($id: ID!) {
+  subject(id: $id) {
+    ...SubjectCourse
+  }
+}
+    ${SubjectCourseFragmentDoc}`;
+
+/**
+ * __useSubjectQuery__
+ *
+ * To run a query within a React component, call `useSubjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubjectQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useSubjectQuery(baseOptions: Apollo.QueryHookOptions<SubjectQuery, SubjectQueryVariables> & ({ variables: SubjectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SubjectQuery, SubjectQueryVariables>(SubjectDocument, options);
+      }
+export function useSubjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SubjectQuery, SubjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SubjectQuery, SubjectQueryVariables>(SubjectDocument, options);
+        }
+export function useSubjectSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SubjectQuery, SubjectQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SubjectQuery, SubjectQueryVariables>(SubjectDocument, options);
+        }
+export type SubjectQueryHookResult = ReturnType<typeof useSubjectQuery>;
+export type SubjectLazyQueryHookResult = ReturnType<typeof useSubjectLazyQuery>;
+export type SubjectSuspenseQueryHookResult = ReturnType<typeof useSubjectSuspenseQuery>;
+export type SubjectQueryResult = Apollo.QueryResult<SubjectQuery, SubjectQueryVariables>;

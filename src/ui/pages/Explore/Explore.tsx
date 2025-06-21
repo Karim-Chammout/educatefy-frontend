@@ -1,39 +1,55 @@
-import fallbackImage from '@/assets/educatefy_background.png';
-import person from '@/assets/person.png';
+import Chip from '@mui/material/Chip';
+import Grid from '@mui/material/Grid2';
+import { Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
+
 import { ExploreQuery } from '@/generated/graphql';
-import { CourseCard } from '@/ui/compositions';
+import { Typography } from '@/ui/components';
+
+import { ExploreHeader, StyledPaper } from './Explore.styles';
 
 const Explore = ({ subjects }: { subjects: ExploreQuery['subjectsListWithLinkedCourses'] }) => {
+  const { t } = useTranslation();
+
   return (
-    <div>
-      <h1>Explore page</h1>
-      {subjects.map((subject) => (
-        <div key={subject.id}>
-          <h2>{subject.denomination}</h2>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '32px',
-            }}
-          >
-            {subject.courses.map((course) => (
-              <div style={{ flexBasis: '280px' }} key={course.id}>
-                <CourseCard
-                  difficulty={course.level}
-                  rating={course.rating}
-                  studentsCount={course.participationCount}
-                  slug={course.slug}
-                  teacherAvatar={course.instructor.avatar_url || person}
-                  teacherName={`${course.instructor.first_name} ${course.instructor.last_name}`}
-                  title={course.denomination}
-                  image={course.image ?? fallbackImage}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+    <div style={{ marginTop: '16px' }}>
+      <ExploreHeader>
+        <Typography variant="h3" component="h1" sx={{ fontWeight: 'bold' }} gutterBottom>
+          {t('explore.heading')}
+        </Typography>
+        <Typography variant="h6" color="text.secondary">
+          {t('explore.subHeading')}
+        </Typography>
+      </ExploreHeader>
+
+      <Grid container spacing={3}>
+        {subjects.map((subject) => {
+          const totalStudents =
+            subject.courses.reduce((acc, course) => acc + course.participationCount, 0) || 0;
+
+          return (
+            <Grid key={subject.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+              <Link to={`/subject/${subject.id}`} style={{ textDecoration: 'none' }}>
+                <StyledPaper variant="outlined">
+                  <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold' }} gutterBottom>
+                    {subject.denomination}
+                  </Typography>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <Chip
+                      label={t('courses.count', { count: subject.courses.length })}
+                      sx={{ width: 'fit-content' }}
+                    />
+                    <Chip
+                      label={t('students.count', { count: totalStudents })}
+                      sx={{ width: 'fit-content' }}
+                    />
+                  </div>
+                </StyledPaper>
+              </Link>
+            </Grid>
+          );
+        })}
+      </Grid>
     </div>
   );
 };

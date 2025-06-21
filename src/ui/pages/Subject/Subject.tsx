@@ -14,8 +14,7 @@ const Subject = ({ subject }: { subject: SubjectCourseFragment }) => {
 
   const averageRating =
     subject.courses.reduce((acc, course) => acc + course.rating, 0) / subject.courses.length;
-  const totalStudents =
-    subject.courses.reduce((acc, course) => acc + course.participationCount, 0) || 0;
+  const totalStudents = subject.courses.reduce((acc, course) => acc + course.participationCount, 0);
 
   return (
     <div style={{ marginTop: '16px' }}>
@@ -80,7 +79,7 @@ const Subject = ({ subject }: { subject: SubjectCourseFragment }) => {
               image={course.image || fallbackImage}
               difficulty={course.level}
               rating={course.rating}
-              studentsCount={course.participationCount || 0}
+              studentsCount={course.participationCount}
             />
           </Grid>
         ))}

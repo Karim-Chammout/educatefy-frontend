@@ -1,5 +1,5 @@
 {
-  "language.selector.label": "اختر لغة",
+  "language.selector.label": "اختر اللغة",
   "ui.components.loader.label": "يتم التحميل...",
   "errorPlaceholder.title": "حدث خطأ",
   "errorPlaceholder.subtitle": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا أو الاتصال بالدعم.",
@@ -242,5 +242,20 @@
   "contentComponent.deletedSuccessfully": "تم حذف العنصر بنجاح",
   "contentComponent.preview": "معاينة",
   "instructor.follow": "متابعة",
-  "instructor.unfollow": "إلغاء المتابعة"
+  "instructor.unfollow": "إلغاء المتابعة",
+  "explore.heading": "استكشف الدورات",
+  "explore.subHeading": "اكتشف الدورات التي تناسب اهتماماتك",
+  "courses.count_one": "{{count}} دورة",
+  "courses.count_two": "{{count}} دورات",
+  "courses.count_few": "{{count}} دورات",
+  "courses.count_many": "{{count}} دورة",
+  "courses.count_other": "{{count}} دورة",
+  "students.count_zero": "لا يوجد طلاب",
+  "students.count_one": "{{count}} طالب",
+  "students.count_two": "طالبين",
+  "students.count_few": "{{count}} طلاب",
+  "students.count_many": "{{count}} طالب",
+  "averageRating": "متوسط التقييم",
+  "subject.coursesAvailable": "دورات متاحة",
+  "subject.totalStudents": "إجمالي الطلاب"
 }

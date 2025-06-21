@@ -231,5 +231,15 @@
   "contentComponent.deletedSuccessfully": "Component deleted successfully",
   "contentComponent.preview": "Preview",
   "instructor.follow": "Follow",
-  "instructor.unfollow": "Unfollow"
+  "instructor.unfollow": "Unfollow",
+  "explore.heading": "Explore Courses",
+  "explore.subHeading": "Discover new skills and expand your knowledge",
+  "courses.count_one": "{{count}} course",
+  "courses.count_other": "{{count}} courses",
+  "students.count_zero": "0 students",
+  "students.count_one": "{{count}} student",
+  "students.count_other": "{{count}} students",
+  "averageRating": "Average rating",
+  "subject.coursesAvailable": "Courses available",
+  "subject.totalStudents": "Total students"
 }

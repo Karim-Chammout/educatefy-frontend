@@ -3,12 +3,12 @@ import Grid from '@mui/material/Grid2';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
-import { ExploreQuery } from '@/generated/graphql';
+import { ExploreSubjectFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 
 import { ExploreHeader, StyledPaper } from './Explore.styles';
 
-const Explore = ({ subjects }: { subjects: ExploreQuery['subjectsListWithLinkedCourses'] }) => {
+const Explore = ({ subjects }: { subjects: ExploreSubjectFragment[] }) => {
   const { t } = useTranslation();
 
   return (
@@ -24,8 +24,10 @@ const Explore = ({ subjects }: { subjects: ExploreQuery['subjectsListWithLinkedC
 
       <Grid container spacing={3}>
         {subjects.map((subject) => {
-          const totalStudents =
-            subject.courses.reduce((acc, course) => acc + course.participationCount, 0) || 0;
+          const totalStudents = subject.courses.reduce(
+            (acc, course) => acc + course.participationCount,
+            0,
+          );
 
           return (
             <Grid key={subject.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>

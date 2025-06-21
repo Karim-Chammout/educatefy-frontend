@@ -36,11 +36,7 @@ const ExploreContainer = () => {
     return <ErrorPlaceholder />;
   }
 
-  return (
-    <div>
-      <Explore subjects={data.subjectsListWithLinkedCourses} />
-    </div>
-  );
+  return <Explore subjects={data.subjectsListWithLinkedCourses} />;
 };
 
 export default ExploreContainer;

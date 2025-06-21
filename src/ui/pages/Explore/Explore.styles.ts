@@ -15,6 +15,7 @@ export const StyledPaper = styled(Paper)(({ theme }) => ({
   justifyContent: 'space-between',
   gap: '8px',
 
+  height: '100%',
   padding: theme.spacing(2),
   transition: 'all 0.3s ease-in-out',
   borderRadius: '4px',

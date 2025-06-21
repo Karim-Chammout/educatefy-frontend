@@ -37,13 +37,13 @@ const OIDCButtons = ({ isRegister, userType, disabled }: OIDCButtonsType) => {
     return (
       <Button
         key={oidc.id}
-        fullWidth
         variant="contained"
-        sx={{ my: 3 }}
         LinkComponent="a"
         href={url}
         startIcon={buttonIcon[oidc.identity_provider]}
         disabled={disabled}
+        sx={{ my: 3, maxWidth: '320px' }}
+        fullWidth
       >
         {oidc.button_text}
       </Button>

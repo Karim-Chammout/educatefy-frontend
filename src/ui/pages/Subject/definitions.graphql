@@ -1,0 +1,25 @@
+fragment SubjectCourse on Subject {
+  id
+  denomination
+  courses {
+    id
+    denomination
+    description
+    slug
+    level
+    image
+    rating
+    participationCount
+    instructor {
+      first_name
+      last_name
+      avatar_url
+    }
+  }
+}
+
+query Subject($id: ID!) {
+  subject(id: $id) {
+    ...SubjectCourse
+  }
+}

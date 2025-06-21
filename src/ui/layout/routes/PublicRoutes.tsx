@@ -1,6 +1,14 @@
 import { Route, Routes } from 'react-router';
 
-import { Course, Explore, Login, LoginCallback, NotFound, Register } from './LazyComponent';
+import {
+  Course,
+  Explore,
+  Login,
+  LoginCallback,
+  NotFound,
+  Register,
+  Subject,
+} from './LazyComponent';
 import Redirect from './Redirect';
 import RouteWrapper from './RouteWrapper';
 
@@ -42,6 +50,14 @@ const PublicRoutes = () => {
         element={
           <RouteWrapper>
             <Explore />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path="/subject/:id"
+        element={
+          <RouteWrapper>
+            <Subject />
           </RouteWrapper>
         }
       />

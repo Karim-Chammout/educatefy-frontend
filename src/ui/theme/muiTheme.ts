@@ -12,6 +12,7 @@ const muiCustomTheme = (direction?: 'ltr' | 'rtl'): ThemeOptions => {
     },
     breakpoints: {
       values: {
+        xxs: 0,
         xs: 360,
         sm: 768,
         md: 990,

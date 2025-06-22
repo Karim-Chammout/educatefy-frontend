@@ -983,12 +983,12 @@ export type AccountInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AccountInfoQuery = { __typename: 'Query', me: { __typename: 'Account', nickname?: string | null, gender?: Gender | null, avatar_url?: string | null, accountRole: AccountRole } };
 
-export type AccountFragment = { __typename: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
+export type AccountFragment = { __typename: 'Account', nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename: 'Query', me: { __typename: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename: 'Country', id: string, denomination: string, iso: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string, iso: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> } };
+export type MeQuery = { __typename: 'Query', me: { __typename: 'Account', nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: string | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> } };
 
 export type TextContentComponentFragment = { __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string };
 
@@ -1245,8 +1245,6 @@ export const SubjectFragmentDoc = gql`
     `;
 export const AccountFragmentDoc = gql`
     fragment Account on Account {
-  id
-  name
   nickname
   first_name
   last_name
@@ -1256,12 +1254,10 @@ export const AccountFragmentDoc = gql`
   country {
     id
     denomination
-    iso
   }
   nationality {
     id
     denomination
-    iso
   }
   preferredLanguage
   accountRole

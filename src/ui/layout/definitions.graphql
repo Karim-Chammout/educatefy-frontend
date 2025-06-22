@@ -1,6 +1,4 @@
 fragment Account on Account {
-  id
-  name
   nickname
   first_name
   last_name
@@ -10,12 +8,10 @@ fragment Account on Account {
   country {
     id
     denomination
-    iso
   }
   nationality {
     id
     denomination
-    iso
   }
   preferredLanguage
   accountRole

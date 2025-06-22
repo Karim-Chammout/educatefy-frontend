@@ -17,11 +17,7 @@ const ProfileContainer = () => {
 
   const { me, countries, subjects } = data;
 
-  return (
-    <div>
-      <Profile userInfo={me} countries={countries} subjects={subjects} />
-    </div>
-  );
+  return <Profile userInfo={me} countries={countries} subjects={subjects} />;
 };
 
 export default ProfileContainer;

@@ -23,11 +23,7 @@ const SubjectContainer = () => {
     return <ErrorPlaceholder />;
   }
 
-  return (
-    <div>
-      <Subject subject={data.subject} />
-    </div>
-  );
+  return <Subject subject={data.subject} />;
 };
 
 export default SubjectContainer;

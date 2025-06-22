@@ -7,7 +7,6 @@ import SchoolIcon from '@mui/icons-material/School';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
-import Container from '@mui/material/Container';
 import DialogActions from '@mui/material/DialogActions';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid2';
@@ -121,7 +120,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
   const dateOfBirth = format(new Date(userInfo.date_of_birth), 'yyyy MMMM dd');
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 2 }}>
+    <div style={{ marginTop: '16px' }}>
       {/* Header Section */}
       <Paper
         variant="outlined"
@@ -348,7 +347,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
           </DialogActions>
         }
       />
-    </Container>
+    </div>
   );
 };
 

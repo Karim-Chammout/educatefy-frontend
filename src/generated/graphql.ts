@@ -709,6 +709,8 @@ export type Query = {
   course?: Maybe<Course>;
   /** Retrieve a course to be edited by the teacher. */
   editableCourse?: Maybe<Course>;
+  /** Retrieve the instructor (teacher) account by its id */
+  instructor?: Maybe<Teacher>;
   /** List of languages */
   languages: Array<Language>;
   /** The current user */
@@ -732,6 +734,11 @@ export type QueryCourseArgs = {
 
 
 export type QueryEditableCourseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryInstructorArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -768,6 +775,8 @@ export type Teacher = {
   avatar_url?: Maybe<Scalars['String']['output']>;
   /** A short biography of the teacher */
   bio?: Maybe<Scalars['String']['output']>;
+  /** List of courses created by the teacher */
+  courses: Array<Course>;
   /** A detailed description of the teacher */
   description?: Maybe<Scalars['String']['output']>;
   /** The first name of the teacher */
@@ -1187,6 +1196,15 @@ export type ExploreQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ExploreQuery = { __typename: 'Query', subjectsListWithLinkedCourses: Array<{ __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }> }> };
 
+export type TeacherFragment = { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }> };
+
+export type InstructorQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type InstructorQuery = { __typename: 'Query', instructor?: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }> } | null };
+
 export type UserFragment = { __typename: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
 
 export type UserProfileQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1507,6 +1525,27 @@ export const ExploreSubjectFragmentDoc = gql`
   denomination
   courses {
     id
+    participationCount
+  }
+}
+    `;
+export const TeacherFragmentDoc = gql`
+    fragment Teacher on Teacher {
+  id
+  first_name
+  last_name
+  avatar_url
+  description
+  bio
+  isFollowed
+  isAllowedToFollow
+  courses {
+    id
+    denomination
+    slug
+    level
+    image
+    rating
     participationCount
   }
 }
@@ -2725,6 +2764,46 @@ export type ExploreQueryHookResult = ReturnType<typeof useExploreQuery>;
 export type ExploreLazyQueryHookResult = ReturnType<typeof useExploreLazyQuery>;
 export type ExploreSuspenseQueryHookResult = ReturnType<typeof useExploreSuspenseQuery>;
 export type ExploreQueryResult = Apollo.QueryResult<ExploreQuery, ExploreQueryVariables>;
+export const InstructorDocument = gql`
+    query Instructor($id: ID!) {
+  instructor(id: $id) {
+    ...Teacher
+  }
+}
+    ${TeacherFragmentDoc}`;
+
+/**
+ * __useInstructorQuery__
+ *
+ * To run a query within a React component, call `useInstructorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInstructorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInstructorQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useInstructorQuery(baseOptions: Apollo.QueryHookOptions<InstructorQuery, InstructorQueryVariables> & ({ variables: InstructorQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<InstructorQuery, InstructorQueryVariables>(InstructorDocument, options);
+      }
+export function useInstructorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InstructorQuery, InstructorQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<InstructorQuery, InstructorQueryVariables>(InstructorDocument, options);
+        }
+export function useInstructorSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<InstructorQuery, InstructorQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<InstructorQuery, InstructorQueryVariables>(InstructorDocument, options);
+        }
+export type InstructorQueryHookResult = ReturnType<typeof useInstructorQuery>;
+export type InstructorLazyQueryHookResult = ReturnType<typeof useInstructorLazyQuery>;
+export type InstructorSuspenseQueryHookResult = ReturnType<typeof useInstructorSuspenseQuery>;
+export type InstructorQueryResult = Apollo.QueryResult<InstructorQuery, InstructorQueryVariables>;
 export const UserProfileDocument = gql`
     query UserProfile {
   me {

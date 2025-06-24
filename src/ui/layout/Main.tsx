@@ -22,6 +22,7 @@ import {
   Dashboard,
   Explore,
   Home,
+  Instructor,
   NotFound,
   Profile,
   Section,
@@ -100,6 +101,14 @@ const PrivatePagesView = () => {
           element={
             <RouteWrapper>
               <Subject />
+            </RouteWrapper>
+          }
+        />
+        <Route
+          path="/teacher/:id"
+          element={
+            <RouteWrapper>
+              <Instructor />
             </RouteWrapper>
           }
         />

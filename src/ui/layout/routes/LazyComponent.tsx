@@ -15,6 +15,7 @@ export const CreateCourse = lazy(() => import('@/ui/pages/Dashboard/Courses/Crea
 export const Dashboard = lazy(() => import('@/ui/pages/Dashboard'));
 export const Explore = lazy(() => import('@/ui/pages/Explore'));
 export const Home = lazy(() => import('@/ui/pages/Home'));
+export const Instructor = lazy(() => import('@/ui/pages/Instructor'));
 export const Login = lazy(() => import('@/ui/pages/Login'));
 export const LoginCallback = lazy(() => import('@/ui/pages/Login/LoginCallback'));
 export const NotFound = lazy(() => import('@/ui/pages/NotFound'));

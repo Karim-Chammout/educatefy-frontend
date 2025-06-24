@@ -8,7 +8,6 @@ export const HeaderSection = styled(Paper)(({ theme }) => ({
   gap: theme.spacing(4),
 
   [theme.breakpoints.down('md')]: {
-    background: 'blue',
     flexDirection: 'column',
     alignItems: 'center',
     textAlign: 'center',

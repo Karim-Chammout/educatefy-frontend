@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import { Link } from 'react-router';
 
 import { Typography } from '@/ui/components';
 import { max, min } from '@/utils/mediaQuery';
@@ -70,11 +71,12 @@ export const SubjectsContainer = styled(Box)`
   margin: 1rem 0;
 `;
 
-export const InstructorInfoWrapper = styled('div')`
-  display: flex;
+export const InstructorInfoWrapper = styled(Link)`
+  display: inline-flexbox;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
+  color: inherit;
 `;
 
 export const RatingContainer = styled(Box)`

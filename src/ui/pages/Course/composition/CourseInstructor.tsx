@@ -38,7 +38,7 @@ const CourseInstructor = ({ courseInfo }: { courseInfo: CourseFragment }) => {
       <SectionTitle component="h3" variant="h6" gutterBottom>
         {t('course.instructor')}
       </SectionTitle>
-      <InstructorInfoWrapper>
+      <InstructorInfoWrapper to={`/teacher/${id}`}>
         <Avatar src={avatar_url || person} sx={{ height: '96px', width: '96px' }} />
         <Typography variant="h6" gutterBottom>
           {first_name} {last_name}
@@ -46,7 +46,7 @@ const CourseInstructor = ({ courseInfo }: { courseInfo: CourseFragment }) => {
       </InstructorInfoWrapper>
       {isAllowedToFollow && (
         <Button
-          sx={{ my: 2 }}
+          sx={{ my: 2, display: 'block' }}
           onClick={handleFollowTeacher}
           variant={isFollowed ? 'outlined' : 'contained'}
           disabled={updatingFollow}

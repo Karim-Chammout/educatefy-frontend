@@ -241,5 +241,14 @@
   "students.count_other": "{{count}} students",
   "averageRating": "Average rating",
   "subject.coursesAvailable": "Courses available",
-  "subject.totalStudents": "Total students"
+  "subject.totalStudents": "Total students",
+  "account.bio": "Bio",
+  "account.about": "About",
+  "instructor.courses_one": "Course",
+  "instructor.courses_other": "Courses",
+  "instructor.courses_zero": "Courses",
+  "instructor.sutdents_one": "Student",
+  "instructor.sutdents_other": "Students",
+  "instructor.sutdents_zero": "Students",
+  "course.coursesBy": "Courses by {{name}}"
 }

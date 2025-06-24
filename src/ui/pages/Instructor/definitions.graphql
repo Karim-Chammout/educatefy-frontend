@@ -1,0 +1,25 @@
+fragment Teacher on Teacher {
+  id
+  first_name
+  last_name
+  avatar_url
+  description
+  bio
+  isFollowed
+  isAllowedToFollow
+  courses {
+    id
+    denomination
+    slug
+    level
+    image
+    rating
+    participationCount
+  }
+}
+
+query Instructor($id: ID!) {
+  instructor(id: $id) {
+    ...Teacher
+  }
+}

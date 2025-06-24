@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router';
 import {
   Course,
   Explore,
+  Instructor,
   Login,
   LoginCallback,
   NotFound,
@@ -58,6 +59,14 @@ const PublicRoutes = () => {
         element={
           <RouteWrapper>
             <Subject />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path="/teacher/:id"
+        element={
+          <RouteWrapper>
+            <Instructor />
           </RouteWrapper>
         }
       />

@@ -8,6 +8,7 @@ import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 
 import fallbackImage from '@/assets/educatefy_background.png';
 import { CourseFragment } from '@/generated/graphql';
@@ -43,7 +44,7 @@ const CourseHeader = ({ courseInfo }: { courseInfo: CourseFragment }) => {
               <RatingContainer>
                 <StarIcon color="warning" />
                 <Typography variant="body1">
-                  {courseInfo.rating.toFixed(1)} ({courseInfo.ratingsCount} {t('course.reviews')})
+                  {courseInfo.rating} ({courseInfo.ratingsCount} {t('course.reviews')})
                 </Typography>
               </RatingContainer>
             )}
@@ -86,7 +87,18 @@ const CourseHeader = ({ courseInfo }: { courseInfo: CourseFragment }) => {
 
           <SubjectsContainer>
             {courseInfo.subjects.map((subject) => (
-              <Chip key={subject.id} label={subject.denomination} />
+              <Chip
+                key={subject.id}
+                label={subject.denomination}
+                component={Link}
+                to={`/subject/${subject.id}`}
+                sx={{
+                  '&:hover, &:focus': {
+                    cursor: 'pointer',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                  },
+                }}
+              />
             ))}
           </SubjectsContainer>
 

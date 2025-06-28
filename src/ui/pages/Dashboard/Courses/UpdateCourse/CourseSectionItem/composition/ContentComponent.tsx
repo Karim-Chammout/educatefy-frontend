@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { FileDropzone, RichTextEditor } from '@/ui/compositions';
+import { getMediaUrl } from '@/utils/getMediaUrl';
 
 const ContentComponent = ({
   type,
@@ -19,9 +20,6 @@ const ContentComponent = ({
   videoUrl: string | null;
 }) => {
   const { t } = useTranslation();
-  const S3_PATH_PREFIX = import.meta.env.VITE_S3_PATH_PREFIX;
-  const S3_BUCKET_NAME = import.meta.env.VITE_S3_BUCKET_NAME;
-  const BUCKET_PATH_NAME_URL = `${S3_PATH_PREFIX}/${S3_BUCKET_NAME}`;
 
   switch (type) {
     case 'TextContent':
@@ -44,16 +42,8 @@ const ContentComponent = ({
             <div style={{ marginTop: '16px' }}>
               <span>{t('contentComponent.preview')}:</span>
               <div>
-                <video
-                  width="100%"
-                  height="250"
-                  key={`${BUCKET_PATH_NAME_URL}/${videoUrl}`}
-                  controls
-                >
-                  <source
-                    src={`${BUCKET_PATH_NAME_URL}/${videoUrl}`}
-                    type={`video/${videoUrl.split('.').pop()}`}
-                  />
+                <video width="100%" height="250" key={getMediaUrl(videoUrl)} controls>
+                  <source src={getMediaUrl(videoUrl)} type={`video/${videoUrl.split('.').pop()}`} />
                   Your browser does not support videos.
                 </video>
               </div>

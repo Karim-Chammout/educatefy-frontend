@@ -6,6 +6,7 @@ import { useQuill } from 'react-quilljs';
 
 import api from '@/api';
 import { useLanguageSelection } from '@/hooks';
+import { getMediaUrl } from '@/utils/getMediaUrl';
 
 import { EditorWrapper, LoadingOverlay } from './RichTextEditor.style';
 
@@ -150,11 +151,7 @@ const RichTextEditor = ({
           },
         });
 
-        const S3_PATH_PREFIX = import.meta.env.VITE_S3_PATH_PREFIX;
-        const S3_BUCKET_NAME = import.meta.env.VITE_S3_BUCKET_NAME;
-        const storageBucket = `${S3_PATH_PREFIX}/${S3_BUCKET_NAME}`;
-
-        insertToEditor(`${storageBucket}/${uploadedimage.filePath}`);
+        insertToEditor(getMediaUrl(uploadedimage.filePath));
       } catch (_error) {
         handleError(t('richTextEditor.uploadError'));
       } finally {

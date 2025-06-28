@@ -36,6 +36,7 @@ import { FileResponseType } from '@/types/types';
 import { Button, Typography } from '@/ui/components';
 import { FileDropzone, RichTextEditor } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
+import { getMediaUrl } from '@/utils/getMediaUrl';
 import { isValidSlug } from '@/utils/isValidSlug';
 import { isValidUrl } from '@/utils/isValidUrl';
 import { removeHtmlTags } from '@/utils/removeHTMLTags';
@@ -67,10 +68,6 @@ const CreateCourse = ({
   const [createCourse, { loading: createCourseLoading }] = useCreateCourseMutation();
 
   const { handleSubmit, control, setValue: setFormValue } = useForm();
-
-  const S3_PATH_PREFIX = import.meta.env.VITE_S3_PATH_PREFIX;
-  const S3_BUCKET_NAME = import.meta.env.VITE_S3_BUCKET_NAME;
-  const BUCKET_PATH_NAME_URL = `${S3_PATH_PREFIX}/${S3_BUCKET_NAME}`;
 
   const [
     denomination,
@@ -548,7 +545,7 @@ const CreateCourse = ({
                 }}
               >
                 <img
-                  src={`${BUCKET_PATH_NAME_URL}/${uploadedImageDetails.filePath}`}
+                  src={getMediaUrl(uploadedImageDetails.filePath)}
                   alt={t('course.imageAlt')}
                   style={{
                     maxWidth: '300px',

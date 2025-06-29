@@ -64,6 +64,11 @@ export const ContentArea = styled(Box, {
   overflow-y: auto;
   width: 100%;
 
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
   ${({ fullWidth }) =>
     fullWidth &&
     css`

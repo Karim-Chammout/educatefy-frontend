@@ -104,7 +104,7 @@ const CourseHeader = ({ courseInfo }: { courseInfo: CourseFragment }) => {
 
           <CourseCTA course={courseInfo} />
         </CourseInfo>
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <CourseImage src={courseInfo.image || fallbackImage} alt={courseInfo.denomination} />
         </div>
       </CourseHeaderWrapper>

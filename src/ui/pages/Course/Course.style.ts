@@ -36,6 +36,8 @@ export const CourseImage = styled.img`
   width: 100%;
   max-width: 400px;
   height: auto;
+  min-height: 200px;
+  max-height: 300px;
   border-radius: 4px;
   object-fit: cover;
 `;

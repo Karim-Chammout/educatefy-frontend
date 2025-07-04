@@ -6,6 +6,11 @@ fragment TextContentComponent on TextContent {
   is_required
   content
   component_id
+  progress {
+    id
+    content_component_id
+    is_completed
+  }
 }
 
 fragment VideoContentComponent on VideoContent {
@@ -16,6 +21,11 @@ fragment VideoContentComponent on VideoContent {
   is_required
   url
   component_id
+  progress {
+    id
+    content_component_id
+    is_completed
+  }
 }
 
 fragment CourseSection on CourseSection {
@@ -133,5 +143,19 @@ mutation FollowTeacher($followTeacherInfo: FollowTeacherInput!) {
       message
     }
     isFollowing
+  }
+}
+
+mutation UpdateContentComponentProgress($progressInput: UpdateContentComponentProgressInput!) {
+  updateContentComponentProgress(progressInput: $progressInput) {
+    success
+    errors {
+      message
+    }
+    contentComponentProgress {
+      id
+      content_component_id
+      is_completed
+    }
   }
 }

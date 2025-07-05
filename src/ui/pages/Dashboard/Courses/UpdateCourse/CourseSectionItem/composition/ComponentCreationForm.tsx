@@ -20,6 +20,7 @@ import ContentComponent from './ContentComponent';
 type BaseComponentStateType = {
   denomination: string;
   isPublished: boolean;
+  isRequired: boolean;
 };
 
 type ContentComponentType = EditableLessonFragment['components'][0];
@@ -45,6 +46,7 @@ const ComponentCreationForm = ({
   const [baseComponent, setBaseComponent] = useState<BaseComponentStateType>({
     denomination: initialData?.denomination ?? '',
     isPublished: initialData?.is_published ?? true,
+    isRequired: initialData?.is_required ?? false,
   });
 
   const [textContent, setTextContent] = useState(
@@ -108,7 +110,7 @@ const ComponentCreationForm = ({
             denomination: baseComponent.denomination,
             isPublished: baseComponent.isPublished,
             type: getComponentType(),
-            isRequired: false, // default to false until implementing the needed functionality
+            isRequired: baseComponent.isRequired,
             parentType: ComponentParentType.Lesson,
             parentId,
           },
@@ -144,6 +146,7 @@ const ComponentCreationForm = ({
     const updatedData = {
       denomination: baseComponent.denomination,
       isPublished: baseComponent.isPublished,
+      isRequired: baseComponent.isRequired,
       textContent: textContent ? { content: textContent } : null,
       videoContent: uploadedVideoUrl ? { url: uploadedVideoUrl } : null,
       type: getComponentType(),

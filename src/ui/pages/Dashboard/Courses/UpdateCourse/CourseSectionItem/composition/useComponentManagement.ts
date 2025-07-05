@@ -164,7 +164,7 @@ const useComponentManagement = (
             denomination: updatedData.denomination,
             isPublished: updatedData.isPublished,
             type: updatedData.type,
-            isRequired: false, // default to false until implementing the needed functionality
+            isRequired: updatedData.isRequired,
           },
           textContent: updatedData.textContent
             ? { content: updatedData.textContent.content }

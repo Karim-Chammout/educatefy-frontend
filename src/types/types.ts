@@ -1,3 +1,5 @@
+import { TextContent, VideoContent } from '@/generated/graphql';
+
 export type FileResponseType =
   | {
       success: true;
@@ -11,3 +13,5 @@ export type FileResponseType =
       success: false;
       message: string;
     };
+
+export type ContentComponentsType = TextContent | VideoContent;

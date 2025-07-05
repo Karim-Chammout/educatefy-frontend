@@ -3,15 +3,19 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DoneIcon from '@mui/icons-material/Done';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import LockIcon from '@mui/icons-material/Lock';
 import Menu from '@mui/icons-material/Menu';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import StarIcon from '@mui/icons-material/Star';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
+import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
@@ -23,6 +27,7 @@ import {
 import { Button, Typography } from '@/ui/components';
 import { getMediaUrl } from '@/utils/getMediaUrl';
 
+import { ContentComponentsType } from '@/types/types';
 import {
   ComponentButton,
   ContentArea,
@@ -54,6 +59,35 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
 
   const [updateContentComponentProgress, { loading: isUpdatingProgress }] =
     useUpdateContentComponentProgressMutation();
+
+  const isComponentAccessible = (targetItemId: string, targetComponentId: string) => {
+    const requiredComponents: Partial<ContentComponentsType>[] = [];
+    let foundTarget = false;
+
+    section.items.forEach((item) => {
+      if (foundTarget) {
+        return;
+      }
+
+      item.components.forEach((component) => {
+        if (foundTarget) {
+          return;
+        }
+
+        if (item.id === targetItemId && component.component_id === targetComponentId) {
+          foundTarget = true;
+
+          return;
+        }
+
+        if (component.is_required) {
+          requiredComponents.push(component);
+        }
+      });
+    });
+
+    return requiredComponents.every((comp) => comp.progress?.is_completed);
+  };
 
   const getNextComponent = () => {
     const currentItemIndex = section.items.findIndex((item) => item.id === selectedItem.id);
@@ -94,6 +128,10 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
   };
 
   const handleComponentClick = (itemID: string, componentID: string) => {
+    if (!isComponentAccessible(itemID, componentID)) {
+      return;
+    }
+
     navigate(`/course/${slug}/section/${section.id}/item/${itemID}/component/${componentID}`);
     setMobileOpen(false); // Close menu on mobile after selection
   };
@@ -153,6 +191,50 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
 
   const isSelectedComponentCompleted = selectedComponent.progress?.is_completed || false;
 
+  const isCurrentComponentAccessible = isComponentAccessible(
+    selectedItem.id,
+    selectedComponent.component_id,
+  );
+
+  // Find the first incomplete required component that blocks access
+  const getBlockingComponent = (): {
+    itemId: string;
+    componentId: string;
+    denomination: string;
+  } | null => {
+    let blockingComponent = null;
+    let reachedTarget = false;
+
+    section.items.some((item) => {
+      return item.components.some((component) => {
+        if (
+          item.id === selectedItem.id &&
+          component.component_id === selectedComponent.component_id
+        ) {
+          reachedTarget = true;
+
+          return true;
+        }
+
+        if (!reachedTarget && component.is_required && !component.progress?.is_completed) {
+          blockingComponent = {
+            itemId: item.id,
+            componentId: component.component_id,
+            denomination: component.denomination,
+          };
+
+          return true;
+        }
+
+        return false;
+      });
+    });
+
+    return blockingComponent;
+  };
+
+  const blockingComponent = getBlockingComponent();
+
   return (
     <SectionContainer>
       <MobileMenuButton onClick={toggleMobileMenu}>
@@ -202,16 +284,47 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
 
               <Collapse in={openItems[item.id]} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  {item.components.map((component) => (
-                    <ComponentButton
-                      key={component.component_id}
-                      isActive={component.component_id === selectedComponent.component_id}
-                      onClick={() => handleComponentClick(item.id, component.component_id)}
-                      isCompleted={component.progress?.is_completed}
-                    >
-                      <Typography variant="body2">{component.denomination}</Typography>
-                    </ComponentButton>
-                  ))}
+                  {item.components.map((component) => {
+                    const isAccessible = isComponentAccessible(item.id, component.component_id);
+                    const isActive = component.component_id === selectedComponent.component_id;
+
+                    return (
+                      <Tooltip
+                        key={component.component_id}
+                        title={
+                          !isAccessible
+                            ? t('contentComponent.completeRequiredContents')
+                            : component.is_required
+                              ? t('contentComponent.requiredContent')
+                              : ''
+                        }
+                        arrow
+                      >
+                        <span>
+                          <ComponentButton
+                            isActive={isActive}
+                            onClick={() => handleComponentClick(item.id, component.component_id)}
+                            isCompleted={component.progress?.is_completed ?? false}
+                            isRequired={component.is_required}
+                            isAccessible={isAccessible}
+                            disabled={!isAccessible}
+                          >
+                            <Box
+                              sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1 }}
+                            >
+                              <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                                {component.denomination}
+                              </Typography>
+                              {component.is_required && (
+                                <StarIcon sx={{ fontSize: '16px', color: '#ff9800' }} />
+                              )}
+                              {!isAccessible && <LockIcon sx={{ fontSize: '16px' }} />}
+                            </Box>
+                          </ComponentButton>
+                        </span>
+                      </Tooltip>
+                    );
+                  })}
                 </List>
               </Collapse>
             </Box>
@@ -219,72 +332,143 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
         </List>
       </NavigationPanel>
 
-      <ContentArea fullWidth={mobileOpen}>
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h4" gutterBottom>
-            {selectedComponent.denomination}
-          </Typography>
+      {isUpdatingProgress ? (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            width: { xxs: '90%', md: '60%' },
+            margin: '16px auto',
+          }}
+        >
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton height={120} />
         </Box>
-
-        {selectedComponent.__typename === 'TextContent' && (
-          <TextContent dangerouslySetInnerHTML={{ __html: selectedComponent.content }} />
-        )}
-
-        {selectedComponent.__typename === 'VideoContent' && selectedComponent.url && (
-          <VideoComponent controls>
-            <source
-              src={getMediaUrl(selectedComponent.url)}
-              type={`video/${selectedComponent.url.split('.').pop()}`}
-            />
-            Your browser does not support the video tag.
-          </VideoComponent>
-        )}
-
-        <Box sx={{ mt: 4, pt: 3, borderTop: '1px solid #e0e0e0' }}>
-          <Stack direction={{ xxs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
-            {!isSelectedComponentCompleted && (
-              <Button
-                variant="contained"
-                startIcon={<DoneIcon />}
-                onClick={handleCompleteAndNext}
-                disabled={isUpdatingProgress}
-              >
-                {nextComponent ? t('common.completeAndNext') : t('common.complete')}
-              </Button>
-            )}
-            {isSelectedComponentCompleted && nextComponent && (
-              <Button
-                variant="outlined"
-                startIcon={<NavigateNextIcon />}
-                onClick={handleNavigateNext}
-                disabled={!isSelectedComponentCompleted || isUpdatingProgress}
-              >
-                {t('common.next')}
-              </Button>
-            )}
-          </Stack>
-          {isSelectedComponentCompleted && !nextComponent && (
+      ) : (
+        <ContentArea fullWidth={mobileOpen}>
+          {!isCurrentComponentAccessible ? (
             <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                mt: 4,
+                textAlign: 'center',
               }}
             >
-              <Alert icon={<DoneIcon fontSize="inherit" />} severity="success" sx={{ mb: 2 }}>
-                {t('courseSection.sectionCompleted')}
-              </Alert>
-              <Button
-                variant="outlined"
-                startIcon={<ArrowBackIcon />}
-                onClick={() => navigate(`/course/${slug}`)}
-              >
-                {t('courseSection.backToCourse')}
-              </Button>
+              <LockIcon sx={{ fontSize: '48px', mb: 2 }} />
+              <Typography variant="h5" gutterBottom>
+                {t('contentComponent.contentLocked')}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 3, maxWidth: '400px' }}>
+                {t('contentComponent.contentLockedDesc')}
+              </Typography>
+              {blockingComponent && (
+                <Typography variant="body2" sx={{ mb: 3, maxWidth: '400px', color: '#757575' }}>
+                  {t('contentComponent.nextRequired')}
+                  <span style={{ fontWeight: 'bold' }}>{blockingComponent.denomination}</span>
+                </Typography>
+              )}
+              {blockingComponent && (
+                <Button
+                  startIcon={<NavigateNextIcon />}
+                  onClick={() =>
+                    navigate(
+                      `/course/${slug}/section/${section.id}/item/${blockingComponent.itemId}/component/${blockingComponent.componentId}`,
+                    )
+                  }
+                >
+                  {t('contentComponent.goToRequiredBtn')}
+                </Button>
+              )}
             </Box>
+          ) : (
+            <>
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <Typography variant="h4" gutterBottom sx={{ mb: 0 }}>
+                    {selectedComponent.denomination}
+                  </Typography>
+                  {selectedComponent.is_required && (
+                    <Tooltip title={t('contentComponent.requiredContent')} arrow>
+                      <StarIcon sx={{ fontSize: '24px', color: '#ff9800' }} />
+                    </Tooltip>
+                  )}
+                </Box>
+                {selectedComponent.is_required && !selectedComponent.progress?.is_completed && (
+                  <Alert severity="info" sx={{ mb: 2 }}>
+                    {t('contentComponent.requiredContentHint')}
+                  </Alert>
+                )}
+              </Box>
+
+              {selectedComponent.__typename === 'TextContent' && (
+                <TextContent dangerouslySetInnerHTML={{ __html: selectedComponent.content }} />
+              )}
+
+              {selectedComponent.__typename === 'VideoContent' && selectedComponent.url && (
+                <VideoComponent controls>
+                  <source
+                    src={getMediaUrl(selectedComponent.url)}
+                    type={`video/${selectedComponent.url.split('.').pop()}`}
+                  />
+                  Your browser does not support the video tag.
+                </VideoComponent>
+              )}
+
+              <Box sx={{ mt: 4, pt: 3, borderTop: '1px solid #e0e0e0' }}>
+                <Stack direction={{ xxs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
+                  {!isSelectedComponentCompleted && (
+                    <Button
+                      variant="contained"
+                      startIcon={<DoneIcon />}
+                      onClick={handleCompleteAndNext}
+                      disabled={isUpdatingProgress}
+                    >
+                      {nextComponent ? t('common.completeAndNext') : t('common.complete')}
+                    </Button>
+                  )}
+                  {isSelectedComponentCompleted && nextComponent && (
+                    <Button
+                      variant="outlined"
+                      startIcon={<NavigateNextIcon />}
+                      onClick={handleNavigateNext}
+                      disabled={!isSelectedComponentCompleted || isUpdatingProgress}
+                    >
+                      {t('common.next')}
+                    </Button>
+                  )}
+                </Stack>
+                {isSelectedComponentCompleted && !nextComponent && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Alert icon={<DoneIcon fontSize="inherit" />} severity="success" sx={{ mb: 2 }}>
+                      {t('courseSection.sectionCompleted')}
+                    </Alert>
+                    <Button
+                      variant="outlined"
+                      startIcon={<ArrowBackIcon />}
+                      onClick={() => navigate(`/course/${slug}`)}
+                    >
+                      {t('courseSection.backToCourse')}
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            </>
           )}
-        </Box>
-      </ContentArea>
+        </ContentArea>
+      )}
     </SectionContainer>
   );
 };

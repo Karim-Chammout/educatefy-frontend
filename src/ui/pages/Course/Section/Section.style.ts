@@ -41,19 +41,48 @@ export const NavigationPanel = styled(Box, {
 `;
 
 export const ItemButton = styled(ListItemButton, {
-  shouldForwardProp: (prop) => prop !== 'isActive',
-})<{ isActive: boolean }>`
-  border-left: 3px solid ${({ isActive }) => (isActive ? '#1976d2' : 'transparent')};
-  background-color: ${({ isActive }) => (isActive ? 'rgba(25, 118, 210, 0.08)' : 'inherit')};
+  shouldForwardProp: (prop) => prop !== 'isActive' && prop !== 'isCompleted',
+})<{ isActive: boolean; isCompleted: boolean }>`
+  border-left: 3px solid
+    ${({ isActive, isCompleted }) =>
+      isActive ? '#1976d2' : isCompleted ? '#4caf50' : 'transparent'};
+  background-color: ${({ isActive, isCompleted }) =>
+    isActive ? 'rgba(25, 118, 210, 0.08)' : isCompleted ? 'rgba(76, 175, 80, 0.05)' : 'inherit'};
   padding: 12px 16px;
+
+  &:hover {
+    background-color: ${({ isActive, isCompleted }) =>
+      isActive
+        ? 'rgba(25, 118, 210, 0.12)'
+        : isCompleted
+          ? 'rgba(76, 175, 80, 0.08)'
+          : 'rgba(0, 0, 0, 0.04)'};
+  }
 `;
 
 export const ComponentButton = styled(ListItemButton, {
-  shouldForwardProp: (prop) => prop !== 'isActive',
-})<{ isActive: boolean }>`
+  shouldForwardProp: (prop) => prop !== 'isActive' && prop !== 'isCompleted',
+})<{ isActive: boolean; isCompleted?: boolean }>`
   padding-left: 32px !important;
-  border-left: 3px solid ${({ isActive }) => (isActive ? '#1976d2' : 'transparent')};
-  background-color: ${({ isActive }) => (isActive ? 'rgba(25, 118, 210, 0.08)' : 'inherit')};
+  border-left: 3px solid
+    ${({ isActive, isCompleted }) =>
+      isActive ? '#1976d2' : isCompleted ? '#4caf50' : 'transparent'};
+  background-color: ${({ isActive, isCompleted }) =>
+    isActive ? 'rgba(25, 118, 210, 0.08)' : isCompleted ? 'rgba(76, 175, 80, 0.05)' : 'inherit'};
+
+  &:hover:not(:disabled) {
+    background-color: ${({ isActive, isCompleted }) =>
+      isActive
+        ? 'rgba(25, 118, 210, 0.12)'
+        : isCompleted
+          ? 'rgba(76, 175, 80, 0.08)'
+          : 'rgba(0, 0, 0, 0.04)'};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 export const ContentArea = styled(Box, {

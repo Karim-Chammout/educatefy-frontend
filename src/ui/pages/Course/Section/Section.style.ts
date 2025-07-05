@@ -61,27 +61,58 @@ export const ItemButton = styled(ListItemButton, {
 `;
 
 export const ComponentButton = styled(ListItemButton, {
-  shouldForwardProp: (prop) => prop !== 'isActive' && prop !== 'isCompleted',
-})<{ isActive: boolean; isCompleted?: boolean }>`
+  shouldForwardProp: (prop) =>
+    prop !== 'isActive' &&
+    prop !== 'isCompleted' &&
+    prop !== 'isRequired' &&
+    prop !== 'isAccessible',
+})<{
+  isActive: boolean;
+  isCompleted: boolean;
+  isRequired: boolean;
+  isAccessible: boolean;
+}>`
   padding-left: 32px !important;
-  border-left: 3px solid
-    ${({ isActive, isCompleted }) =>
-      isActive ? '#1976d2' : isCompleted ? '#4caf50' : 'transparent'};
-  background-color: ${({ isActive, isCompleted }) =>
-    isActive ? 'rgba(25, 118, 210, 0.08)' : isCompleted ? 'rgba(76, 175, 80, 0.05)' : 'inherit'};
+
+  ${({ isActive, isCompleted, isRequired, isAccessible }) => {
+    let borderColor = 'transparent';
+    let backgroundColor = 'inherit';
+
+    if (!isAccessible) {
+      borderColor = '#bdbdbd';
+      backgroundColor = 'rgba(189, 189, 189, 0.05)';
+    } else if (isActive) {
+      borderColor = '#1976d2';
+      backgroundColor = 'rgba(25, 118, 210, 0.08)';
+    } else if (isCompleted) {
+      borderColor = '#4caf50';
+      backgroundColor = 'rgba(76, 175, 80, 0.05)';
+    } else if (isRequired) {
+      borderColor = '#ff9800';
+      backgroundColor = 'rgba(255, 152, 0, 0.05)';
+    }
+
+    return css`
+      border-left: 3px solid ${borderColor};
+      background-color: ${backgroundColor};
+    `;
+  }}
 
   &:hover:not(:disabled) {
-    background-color: ${({ isActive, isCompleted }) =>
-      isActive
-        ? 'rgba(25, 118, 210, 0.12)'
-        : isCompleted
-          ? 'rgba(76, 175, 80, 0.08)'
-          : 'rgba(0, 0, 0, 0.04)'};
+    background-color: ${({ isActive, isCompleted, isRequired, isAccessible }) => {
+      if (!isAccessible) return 'rgba(189, 189, 189, 0.08)';
+      if (isActive) return 'rgba(25, 118, 210, 0.12)';
+      if (isCompleted) return 'rgba(76, 175, 80, 0.08)';
+      if (isRequired) return 'rgba(255, 152, 0, 0.08)';
+
+      return 'rgba(0, 0, 0, 0.04)';
+    }};
   }
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
+    color: #757575;
   }
 `;
 

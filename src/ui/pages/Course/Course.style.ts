@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import { styled as MuiStyled } from '@mui/material/styles';
 import { Link } from 'react-router';
 
 import { Typography } from '@/ui/components';
@@ -86,3 +88,22 @@ export const RatingContainer = styled(Box)`
   align-items: center;
   gap: 8px;
 `;
+
+export const StyledLinearProgress = MuiStyled(LinearProgress)(({ theme }) => ({
+  height: 8,
+  borderRadius: 4,
+  backgroundColor: theme.palette.grey[200],
+  '& .MuiLinearProgress-bar': {
+    borderRadius: 4,
+  },
+}));
+
+export const CompletedIndicator = MuiStyled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  color: theme.palette.success.main,
+  '& .MuiSvgIcon-root': {
+    fontSize: '1.2rem',
+  },
+}));

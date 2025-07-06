@@ -1,16 +1,12 @@
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import Paper from '@mui/material/Paper';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-
 import { CourseSectionFragment } from '@/generated/graphql';
-import { Button, Typography } from '@/ui/components';
 import { AuthContext } from '@/ui/context';
 import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
-
-import { SectionTitle, SectionWrapper } from '../Course.style';
+import { SectionTitle } from '../Course.style';
+import { SectionCard } from './SectionCard';
 
 const CourseSections = ({
   slug,
@@ -67,26 +63,12 @@ const CourseSections = ({
       </SectionTitle>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
         {sections.map((section) => (
-          <Paper key={section.id} variant="outlined" sx={{ p: 2, flex: '1 1 auto' }}>
-            <SectionWrapper>
-              <div>
-                <Typography variant="h6">{section.denomination}</Typography>
-                <Typography variant="body2">
-                  {t('courseSection.itemInfo', {
-                    count: section.items.length,
-                    duration: calculateSectionDuration(section),
-                  })}
-                </Typography>
-              </div>
-              <Button
-                variant="outlined"
-                onClick={() => handleSectionClick(section.id)}
-                startIcon={<OpenInNewIcon />}
-              >
-                {t('common.open')}
-              </Button>
-            </SectionWrapper>
-          </Paper>
+          <SectionCard
+            key={section.id}
+            section={section}
+            onSectionClick={handleSectionClick}
+            calculateSectionDuration={calculateSectionDuration}
+          />
         ))}
       </div>
     </>

@@ -9,7 +9,7 @@ import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
 import Section from './Section';
 
-const SectionContainer = () => {
+const CourseSectionContainer = () => {
   const { t } = useTranslation();
   const { slug, sectionId } = useParams();
   const navigate = useNavigate();
@@ -73,4 +73,4 @@ const SectionContainer = () => {
   return <Section section={section} />;
 };
 
-export default SectionContainer;
+export default CourseSectionContainer;

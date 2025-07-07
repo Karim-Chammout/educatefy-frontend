@@ -44,7 +44,7 @@ const Subject = ({ subject }: { subject: SubjectCourseFragment }) => {
                 component="span"
                 sx={{ fontWeight: 'bold', color: 'primary.main' }}
               >
-                {averageRating}
+                {averageRating.toFixed(1)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {t('averageRating')}

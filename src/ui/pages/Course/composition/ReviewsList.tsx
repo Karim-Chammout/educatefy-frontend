@@ -27,7 +27,7 @@ const ReviewsList = ({
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         {ratingsCount > 0 && (
           <Typography variant="h4" sx={{ mr: 1 }}>
-            {averageRating}
+            {averageRating.toFixed(1)}
           </Typography>
         )}
         <Typography variant="body1" color="text.secondary">

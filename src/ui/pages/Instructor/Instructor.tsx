@@ -151,7 +151,7 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
               </StatIcon>
               <StatContent>
                 <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
-                  {averageRating > 0 ? averageRating : '—'}
+                  {averageRating > 0 ? averageRating.toFixed(1) : '—'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {t('averageRating')}

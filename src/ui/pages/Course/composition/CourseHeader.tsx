@@ -44,7 +44,7 @@ const CourseHeader = ({ courseInfo }: { courseInfo: CourseFragment }) => {
               <RatingContainer>
                 <StarIcon color="warning" />
                 <Typography variant="body1">
-                  {courseInfo.rating} ({courseInfo.ratingsCount} {t('course.reviews')})
+                  {courseInfo.rating.toFixed(1)} ({courseInfo.ratingsCount} {t('course.reviews')})
                 </Typography>
               </RatingContainer>
             )}

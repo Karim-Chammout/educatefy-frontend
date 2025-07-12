@@ -67,11 +67,14 @@ const Subject = ({ subject }: { subject: SubjectCourseFragment }) => {
         </StatsContainer>
       </SubjectHeader>
 
-      <Grid container spacing={3} sx={{ justifyContent: { xxs: 'center', sm: 'start' } }}>
+      <Grid container spacing={3}>
         {subject.courses.map((course) => (
-          <Grid key={subject.id} size="auto">
+          <Grid
+            key={course.id}
+            size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}
+            sx={{ display: 'flex', justifyContent: 'center' }}
+          >
             <CourseCard
-              key={course.id}
               title={course.denomination}
               slug={course.slug}
               teacherName={`${course.instructor.first_name} ${course.instructor.last_name}`}

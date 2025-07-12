@@ -14,6 +14,7 @@ const cardStyles = css`
   width: 100%;
   max-width: 420px;
   border-radius: 4px;
+  height: 100%;
 
   & .MuiCardActionArea-root {
     height: 100%;

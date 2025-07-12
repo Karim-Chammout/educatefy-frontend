@@ -170,9 +170,13 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
             })}
           </Typography>
 
-          <Grid container spacing={3} sx={{ justifyContent: { xxs: 'center', sm: 'start' } }}>
+          <Grid container spacing={3}>
             {instructor.courses.map((course) => (
-              <Grid key={course.id} size="auto">
+              <Grid
+                key={course.id}
+                size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}
+                sx={{ display: 'flex', justifyContent: 'center' }}
+              >
                 <CourseCard
                   title={course.denomination}
                   slug={course.slug}

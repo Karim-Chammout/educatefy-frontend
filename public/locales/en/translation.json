@@ -183,6 +183,7 @@
   "common.next": "Next",
   "common.completeAndNext": "Complete & Next",
   "common.complete": "Complete",
+  "common.isPublished": "Is published?",
   "courseSection.updateSection": "Update course section",
   "courseSection.createSection": "Create a new course section",
   "courseSection.sectionName": "Section name",

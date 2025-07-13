@@ -75,7 +75,6 @@ fragment Course on Course {
   level
   image
   external_resource_link
-  external_meeting_link
   start_date
   end_date
   language

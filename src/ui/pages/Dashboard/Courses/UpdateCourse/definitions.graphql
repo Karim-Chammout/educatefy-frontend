@@ -8,7 +8,6 @@ fragment EditableCourse on Course {
   image
   language
   external_resource_link
-  external_meeting_link
   is_published
   start_date
   end_date

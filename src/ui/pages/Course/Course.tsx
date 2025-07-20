@@ -11,11 +11,7 @@ const Course = ({ courseInfo }: { courseInfo: CourseFragment }) => {
 
       <CourseInstructor courseInfo={courseInfo} />
 
-      <ReviewsList
-        reviews={courseInfo.reviews}
-        averageRating={courseInfo.rating}
-        ratingsCount={courseInfo.ratingsCount}
-      />
+      <ReviewsList courseInfo={courseInfo} />
     </div>
   );
 };

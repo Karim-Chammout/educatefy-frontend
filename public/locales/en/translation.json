@@ -161,6 +161,7 @@
   "course.courseRequirementsSubtitle": "Set the requirements for the course",
   "course.requirement": "Requirement",
   "course.requirementHelperText": "What should the students know before starting this course?",
+  "course.mustEnrollFirst": "You must enroll in the course first to view its content.",
   "course.enroll": "Enroll now",
   "course.unenroll": "Unenroll",
   "course.markCompleted": "Mark as completed",

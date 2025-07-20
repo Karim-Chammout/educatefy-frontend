@@ -161,6 +161,7 @@
   "course.courseRequirementsSubtitle": "تعيين متطلبات الدورة",
   "course.requirement": "الشرط المطلوب",
   "course.requirementHelperText": "ما الذي يجب أن يعرفه الطلاب قبل البدء في هذه الدورة؟",
+  "course.mustEnrollFirst": "يجب عليك التسجيل في الدورة أولاً لمشاهدة محتواها.",
   "course.enroll": "سجّل الآن",
   "course.unenroll": "إلغاء التسجيل",
   "course.markCompleted": "وضع علامة مكتمل",

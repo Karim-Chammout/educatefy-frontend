@@ -1,11 +1,12 @@
 import CloseIcon from '@mui/icons-material/Close';
 import ContentPasteOffIcon from '@mui/icons-material/ContentPasteOff';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router';
+import { Navigate, useNavigate, useParams } from 'react-router';
 
-import { useCourseQuery } from '@/generated/graphql';
+import { CourseStatus, useCourseQuery } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
+import { MUST_ENROLL_TO_COURSE_FIRST } from '@/utils/constants';
 
 import Section from './Section';
 
@@ -38,6 +39,13 @@ const CourseSectionContainer = () => {
         icon={<CloseIcon />}
       />
     );
+  }
+
+  if (
+    data.course.status === CourseStatus.Available ||
+    data.course.status === CourseStatus.Unenrolled
+  ) {
+    return <Navigate to={`/course/${slug}`} state={{ action: MUST_ENROLL_TO_COURSE_FIRST }} />;
   }
 
   const section = data.course.sections.find((s) => s.id === sectionId);

@@ -93,4 +93,7 @@ export const client = new ApolloClient({
       httpLink,
     ]),
   ),
+  devtools: {
+    enabled: import.meta.env.DEV,
+  },
 });

@@ -135,6 +135,21 @@ mutation UpdateCourseStatus($courseStatusInput: CourseStatusInput!) {
   }
 }
 
+mutation RateCourse($ratingInfo: RateCourse!) {
+  rateCourse(ratingInfo: $ratingInfo) {
+    success
+    errors {
+      message
+    }
+    course {
+      reviews {
+        ...CourseReview
+      }
+      rating
+    }
+  }
+}
+
 mutation FollowTeacher($followTeacherInfo: FollowTeacherInput!) {
   followTeacher(followTeacherInfo: $followTeacherInfo) {
     success

@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import { NavLink } from 'react-router';
 
 import { min } from '@/utils/mediaQuery';
+import { ThemeType } from '@/ui/theme/theme';
 
 const logoWrapperStyles = css`
   display: none;
@@ -18,8 +19,8 @@ const logoWrapperStyles = css`
   )}
 `;
 
-const navLinkStyles = css`
-  color: black;
+const navLinkStyles = ({ theme }: { theme: ThemeType }) => css`
+  color: ${theme.colors.text.primary};
   text-decoration: none;
   margin: 0 16px;
   display: flex;
@@ -27,7 +28,7 @@ const navLinkStyles = css`
   position: relative;
 
   svg {
-    color: #ccc;
+    color: ${theme.colors.text.primary};
   }
 
   &::after {
@@ -37,7 +38,7 @@ const navLinkStyles = css`
     left: 0;
     right: 0;
     height: 3px;
-    background-color: #000;
+    background-color: ${theme.colors.text.primary};
     transform: scale(0);
     transition: transform 0.3s ease-in-out;
   }

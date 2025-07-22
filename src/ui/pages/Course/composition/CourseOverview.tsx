@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { CourseFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 
-import { MetaItem, SectionTitle } from '../Course.style';
+import { MetaItem, SectionTitle, StyledLink } from '../Course.style';
 import CourseSections from './CourseSections';
 
 const CourseOverview = ({ courseInfo }: { courseInfo: CourseFragment }) => {
@@ -79,14 +79,13 @@ const CourseOverview = ({ courseInfo }: { courseInfo: CourseFragment }) => {
           <MetaItem>
             <LinkIcon color="action" />
             <Typography variant="body1">
-              <a
+              <StyledLink
                 href={courseInfo.external_resource_link}
-                style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 {courseInfo.external_resource_link}
-              </a>
+              </StyledLink>
             </Typography>
           </MetaItem>
         </Paper>

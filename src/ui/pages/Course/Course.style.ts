@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -5,6 +6,7 @@ import { styled as MuiStyled } from '@mui/material/styles';
 import { Link } from 'react-router';
 
 import { Typography } from '@/ui/components';
+import { ThemeType } from '@/ui/theme/theme';
 import { max, min } from '@/utils/mediaQuery';
 
 export const CourseHeaderWrapper = styled(Box)`
@@ -59,6 +61,14 @@ export const MetaItem = styled(Box)`
 export const SectionTitle = styled(Typography)`
   font-weight: 600;
 `;
+
+export const StyledLink = styled('a')(
+  ({ theme }: { theme: ThemeType }) => css`
+    overflow-wrap: break-word;
+    word-break: break-word;
+    color: ${theme.colors.primary['500']};
+  `,
+);
 
 export const SectionWrapper = styled('div')`
   display: flex;

@@ -40,10 +40,10 @@ const difficultyChipStyles = ({
       ? 'rgba(251, 188, 5, 0.1)'
       : 'rgba(234, 67, 53, 0.1)'};
   color: ${difficulty === CourseLevel.Beginner
-    ? theme.colors.successGreen
+    ? theme.colors.success['500']
     : difficulty === CourseLevel.Intermediate
-      ? theme.colors.warningYellow
-      : theme.colors.errorRed};
+      ? theme.colors.warning['500']
+      : theme.colors.error['500']};
   font-weight: 500;
   font-size: 12px;
   text-transform: capitalize;
@@ -81,7 +81,7 @@ const statisticStyles = css`
 `;
 
 const starIconStyles = ({ theme }: { theme: Theme }) => css`
-  color: ${theme.colors.warningYellow};
+  color: ${theme.colors.warning['500']};
   font-size: 20px;
 `;
 

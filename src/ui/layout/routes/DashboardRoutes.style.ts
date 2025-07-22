@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 import { min } from '@/utils/mediaQuery';
+import { ThemeType } from '@/ui/theme/theme';
 
 const dashboardStyles = css`
   display: flex;
@@ -10,11 +11,11 @@ const dashboardStyles = css`
   min-height: 100vh;
 `;
 
-const sidebarStyles = css`
+const sidebarStyles = ({ theme }: { theme: ThemeType }) => css`
   width: 56px;
   flex-shrink: 0;
   overflow: hidden;
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  border-right: 1px solid ${theme.colors.divider};
 
   ${min(
     'sm',

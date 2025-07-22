@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 
 const styledLink = ({ theme, isCurrent }: { theme: Theme; isCurrent?: boolean }) => css`
   text-decoration: none;
-  color: ${isCurrent ? 'inherit' : theme.colors.blue};
+  color: ${isCurrent ? 'inherit' : theme.colors.primary['500']};
 
   &:hover {
     text-decoration: underline;

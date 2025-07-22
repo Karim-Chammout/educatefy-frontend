@@ -14,7 +14,8 @@ import { useLanguageSelection } from '@/hooks';
 import { client } from '@/ui/layout/apolloClient';
 import Main from '@/ui/layout/Main';
 import muiCustomTheme from '@/ui/theme/muiTheme';
-import theme from '@/ui/theme/theme';
+import { createAppTheme } from '@/ui/theme/theme';
+import { ThemeContextProvider, useThemeContext } from '@/ui/theme/ThemeContext';
 
 const cacheRtl = createCache({
   key: 'muirtl',
@@ -26,14 +27,17 @@ const cacheLtr = createCache({
   stylisPlugins: [prefixer],
 });
 
-const App = () => {
+const AppContent = () => {
   const { languageDirection } = useLanguageSelection();
-  const muiTheme = responsiveFontSizes(createTheme(muiCustomTheme(languageDirection)));
+  const { themeMode } = useThemeContext();
+
+  const emotionTheme = createAppTheme(themeMode);
+  const muiTheme = responsiveFontSizes(createTheme(muiCustomTheme(themeMode, languageDirection)));
 
   return (
     <CacheProvider value={languageDirection === 'rtl' ? cacheRtl : cacheLtr}>
       <MUIThemeProvider theme={muiTheme}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={emotionTheme}>
           <ApolloProvider client={client}>
             <CssBaseline />
             <Main />
@@ -41,6 +45,14 @@ const App = () => {
         </ThemeProvider>
       </MUIThemeProvider>
     </CacheProvider>
+  );
+};
+
+const App = () => {
+  return (
+    <ThemeContextProvider>
+      <AppContent />
+    </ThemeContextProvider>
   );
 };
 

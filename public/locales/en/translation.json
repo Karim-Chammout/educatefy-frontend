@@ -274,5 +274,7 @@
   "instructor.sutdents_one": "Student",
   "instructor.sutdents_other": "Students",
   "instructor.sutdents_zero": "Students",
-  "course.coursesBy": "Courses by {{name}}"
+  "course.coursesBy": "Courses by {{name}}",
+  "theme.dark": "Night Mode",
+  "theme.light": "Day Mode"
 }

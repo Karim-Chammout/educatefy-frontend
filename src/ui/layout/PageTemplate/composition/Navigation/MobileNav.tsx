@@ -1,3 +1,5 @@
+import Brightness4 from '@mui/icons-material/Brightness4';
+import Brightness7 from '@mui/icons-material/Brightness7';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ExploreIcon from '@mui/icons-material/Explore';
 import HomeIcon from '@mui/icons-material/Home';
@@ -16,6 +18,7 @@ import { useLocation, useNavigate } from 'react-router';
 
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
+import { useThemeContext } from '@/ui/theme/ThemeContext';
 import { logout } from '@/utils/logout';
 
 const navItems = [
@@ -43,6 +46,7 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const { themeMode, toggleTheme } = useThemeContext();
 
   const [value, setValue] = useState(location.pathname);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -114,6 +118,7 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
             sx: {
               overflow: 'visible',
               filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              minWidth: 160,
             },
           },
         }}
@@ -131,6 +136,16 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
             <Person2Icon fontSize="small" />
           </ListItemIcon>
           {t('navigation.profile')}
+        </MenuItem>
+        <MenuItem onClick={toggleTheme}>
+          <ListItemIcon>
+            {themeMode === 'light' ? (
+              <Brightness4 fontSize="small" />
+            ) : (
+              <Brightness7 fontSize="small" />
+            )}
+          </ListItemIcon>
+          {t(`theme.${themeMode === 'light' ? 'dark' : 'light'}`)}
         </MenuItem>
         <MenuItem
           onClick={() => {

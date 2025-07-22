@@ -1,3 +1,5 @@
+import Brightness4 from '@mui/icons-material/Brightness4';
+import Brightness7 from '@mui/icons-material/Brightness7';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ExploreIcon from '@mui/icons-material/Explore';
 import HomeIcon from '@mui/icons-material/Home';
@@ -20,6 +22,7 @@ import { useNavigate } from 'react-router';
 import logo from '@/assets/logo.png';
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
+import { useThemeContext } from '@/ui/theme/ThemeContext';
 import { logout } from '@/utils/logout';
 
 import { LogoWrapper, StyledNavLink } from './Navigation.style';
@@ -65,6 +68,7 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
   const { t } = useTranslation();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
+  const { themeMode, toggleTheme } = useThemeContext();
 
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -112,6 +116,7 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
                     overflow: 'visible',
                     filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                     mt: 1.5,
+                    width: 160,
                   },
                 },
               }}
@@ -129,6 +134,16 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
                   <Person2Icon fontSize="small" />
                 </ListItemIcon>
                 {t('navigation.profile')}
+              </MenuItem>
+              <MenuItem onClick={toggleTheme}>
+                <ListItemIcon>
+                  {themeMode === 'light' ? (
+                    <Brightness4 fontSize="small" />
+                  ) : (
+                    <Brightness7 fontSize="small" />
+                  )}
+                </ListItemIcon>
+                {t(`theme.${themeMode === 'light' ? 'dark' : 'light'}`)}
               </MenuItem>
               <MenuItem
                 onClick={() => {

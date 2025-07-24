@@ -5,7 +5,11 @@ import TextField from '@mui/material/TextField';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CourseReviewFragment, useRateCourseMutation } from '@/generated/graphql';
+import {
+  CourseReviewFragment,
+  useDeleteCourseRatingMutation,
+  useRateCourseMutation,
+} from '@/generated/graphql';
 import { ToasterContext } from '@/ui/context';
 
 const ReviewForm = ({
@@ -23,6 +27,7 @@ const ReviewForm = ({
   const [reviewText, setReviewText] = useState(existingReview?.review || '');
 
   const [rateCourse, { loading }] = useRateCourseMutation();
+  const [deleteCourseRating, { loading: isDeleting }] = useDeleteCourseRatingMutation();
 
   const handleSubmit = async () => {
     if (!rating && !reviewText) {
@@ -101,6 +106,57 @@ const ReviewForm = ({
     });
   };
 
+  const handleDeleteRating = async () => {
+    if (!existingReview) return;
+
+    await deleteCourseRating({
+      variables: {
+        ratingInfo: {
+          courseId,
+          courseRateId: existingReview.id,
+        },
+      },
+      update(cache) {
+        const courseRef = cache.identify({
+          __typename: 'Course',
+          id: courseId,
+        });
+
+        if (courseRef) {
+          cache.modify({
+            id: courseRef,
+            fields: {
+              ratingsCount: (existingCount: number) => existingCount - 1,
+              reviews: (courseReviews) => {
+                const existingReviews = courseReviews as CourseReviewFragment[];
+
+                return existingReviews.filter((review) => review.id !== existingReview.id);
+              },
+              viewerReview: () => null,
+            },
+          });
+        }
+      },
+      onCompleted(data) {
+        if (data.deleteCourseRating?.success) {
+          setToasterVisibility({
+            newDuration: 5000,
+            newText: t('course.reviewDeleted'),
+            newType: 'success',
+          });
+          onClose();
+        }
+      },
+      onError() {
+        setToasterVisibility({
+          newDuration: 5000,
+          newText: t('error.message'),
+          newType: 'error',
+        });
+      },
+    });
+  };
+
   return (
     <Box sx={{ mb: 4 }}>
       <Box sx={{ mb: 2 }}>
@@ -120,17 +176,29 @@ const ReviewForm = ({
         onChange={(e) => setReviewText(e.target.value)}
         sx={{ mb: 2 }}
       />
-      <Box sx={{ display: 'flex', gap: 2 }}>
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={(!rating && !reviewText) || loading}
-        >
-          {t('common.submit')}
-        </Button>
-        <Button variant="outlined" onClick={onClose}>
-          {t('common.cancel')}
-        </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={(!rating && !reviewText) || loading}
+          >
+            {t('common.submit')}
+          </Button>
+          <Button variant="outlined" onClick={onClose}>
+            {t('common.cancel')}
+          </Button>
+        </Box>
+        {existingReview && (
+          <Button
+            color="error"
+            variant="outlined"
+            onClick={handleDeleteRating}
+            disabled={isDeleting}
+          >
+            {t('common.delete')}
+          </Button>
+        )}
       </Box>
     </Box>
   );

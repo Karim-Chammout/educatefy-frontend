@@ -177,6 +177,7 @@
   "course.leaveReview": "Leave a review",
   "course.yourReview": "Your review",
   "course.reviewSubmitted": "Your review has been submitted successfully!",
+  "course.reviewDeleted": "Your review has been deleted!",
   "error.message": "Something went wrong. Please try again later",
   "common.add": "Add",
   "courseSection.backToCourse": "Back to course",

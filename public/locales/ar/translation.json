@@ -177,6 +177,7 @@
   "course.leaveReview": "اترك تقييمًا",
   "course.yourReview": "تقييمك",
   "course.reviewSubmitted": "تم إرسال تقييمك بنجاح!",
+  "course.reviewDeleted": "تم حذف تقييمك!",
   "error.message": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا",
   "common.add": "إضافة",
   "courseSection.backToCourse": "العودة إلى الدورة",

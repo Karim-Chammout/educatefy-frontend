@@ -150,6 +150,15 @@ mutation RateCourse($ratingInfo: RateCourse!) {
   }
 }
 
+mutation DeleteCourseRating($ratingInfo: DeleteCourseRatingInput!) {
+  deleteCourseRating(ratingInfo: $ratingInfo) {
+    success
+    errors {
+      message
+    }
+  }
+}
+
 mutation FollowTeacher($followTeacherInfo: FollowTeacherInput!) {
   followTeacher(followTeacherInfo: $followTeacherInfo) {
     success

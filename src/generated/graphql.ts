@@ -403,6 +403,14 @@ export type CreateOrUpdateLessonResult = {
   success: Scalars['Boolean']['output'];
 };
 
+/** Input for deleting a course rating */
+export type DeleteCourseRatingInput = {
+  /** The ID of the course. */
+  courseId: Scalars['ID']['input'];
+  /** The ID of the course rating to delete. */
+  courseRateId: Scalars['ID']['input'];
+};
+
 /** An object type that wraps an error */
 export type Error = {
   __typename: 'Error';
@@ -492,6 +500,8 @@ export type Mutation = {
   deleteContentComponent?: Maybe<MutationResult>;
   /** Deletes a course. */
   deleteCourse?: Maybe<MutationResult>;
+  /** Delete a course rating. */
+  deleteCourseRating?: Maybe<MutationResult>;
   /** Deletes a course section. */
   deleteCourseSection?: Maybe<MutationResult>;
   /** Deletes a course section item. */
@@ -564,6 +574,11 @@ export type MutationDeleteContentComponentArgs = {
 
 export type MutationDeleteCourseArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteCourseRatingArgs = {
+  ratingInfo: DeleteCourseRatingInput;
 };
 
 
@@ -1078,6 +1093,13 @@ export type RateCourseMutationVariables = Exact<{
 
 
 export type RateCourseMutation = { __typename: 'Mutation', rateCourse?: { __typename: 'RateCourseResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, course?: { __typename: 'Course', rating: number, reviews: Array<{ __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } | null } | null };
+
+export type DeleteCourseRatingMutationVariables = Exact<{
+  ratingInfo: DeleteCourseRatingInput;
+}>;
+
+
+export type DeleteCourseRatingMutation = { __typename: 'Mutation', deleteCourseRating?: { __typename: 'MutationResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }> } | null };
 
 export type FollowTeacherMutationVariables = Exact<{
   followTeacherInfo: FollowTeacherInput;
@@ -1990,6 +2012,42 @@ export function useRateCourseMutation(baseOptions?: Apollo.MutationHookOptions<R
 export type RateCourseMutationHookResult = ReturnType<typeof useRateCourseMutation>;
 export type RateCourseMutationResult = Apollo.MutationResult<RateCourseMutation>;
 export type RateCourseMutationOptions = Apollo.BaseMutationOptions<RateCourseMutation, RateCourseMutationVariables>;
+export const DeleteCourseRatingDocument = gql`
+    mutation DeleteCourseRating($ratingInfo: DeleteCourseRatingInput!) {
+  deleteCourseRating(ratingInfo: $ratingInfo) {
+    success
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type DeleteCourseRatingMutationFn = Apollo.MutationFunction<DeleteCourseRatingMutation, DeleteCourseRatingMutationVariables>;
+
+/**
+ * __useDeleteCourseRatingMutation__
+ *
+ * To run a mutation, you first call `useDeleteCourseRatingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCourseRatingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCourseRatingMutation, { data, loading, error }] = useDeleteCourseRatingMutation({
+ *   variables: {
+ *      ratingInfo: // value for 'ratingInfo'
+ *   },
+ * });
+ */
+export function useDeleteCourseRatingMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCourseRatingMutation, DeleteCourseRatingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCourseRatingMutation, DeleteCourseRatingMutationVariables>(DeleteCourseRatingDocument, options);
+      }
+export type DeleteCourseRatingMutationHookResult = ReturnType<typeof useDeleteCourseRatingMutation>;
+export type DeleteCourseRatingMutationResult = Apollo.MutationResult<DeleteCourseRatingMutation>;
+export type DeleteCourseRatingMutationOptions = Apollo.BaseMutationOptions<DeleteCourseRatingMutation, DeleteCourseRatingMutationVariables>;
 export const FollowTeacherDocument = gql`
     mutation FollowTeacher($followTeacherInfo: FollowTeacherInput!) {
   followTeacher(followTeacherInfo: $followTeacherInfo) {

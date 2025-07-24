@@ -7,8 +7,10 @@ import Toolbar from '@mui/material/Toolbar';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router';
 
-import logo from '@/assets/logo.png';
+import logoDark from '@/assets/logo_dark.png';
+import logoLight from '@/assets/logo_light.png';
 import { Button } from '@/ui/components';
+import { useThemeContext } from '@/ui/theme/ThemeContext';
 import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
 import { LogoWrapper, StyledNavLink } from './PublicNavigation.style';
@@ -26,6 +28,7 @@ const PublicNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
+  const { themeMode } = useThemeContext();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const shouldShowCTA = !['/login', '/register'].includes(location.pathname);
@@ -36,7 +39,7 @@ const PublicNavigation = () => {
         <Toolbar disableGutters>
           <LogoWrapper>
             <img
-              src={logo}
+              src={themeMode === 'light' ? logoDark : logoLight}
               width={60}
               alt="Logo"
               role="presentation"

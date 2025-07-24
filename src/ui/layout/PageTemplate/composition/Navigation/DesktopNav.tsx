@@ -19,7 +19,8 @@ import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import logo from '@/assets/logo.png';
+import logoDark from '@/assets/logo_dark.png';
+import logoLight from '@/assets/logo_light.png';
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
 import { useThemeContext } from '@/ui/theme/ThemeContext';
@@ -84,7 +85,7 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
         <Toolbar disableGutters>
           <LogoWrapper>
             <img
-              src={logo}
+              src={themeMode === 'light' ? logoDark : logoLight}
               width={60}
               alt="Logo"
               role="presentation"

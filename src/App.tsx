@@ -38,10 +38,8 @@ const AppContent = () => {
     <CacheProvider value={languageDirection === 'rtl' ? cacheRtl : cacheLtr}>
       <MUIThemeProvider theme={muiTheme}>
         <ThemeProvider theme={emotionTheme}>
-          <ApolloProvider client={client}>
-            <CssBaseline />
-            <Main />
-          </ApolloProvider>
+          <CssBaseline />
+          <Main />
         </ThemeProvider>
       </MUIThemeProvider>
     </CacheProvider>
@@ -50,9 +48,11 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <ThemeContextProvider>
-      <AppContent />
-    </ThemeContextProvider>
+    <ApolloProvider client={client}>
+      <ThemeContextProvider>
+        <AppContent />
+      </ThemeContextProvider>
+    </ApolloProvider>
   );
 };
 

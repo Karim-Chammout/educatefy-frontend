@@ -3,40 +3,18 @@ import FormControl from '@mui/material/FormControl';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { SelectChangeEvent } from '@mui/material/Select/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useTranslation } from 'react-i18next';
 
-import { useUpdateProfileMutation } from '@/generated/graphql';
 import { useLanguageSelection } from '@/hooks';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
 
 const LanguageSelector = () => {
   const { t } = useTranslation();
-  const { currentLanguage, changeLanguage, languages } = useLanguageSelection();
-  const [updateSelectedLanguage] = useUpdateProfileMutation();
+  const { currentLanguage, handleChangeLanguage, languages, getLanguageName } =
+    useLanguageSelection();
 
-  const handleChangeLanguage = async (e: SelectChangeEvent) => {
-    changeLanguage(e.target.value);
-
-    if (isLoggedIn()) {
-      await updateSelectedLanguage({
-        variables: {
-          profileDetails: {
-            selectedLanguage: e.target.value,
-          },
-        },
-      });
-    }
-  };
-
-  const getLanguageName = (lang: string): string => {
-    switch (lang) {
-      case 'ar':
-        return 'AR - العربية';
-      default:
-        return 'EN - English';
-    }
+  const handleUpdateLanguage = (e: SelectChangeEvent) => {
+    handleChangeLanguage(e.target.value);
   };
 
   return (
@@ -51,7 +29,7 @@ const LanguageSelector = () => {
       <Select
         labelId="language-selector-label"
         value={currentLanguage}
-        onChange={handleChangeLanguage}
+        onChange={handleUpdateLanguage}
         label={t('language.selector.label')}
         startAdornment={
           <InputAdornment position="start">

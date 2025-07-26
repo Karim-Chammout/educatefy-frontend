@@ -10,6 +10,7 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import logoDark from '@/assets/logo_dark.png';
 import logoLight from '@/assets/logo_light.png';
 import { Button } from '@/ui/components';
+import { LanguagePicker } from '@/ui/compositions';
 import { useThemeContext } from '@/ui/theme/ThemeContext';
 import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
@@ -53,6 +54,9 @@ const PublicNavigation = () => {
                 {t(item.label)}
               </StyledNavLink>
             ))}
+          </Box>
+          <Box sx={{ mx: 1 }}>
+            <LanguagePicker />
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             {shouldShowCTA &&

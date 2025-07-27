@@ -3,6 +3,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import { useAccountInfoQuery } from '@/generated/graphql';
 
 import DesktopNavigation from './DesktopNav';
+import Header from './Header';
 import MobileNavigation from './MobileNav';
 
 const Navigation = () => {
@@ -16,7 +17,12 @@ const Navigation = () => {
 
   const NavigationComponent = isMobile ? MobileNavigation : DesktopNavigation;
 
-  return <NavigationComponent accountInfo={data.me} />;
+  return (
+    <>
+      {isMobile && <Header />}
+      <NavigationComponent accountInfo={data.me} />
+    </>
+  );
 };
 
 export default Navigation;

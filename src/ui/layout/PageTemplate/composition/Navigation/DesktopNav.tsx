@@ -23,6 +23,7 @@ import logoDark from '@/assets/logo_dark.png';
 import logoLight from '@/assets/logo_light.png';
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
+import { LanguagePicker } from '@/ui/compositions';
 import { useThemeContext } from '@/ui/theme/ThemeContext';
 import { logout } from '@/utils/logout';
 
@@ -98,6 +99,9 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
                   .filter((i) => i.roleAccess !== AccountRole.Teacher)
                   .map((navItem) => <NavItem key={navItem.path} item={navItem} t={t} />)
               : navItems.map((item) => <NavItem key={item.path} item={item} t={t} />)}
+          </Box>
+          <Box sx={{ mx: 2 }}>
+            <LanguagePicker />
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

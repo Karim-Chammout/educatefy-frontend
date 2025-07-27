@@ -22,8 +22,8 @@ const LanguagePicker = () => {
     setAnchorEl(null);
   };
 
-  const handleLanguageSelect = (lang: string) => {
-    handleChangeLanguage(lang);
+  const handleLanguageSelect = async (lang: string) => {
+    await handleChangeLanguage(lang);
     handleCloseLanguageMenu();
   };
 

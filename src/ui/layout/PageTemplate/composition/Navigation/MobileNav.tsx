@@ -84,7 +84,6 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
                   value={item.path}
                   icon={item.icon}
                   onClick={() => navigate(item.path)}
-                  sx={{ '&.Mui-selected': { color: '#000' } }}
                 />
               ))
           : navItems.map((item) => (
@@ -94,7 +93,6 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
                 value={item.path}
                 icon={item.icon}
                 onClick={() => navigate(item.path)}
-                sx={{ '&.Mui-selected': { color: '#000' } }}
               />
             ))}
         <BottomNavigationAction
@@ -114,10 +112,8 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
         onClose={handleMenuClose}
         slotProps={{
           paper: {
-            elevation: 0,
+            elevation: 2,
             sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
               minWidth: 160,
             },
           },

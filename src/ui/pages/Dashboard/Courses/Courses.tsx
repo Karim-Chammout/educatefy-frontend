@@ -1,5 +1,6 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Paper from '@mui/material/Paper';
+import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -30,6 +31,7 @@ const tableHeaderValues = [
 const Courses = ({ courses }: { courses: Array<TeacherCourseFragment> }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -141,7 +143,7 @@ const Courses = ({ courses }: { courses: Array<TeacherCourseFragment> }) => {
         <TableContainer sx={{ maxHeight: '75vh' }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
-              <TableRow sx={{ '& .MuiTableCell-head': { background: 'lightgray' } }}>
+              <TableRow sx={{ '& .MuiTableCell-head': { background: theme.palette.grey['300'] } }}>
                 {tableHeaderValues.map(([key]) => (
                   <TableCell key={key}>
                     <TableSortLabel

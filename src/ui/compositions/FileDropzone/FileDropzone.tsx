@@ -52,7 +52,8 @@ const FileDropzone = ({
         padding: '20px',
         textAlign: 'center',
         cursor: disabled || isUploading ? 'not-allowed' : 'pointer',
-        backgroundColor: isDragActive ? '#f0f8ff' : '#fafafa',
+        backgroundColor: '#fafafa',
+        color: '#333',
         opacity: disabled || isUploading ? 0.5 : 1,
       }}
     >

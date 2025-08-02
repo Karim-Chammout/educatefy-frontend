@@ -12,11 +12,14 @@ export const EditorWrapper = styled(Box, {
     direction: languageDirection,
     borderColor: theme.palette.divider,
     borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+    background: `${theme.palette.common.white} !important`,
   },
   '& .ql-container': {
     borderColor: theme.palette.divider,
     borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
     fontFamily: theme.typography.fontFamily,
+    background: `${theme.palette.common.white} !important`,
+    color: `${theme.palette.common.black} !important`,
   },
   '& .ql-editor': {
     minHeight: '200px',

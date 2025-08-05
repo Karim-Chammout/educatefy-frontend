@@ -40,7 +40,6 @@ const QUILL_FORMATS = [
   'code-block',
   'link',
   'image',
-  'video',
 ];
 
 // Define Quill modules with custom handlers
@@ -55,7 +54,7 @@ const QUILL_MODULES = {
       [{ list: 'ordered' }, { list: 'bullet' }],
       [{ indent: '-1' }, { indent: '+1' }],
       ['blockquote', 'code-block'],
-      ['link', 'image', 'video'],
+      ['link', 'image'],
       ['clean'],
     ],
   },

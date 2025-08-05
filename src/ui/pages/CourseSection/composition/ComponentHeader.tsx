@@ -23,7 +23,7 @@ export const ComponentHeader = ({ component }: { component: Partial<ContentCompo
         )}
       </Box>
       {component.is_required && !component.progress?.is_completed && (
-        <Alert severity="info" sx={{ mb: 2 }}>
+        <Alert severity="info" variant="filled" sx={{ mb: 2 }}>
           {t('contentComponent.requiredContentHint')}
         </Alert>
       )}

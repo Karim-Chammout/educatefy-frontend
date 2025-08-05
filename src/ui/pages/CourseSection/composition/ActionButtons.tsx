@@ -61,7 +61,12 @@ const ActionButtons = ({
             alignItems: 'center',
           }}
         >
-          <Alert icon={<DoneIcon fontSize="inherit" />} severity="success" sx={{ mb: 2 }}>
+          <Alert
+            icon={<DoneIcon fontSize="inherit" />}
+            severity="success"
+            variant="filled"
+            sx={{ mb: 2 }}
+          >
             {t('courseSection.sectionCompleted')}
           </Alert>
           <Button variant="outlined" startIcon={<ArrowBackIcon />} onClick={onBackToCourse}>

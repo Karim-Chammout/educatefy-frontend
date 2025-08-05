@@ -44,6 +44,7 @@ const RegisterPopup = ({ handleLoginSwitch }: { handleLoginSwitch: () => void })
         <Alert
           icon={false}
           severity={userType === undefined ? 'warning' : 'success'}
+          variant="filled"
           sx={{ m: 'auto' }}
         >
           <Typography sx={{ fontWeight: 'bold' }}>{t('register.selectUserRole')}</Typography>

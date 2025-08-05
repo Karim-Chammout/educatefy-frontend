@@ -5,6 +5,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 
 import { Typography } from '@/ui/components';
 import { min } from '@/utils/mediaQuery';
+import { ThemeType } from '@/ui/theme/theme';
 
 export const SectionContainer = styled(Box)`
   display: flex;
@@ -24,21 +25,23 @@ export const SectionContainer = styled(Box)`
 
 export const NavigationPanel = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'mobileOpen',
-})<{ mobileOpen?: boolean }>`
-  width: 100%;
-  border-right: 1px solid #e0e0e0;
-  overflow-y: auto;
-  display: ${({ mobileOpen }) => (mobileOpen === false ? 'none' : 'block')};
+})<{ mobileOpen: boolean }>(
+  ({ theme, mobileOpen }: { theme: ThemeType; mobileOpen: boolean }) => css`
+    width: 100%;
+    overflow-y: auto;
+    display: ${mobileOpen === false ? 'none' : 'block'};
 
-  ${min(
-    'md',
-    `
+    ${min(
+      'md',
+      `
+      border-right: 1px solid ${theme.colors.divider};
       width: 300px;
       display: block;
       flex-shrink: 0;
     `,
-  )}
-`;
+    )}
+  `,
+);
 
 export const ItemButton = styled(ListItemButton, {
   shouldForwardProp: (prop) => prop !== 'isActive' && prop !== 'isCompleted',
@@ -151,18 +154,20 @@ export const TextContent = styled(Typography)`
   line-height: 1.6;
 `;
 
-export const MobileMenuButton = styled(Box)`
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  cursor: pointer;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #e0e0e0;
+export const MobileMenuButton = styled(Box)(
+  ({ theme }: { theme: ThemeType }) => css`
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    background-color: ${theme.colors.background.elevated};
+    border-bottom: 1px solid ${theme.colors.divider};
 
-  ${min(
-    'md',
-    `
+    ${min(
+      'md',
+      `
       display: none;
     `,
-  )}
-`;
+    )}
+  `,
+);

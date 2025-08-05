@@ -10,10 +10,14 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const getValidTheme = () => {
+  const storedTheme = localStorage.getItem('theme');
+
+  return storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'light';
+};
+
 export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
-  const [themeMode, setThemeMode] = useState<ThemeMode>(
-    (localStorage.getItem('theme') as ThemeMode) || 'light',
-  );
+  const [themeMode, setThemeMode] = useState<ThemeMode>(getValidTheme());
 
   useEffect(() => {
     localStorage.setItem('theme', themeMode);
@@ -37,6 +41,7 @@ export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
 
 export const useThemeContext = (): ThemeContextType => {
   const context = useContext(ThemeContext);
+
   if (!context) {
     throw new Error('useTheme must be used within a ThemeContextProvider');
   }

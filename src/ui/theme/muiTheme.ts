@@ -84,6 +84,17 @@ const muiCustomTheme = (
           },
         },
       },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: {
+            backgroundColor: appTheme.colors.gray[200],
+            color: appTheme.colors.text.primary,
+          },
+          arrow: {
+            color: appTheme.colors.gray[200],
+          },
+        },
+      },
     },
   };
 };

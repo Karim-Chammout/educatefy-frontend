@@ -18,8 +18,6 @@ export const EditorWrapper = styled(Box, {
     borderColor: theme.palette.divider,
     borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
     fontFamily: theme.typography.fontFamily,
-    background: `${theme.palette.common.white} !important`,
-    color: `${theme.palette.common.black} !important`,
   },
   '& .ql-editor': {
     minHeight: '200px',

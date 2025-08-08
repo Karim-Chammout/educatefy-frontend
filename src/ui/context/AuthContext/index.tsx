@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setModalVisibility(false);
-  }, [location, setModalVisibility]);
+  }, [location.pathname]);
 
   const setAuthModalVisibility = useCallback(
     (kind: 'login' | 'register') => {

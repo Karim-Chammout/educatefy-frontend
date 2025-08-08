@@ -31,10 +31,16 @@ const PublicPageTemplate = ({ children }: { children: ReactNode }) => {
           </Container>
         </main>
         <Modal open={isAuthModalVisible} onClose={() => setModalVisibility(false)} maxWidth="xs">
-          {isAuthModalVisible && authModalType === 'login' ? (
-            <LoginPopup handleRegisterSwitch={() => setAuthModalVisibility('register')} />
-          ) : (
-            <RegisterPopup handleLoginSwitch={() => setAuthModalVisibility('login')} />
+          {isAuthModalVisible && (
+            <>
+              {authModalType === 'login' && (
+                <LoginPopup handleRegisterSwitch={() => setAuthModalVisibility('register')} />
+              )}
+
+              {authModalType === 'register' && (
+                <RegisterPopup handleLoginSwitch={() => setAuthModalVisibility('login')} />
+              )}
+            </>
           )}
         </Modal>
       </Suspense>

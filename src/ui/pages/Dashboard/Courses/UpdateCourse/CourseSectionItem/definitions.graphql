@@ -20,11 +20,13 @@ mutation CreateContentComponent(
   $baseComponentInfo: ContentComponentBaseInput!
   $textContent: TextContentInput
   $videoContent: VideoContentInput
+  $youtubeContent: YouTubeContentInput
 ) {
   createContentComponent(
     baseComponentInfo: $baseComponentInfo
     textContent: $textContent
     videoContent: $videoContent
+    youtubeContent: $youtubeContent
   ) {
     success
     errors {
@@ -36,6 +38,9 @@ mutation CreateContentComponent(
       }
       ... on VideoContent {
         ...EditableVideoContentComponent
+      }
+      ... on YouTubeContent {
+        ...EditableYouTubeContentComponent
       }
     }
   }
@@ -45,11 +50,13 @@ mutation UpdateContentComponent(
   $baseComponentInfo: UpdateContentComponentBaseInput!
   $textContent: TextContentInput
   $videoContent: VideoContentInput
+  $youtubeContent: YouTubeContentInput
 ) {
   updateContentComponent(
     baseComponentInfo: $baseComponentInfo
     textContent: $textContent
     videoContent: $videoContent
+    youtubeContent: $youtubeContent
   ) {
     success
     errors {
@@ -61,6 +68,9 @@ mutation UpdateContentComponent(
       }
       ... on VideoContent {
         ...EditableVideoContentComponent
+      }
+      ... on YouTubeContent {
+        ...EditableYouTubeContentComponent
       }
     }
   }

@@ -4,6 +4,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/ui/components';
@@ -28,9 +29,10 @@ const ActionButtons = ({
   onBackToCourse,
 }: ActionButtonsType) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   return (
-    <Box sx={{ mt: 4, pt: 3, borderTop: '1px solid #e0e0e0' }}>
+    <Box sx={{ mt: 4, pt: 3, borderTop: `1px solid ${theme.palette.divider}` }}>
       <Stack direction={{ xxs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
         {!isCompleted && (
           <Button

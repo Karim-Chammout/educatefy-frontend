@@ -18,6 +18,17 @@ fragment EditableVideoContentComponent on VideoContent {
   component_id
 }
 
+fragment EditableYouTubeContentComponent on YouTubeContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  component_id
+  youtube_video_id
+  description
+}
+
 fragment EditableLesson on Lesson {
   id
   itemId
@@ -30,6 +41,9 @@ fragment EditableLesson on Lesson {
     }
     ... on VideoContent {
       ...EditableVideoContentComponent
+    }
+    ... on YouTubeContent {
+      ...EditableYouTubeContentComponent
     }
   }
 }

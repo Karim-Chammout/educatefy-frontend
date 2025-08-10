@@ -104,11 +104,12 @@ export enum ComponentParentType {
 /** The type of the component. */
 export enum ComponentType {
   Text = 'text',
-  Video = 'video'
+  Video = 'video',
+  Youtube = 'youtube'
 }
 
 /** A content component which can be of various types. */
-export type ContentComponent = TextContent | VideoContent;
+export type ContentComponent = TextContent | VideoContent | YouTubeContent;
 
 export type ContentComponentBaseInput = {
   /** The denomination of the component. */
@@ -548,6 +549,7 @@ export type MutationCreateContentComponentArgs = {
   baseComponentInfo: ContentComponentBaseInput;
   textContent?: InputMaybe<TextContentInput>;
   videoContent?: InputMaybe<VideoContentInput>;
+  youtubeContent?: InputMaybe<YouTubeContentInput>;
 };
 
 
@@ -616,6 +618,7 @@ export type MutationUpdateContentComponentArgs = {
   baseComponentInfo: UpdateContentComponentBaseInput;
   textContent?: InputMaybe<TextContentInput>;
   videoContent?: InputMaybe<VideoContentInput>;
+  youtubeContent?: InputMaybe<YouTubeContentInput>;
 };
 
 
@@ -1028,6 +1031,38 @@ export type VideoContentInput = {
   url: Scalars['String']['input'];
 };
 
+/** A YouTube content component. */
+export type YouTubeContent = {
+  __typename: 'YouTubeContent';
+  /** The id of the component this video content belongs to. */
+  component_id: Scalars['ID']['output'];
+  /** The denomination of the component. */
+  denomination: Scalars['String']['output'];
+  /** The description of the YouTube. */
+  description?: Maybe<Scalars['String']['output']>;
+  /** A unique id of this video content component. */
+  id: Scalars['ID']['output'];
+  /** A flag indicating whether the component is published */
+  is_published: Scalars['Boolean']['output'];
+  /** A flag indicating whether the component is required to continue. */
+  is_required: Scalars['Boolean']['output'];
+  /** The progress of this component for the current user */
+  progress?: Maybe<ContentComponentProgress>;
+  /** The rank of the component */
+  rank: Scalars['Int']['output'];
+  /** The type of the component. */
+  type: ComponentType;
+  /** The YouTube video id. */
+  youtube_video_id: Scalars['String']['output'];
+};
+
+export type YouTubeContentInput = {
+  /** The description of the YouTube. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The video ID of the YouTube video. */
+  videoId: Scalars['String']['input'];
+};
+
 export type OpenidClientFragment = { __typename: 'OpenidClient', id: string, button_text?: string | null, button_icon?: string | null, button_background_color?: string | null, identity_provider: string };
 
 export type OpenIdClientQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1067,18 +1102,20 @@ export type TextContentComponentFragment = { __typename: 'TextContent', id: stri
 
 export type VideoContentComponentFragment = { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null };
 
-export type CourseSectionFragment = { __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null }> }> };
+export type YouTubeContentComponentFragment = { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, youtube_video_id: string, description?: string | null, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null };
+
+export type CourseSectionFragment = { __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null } | { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, youtube_video_id: string, description?: string | null, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null }> }> };
 
 export type CourseReviewFragment = { __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } };
 
-export type CourseFragment = { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean } };
+export type CourseFragment = { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null } | { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, youtube_video_id: string, description?: string | null, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean } };
 
 export type CourseQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type CourseQuery = { __typename: 'Query', course?: { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean } } | null };
+export type CourseQuery = { __typename: 'Query', course?: { __typename: 'Course', id: string, denomination: string, slug: string, subtitle: string, description: string, level: CourseLevel, image?: string | null, external_resource_link?: string | null, start_date?: any | null, end_date?: any | null, language: string, updated_at: any, created_at: any, status: CourseStatus, rating: number, ratingsCount: number, participationCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'CourseObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'CourseRequirement', id: string, requirement: string }>, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean, rank: number, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null } | { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, youtube_video_id: string, description?: string | null, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null }> }> }>, reviews: Array<{ __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, viewerReview?: { __typename: 'CourseReview', id: string, rating?: number | null, review?: string | null, created_at: any, isEditable: boolean, reviewer: { __typename: 'PublicAccount', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null } } | null, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean } } | null };
 
 export type UpdateCourseStatusMutationVariables = Exact<{
   courseStatusInput: CourseStatusInput;
@@ -1133,18 +1170,20 @@ export type EditableTextContentComponentFragment = { __typename: 'TextContent', 
 
 export type EditableVideoContentComponentFragment = { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string };
 
-export type EditableLessonFragment = { __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> };
+export type EditableYouTubeContentComponentFragment = { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, component_id: string, youtube_video_id: string, description?: string | null };
 
-export type SectionFragment = { __typename: 'CourseSection', id: string, denomination: string, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> };
+export type EditableLessonFragment = { __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string } | { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, component_id: string, youtube_video_id: string, description?: string | null }> };
 
-export type EditableCourseSectionItemFragment = { __typename: 'Course', id: string, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }> };
+export type SectionFragment = { __typename: 'CourseSection', id: string, denomination: string, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string } | { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, component_id: string, youtube_video_id: string, description?: string | null }> }> };
+
+export type EditableCourseSectionItemFragment = { __typename: 'Course', id: string, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string } | { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, component_id: string, youtube_video_id: string, description?: string | null }> }> }> };
 
 export type EditableCourseSectionQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type EditableCourseSectionQuery = { __typename: 'Query', editableCourse?: { __typename: 'Course', id: string, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string }> }> }> } | null };
+export type EditableCourseSectionQuery = { __typename: 'Query', editableCourse?: { __typename: 'Course', id: string, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, items: Array<{ __typename: 'Lesson', id: string, itemId: string, denomination: string, duration: number, is_published: boolean, components: Array<{ __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string } | { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, component_id: string, youtube_video_id: string, description?: string | null }> }> }> } | null };
 
 export type CreateLessonMutationVariables = Exact<{
   lessonInfo: LessonInfoInput;
@@ -1193,19 +1232,21 @@ export type CreateContentComponentMutationVariables = Exact<{
   baseComponentInfo: ContentComponentBaseInput;
   textContent?: InputMaybe<TextContentInput>;
   videoContent?: InputMaybe<VideoContentInput>;
+  youtubeContent?: InputMaybe<YouTubeContentInput>;
 }>;
 
 
-export type CreateContentComponentMutation = { __typename: 'Mutation', createContentComponent?: { __typename: 'CreateOrUpdateContentComponent', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, component?: { __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string } | null } | null };
+export type CreateContentComponentMutation = { __typename: 'Mutation', createContentComponent?: { __typename: 'CreateOrUpdateContentComponent', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, component?: { __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string } | { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, component_id: string, youtube_video_id: string, description?: string | null } | null } | null };
 
 export type UpdateContentComponentMutationVariables = Exact<{
   baseComponentInfo: UpdateContentComponentBaseInput;
   textContent?: InputMaybe<TextContentInput>;
   videoContent?: InputMaybe<VideoContentInput>;
+  youtubeContent?: InputMaybe<YouTubeContentInput>;
 }>;
 
 
-export type UpdateContentComponentMutation = { __typename: 'Mutation', updateContentComponent?: { __typename: 'CreateOrUpdateContentComponent', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, component?: { __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string } | null } | null };
+export type UpdateContentComponentMutation = { __typename: 'Mutation', updateContentComponent?: { __typename: 'CreateOrUpdateContentComponent', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, component?: { __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: string, component_id: string } | { __typename: 'VideoContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, url: string, component_id: string } | { __typename: 'YouTubeContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, component_id: string, youtube_video_id: string, description?: string | null } | null } | null };
 
 export type EditableCourseSectionFragment = { __typename: 'Course', id: string, sections: Array<{ __typename: 'CourseSection', id: string, denomination: string, is_published: boolean }> };
 
@@ -1404,6 +1445,23 @@ export const VideoContentComponentFragmentDoc = gql`
   }
 }
     `;
+export const YouTubeContentComponentFragmentDoc = gql`
+    fragment YouTubeContentComponent on YouTubeContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  youtube_video_id
+  description
+  component_id
+  progress {
+    id
+    content_component_id
+    is_completed
+  }
+}
+    `;
 export const CourseSectionFragmentDoc = gql`
     fragment CourseSection on CourseSection {
   id
@@ -1424,12 +1482,16 @@ export const CourseSectionFragmentDoc = gql`
         ... on VideoContent {
           ...VideoContentComponent
         }
+        ... on YouTubeContent {
+          ...YouTubeContentComponent
+        }
       }
     }
   }
 }
     ${TextContentComponentFragmentDoc}
-${VideoContentComponentFragmentDoc}`;
+${VideoContentComponentFragmentDoc}
+${YouTubeContentComponentFragmentDoc}`;
 export const CourseReviewFragmentDoc = gql`
     fragment CourseReview on CourseReview {
   id
@@ -1526,6 +1588,18 @@ export const EditableVideoContentComponentFragmentDoc = gql`
   component_id
 }
     `;
+export const EditableYouTubeContentComponentFragmentDoc = gql`
+    fragment EditableYouTubeContentComponent on YouTubeContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  component_id
+  youtube_video_id
+  description
+}
+    `;
 export const EditableLessonFragmentDoc = gql`
     fragment EditableLesson on Lesson {
   id
@@ -1540,10 +1614,14 @@ export const EditableLessonFragmentDoc = gql`
     ... on VideoContent {
       ...EditableVideoContentComponent
     }
+    ... on YouTubeContent {
+      ...EditableYouTubeContentComponent
+    }
   }
 }
     ${EditableTextContentComponentFragmentDoc}
-${EditableVideoContentComponentFragmentDoc}`;
+${EditableVideoContentComponentFragmentDoc}
+${EditableYouTubeContentComponentFragmentDoc}`;
 export const SectionFragmentDoc = gql`
     fragment Section on CourseSection {
   id
@@ -2479,11 +2557,12 @@ export type UpdateContentComponentRanksMutationHookResult = ReturnType<typeof us
 export type UpdateContentComponentRanksMutationResult = Apollo.MutationResult<UpdateContentComponentRanksMutation>;
 export type UpdateContentComponentRanksMutationOptions = Apollo.BaseMutationOptions<UpdateContentComponentRanksMutation, UpdateContentComponentRanksMutationVariables>;
 export const CreateContentComponentDocument = gql`
-    mutation CreateContentComponent($baseComponentInfo: ContentComponentBaseInput!, $textContent: TextContentInput, $videoContent: VideoContentInput) {
+    mutation CreateContentComponent($baseComponentInfo: ContentComponentBaseInput!, $textContent: TextContentInput, $videoContent: VideoContentInput, $youtubeContent: YouTubeContentInput) {
   createContentComponent(
     baseComponentInfo: $baseComponentInfo
     textContent: $textContent
     videoContent: $videoContent
+    youtubeContent: $youtubeContent
   ) {
     success
     errors {
@@ -2496,11 +2575,15 @@ export const CreateContentComponentDocument = gql`
       ... on VideoContent {
         ...EditableVideoContentComponent
       }
+      ... on YouTubeContent {
+        ...EditableYouTubeContentComponent
+      }
     }
   }
 }
     ${EditableTextContentComponentFragmentDoc}
-${EditableVideoContentComponentFragmentDoc}`;
+${EditableVideoContentComponentFragmentDoc}
+${EditableYouTubeContentComponentFragmentDoc}`;
 export type CreateContentComponentMutationFn = Apollo.MutationFunction<CreateContentComponentMutation, CreateContentComponentMutationVariables>;
 
 /**
@@ -2519,6 +2602,7 @@ export type CreateContentComponentMutationFn = Apollo.MutationFunction<CreateCon
  *      baseComponentInfo: // value for 'baseComponentInfo'
  *      textContent: // value for 'textContent'
  *      videoContent: // value for 'videoContent'
+ *      youtubeContent: // value for 'youtubeContent'
  *   },
  * });
  */
@@ -2530,11 +2614,12 @@ export type CreateContentComponentMutationHookResult = ReturnType<typeof useCrea
 export type CreateContentComponentMutationResult = Apollo.MutationResult<CreateContentComponentMutation>;
 export type CreateContentComponentMutationOptions = Apollo.BaseMutationOptions<CreateContentComponentMutation, CreateContentComponentMutationVariables>;
 export const UpdateContentComponentDocument = gql`
-    mutation UpdateContentComponent($baseComponentInfo: UpdateContentComponentBaseInput!, $textContent: TextContentInput, $videoContent: VideoContentInput) {
+    mutation UpdateContentComponent($baseComponentInfo: UpdateContentComponentBaseInput!, $textContent: TextContentInput, $videoContent: VideoContentInput, $youtubeContent: YouTubeContentInput) {
   updateContentComponent(
     baseComponentInfo: $baseComponentInfo
     textContent: $textContent
     videoContent: $videoContent
+    youtubeContent: $youtubeContent
   ) {
     success
     errors {
@@ -2547,11 +2632,15 @@ export const UpdateContentComponentDocument = gql`
       ... on VideoContent {
         ...EditableVideoContentComponent
       }
+      ... on YouTubeContent {
+        ...EditableYouTubeContentComponent
+      }
     }
   }
 }
     ${EditableTextContentComponentFragmentDoc}
-${EditableVideoContentComponentFragmentDoc}`;
+${EditableVideoContentComponentFragmentDoc}
+${EditableYouTubeContentComponentFragmentDoc}`;
 export type UpdateContentComponentMutationFn = Apollo.MutationFunction<UpdateContentComponentMutation, UpdateContentComponentMutationVariables>;
 
 /**
@@ -2570,6 +2659,7 @@ export type UpdateContentComponentMutationFn = Apollo.MutationFunction<UpdateCon
  *      baseComponentInfo: // value for 'baseComponentInfo'
  *      textContent: // value for 'textContent'
  *      videoContent: // value for 'videoContent'
+ *      youtubeContent: // value for 'youtubeContent'
  *   },
  * });
  */

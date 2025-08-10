@@ -11,10 +11,14 @@ import {
   ComponentType as ComponentEnumType,
   EditableTextContentComponentFragment,
   EditableVideoContentComponentFragment,
+  EditableYouTubeContentComponentFragment,
 } from '@/generated/graphql';
 import { useDND } from '@/hooks';
 
-type ComponentType = EditableTextContentComponentFragment | EditableVideoContentComponentFragment;
+type ComponentType =
+  | EditableTextContentComponentFragment
+  | EditableVideoContentComponentFragment
+  | EditableYouTubeContentComponentFragment;
 
 type DraggableComponentItemType = {
   componentItem: ComponentType;

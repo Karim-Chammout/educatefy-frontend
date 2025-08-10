@@ -1,3 +1,4 @@
+import TextField from '@mui/material/TextField';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +12,8 @@ const ContentComponent = ({
   onVideoSelected,
   isUploadingVideo,
   videoUrl,
+  youtubeVideoId,
+  setYoutubeVideoId,
 }: {
   type: string;
   textContent: string;
@@ -18,6 +21,8 @@ const ContentComponent = ({
   onVideoSelected: (files: File[]) => Promise<void>;
   isUploadingVideo: boolean;
   videoUrl: string | null;
+  youtubeVideoId: string;
+  setYoutubeVideoId: Dispatch<SetStateAction<string>>;
 }) => {
   const { t } = useTranslation();
 
@@ -54,6 +59,31 @@ const ContentComponent = ({
                 </video>
               </div>
             </div>
+          )}
+        </>
+      );
+    case 'YouTubeContent':
+      return (
+        <>
+          <TextField
+            label={t('contentComponent.youtubeVideoId')}
+            helperText={t('contentComponent.youtubeVideoHelperText')}
+            value={youtubeVideoId}
+            onChange={(e) => setYoutubeVideoId(e.target.value)}
+            required
+          />
+          {youtubeVideoId && (
+            <iframe
+              width="100%"
+              height="315"
+              src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+              title="YouTube video player"
+              allowFullScreen
+              style={{
+                border: 0,
+                marginTop: '16px',
+              }}
+            />
           )}
         </>
       );

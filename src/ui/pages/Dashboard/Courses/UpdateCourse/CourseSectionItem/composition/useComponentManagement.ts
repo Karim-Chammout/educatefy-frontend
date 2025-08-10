@@ -170,6 +170,9 @@ const useComponentManagement = (
             ? { content: updatedData.textContent.content }
             : null,
           videoContent: updatedData.videoContent ? { url: updatedData.videoContent.url } : null,
+          youtubeContent: updatedData.youtubeContent
+            ? { videoId: updatedData.youtubeContent.videoId }
+            : null,
         },
         async onCompleted(res) {
           if (res.updateContentComponent?.success) {

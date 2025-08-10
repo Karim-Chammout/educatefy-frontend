@@ -56,6 +56,9 @@ const ComponentCreationForm = ({
   const [uploadedVideoUrl, setUploadedVideoUrl] = useState<null | string>(
     (initialData?.__typename === 'VideoContent' && initialData.url) || null,
   );
+  const [youtubeVideoId, setYoutubeVideoId] = useState(
+    (initialData?.__typename === 'YouTubeContent' && initialData.youtube_video_id) || '',
+  );
 
   const [createContentComponent] = useCreateContentComponentMutation();
 
@@ -97,6 +100,8 @@ const ComponentCreationForm = ({
         return ComponentType.Text;
       case 'VideoContent':
         return ComponentType.Video;
+      case 'YouTubeContent':
+        return ComponentType.Youtube;
       default:
         throw new Error('Not supported component type');
     }
@@ -116,6 +121,7 @@ const ComponentCreationForm = ({
           },
           textContent: textContent ? { content: textContent } : null,
           videoContent: uploadedVideoUrl ? { url: uploadedVideoUrl } : null,
+          youtubeContent: youtubeVideoId ? { videoId: youtubeVideoId } : null,
         },
         onCompleted(res) {
           if (res.createContentComponent?.success) {
@@ -149,6 +155,7 @@ const ComponentCreationForm = ({
       isRequired: baseComponent.isRequired,
       textContent: textContent ? { content: textContent } : null,
       videoContent: uploadedVideoUrl ? { url: uploadedVideoUrl } : null,
+      youtubeContent: youtubeVideoId ? { videoId: youtubeVideoId } : null,
       type: getComponentType(),
     };
 
@@ -175,6 +182,8 @@ const ComponentCreationForm = ({
           onVideoSelected={onVideoSelected}
           isUploadingVideo={isUploadingVideo}
           videoUrl={uploadedVideoUrl}
+          youtubeVideoId={youtubeVideoId}
+          setYoutubeVideoId={setYoutubeVideoId}
         />
       </div>
       <DialogActions sx={{ padding: '8px 0 !important' }}>
@@ -186,7 +195,8 @@ const ComponentCreationForm = ({
           disabled={
             !baseComponent.denomination ||
             (componentType === 'VideoContent' && !uploadedVideoUrl) ||
-            (componentType === 'TextContent' && !hasContent)
+            (componentType === 'TextContent' && !hasContent) ||
+            (componentType === 'YouTubeContent' && !youtubeVideoId)
           }
           fullWidth
         >

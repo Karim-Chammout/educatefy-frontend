@@ -67,6 +67,7 @@ const CourseSectionItem = ({
   const componentOptions = [
     { id: 'TextContent', label: t('sectionItem.textComponentOption') },
     { id: 'VideoContent', label: t('sectionItem.videoComponentOption') },
+    { id: 'YouTubeContent', label: t('sectionItem.youtubeVideoComponentOption') },
   ];
 
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;

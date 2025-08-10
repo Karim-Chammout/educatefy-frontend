@@ -28,6 +28,22 @@ fragment VideoContentComponent on VideoContent {
   }
 }
 
+fragment YouTubeContentComponent on YouTubeContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  youtube_video_id
+  description
+  component_id
+  progress {
+    id
+    content_component_id
+    is_completed
+  }
+}
+
 fragment CourseSection on CourseSection {
   id
   denomination
@@ -46,6 +62,9 @@ fragment CourseSection on CourseSection {
         }
         ... on VideoContent {
           ...VideoContentComponent
+        }
+        ... on YouTubeContent {
+          ...YouTubeContentComponent
         }
       }
     }

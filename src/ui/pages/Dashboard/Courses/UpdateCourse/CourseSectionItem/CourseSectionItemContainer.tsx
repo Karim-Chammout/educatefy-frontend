@@ -1,11 +1,12 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router';
 
 import { useEditableCourseSectionQuery } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
+import { ComponentProvider } from './composition';
 import CourseSectionItem from './CourseSectionItem';
 
 const CourseSectionItemContainer = () => {
@@ -76,12 +77,20 @@ const CourseSectionItemContainer = () => {
   }
 
   return (
-    <CourseSectionItem
-      sectionItem={currentCourseSectionItem}
+    <ComponentProvider
+      initialComponents={currentCourseSectionItem.components}
       courseId={courseId}
       sectionId={sectionId}
-      sectionDenomination={currentCourseSection.denomination}
-    />
+      itemId={itemId}
+      parentId={currentCourseSectionItem.id}
+    >
+      <CourseSectionItem
+        sectionItem={currentCourseSectionItem}
+        courseId={courseId}
+        sectionId={sectionId}
+        sectionDenomination={currentCourseSection.denomination}
+      />
+    </ComponentProvider>
   );
 };
 

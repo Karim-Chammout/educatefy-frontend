@@ -11,24 +11,20 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import withScrolling from 'react-dnd-scrolling';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
 
 import { SectionFragment } from '@/generated/graphql';
 import { Button, Modal, Typography } from '@/ui/components';
 import { InfoState } from '@/ui/compositions';
 
 import { StyledLink } from '../CourseSections/CourseSections.style';
-import {
-  ComponentCreationForm,
-  DraggableComponentItem,
-  useComponentManagement,
-} from './composition';
+import { DraggableComponentItem, useComponentContext } from './composition';
+import { ComponentFormModal } from './composition/ComponentFormModal';
 
 type ItemType = SectionFragment['items'][0];
 
 const ScrollingComponent = withScrolling('div');
 
-const CourseSectionItem = ({
+const CourseSectionItemContent = ({
   sectionItem,
   sectionDenomination,
   courseId,
@@ -40,36 +36,26 @@ const CourseSectionItem = ({
   sectionId?: string;
 }) => {
   const { t } = useTranslation();
-  const { itemId: itemIdParam } = useParams();
-
   const {
     componentItems,
-    handleEditComponent,
-    handleDeleteComponent,
-    moveComponentItem,
-    handleDragEnd,
-    setIsCreateItemModalOpen,
-    handleEdit,
-    setComponentItemToDelete,
-    setIsDeleteModalOpen,
-    isDeleteModalOpen,
-    isCreateItemModalOpen,
-    handleCloseModal,
-    componentType,
-    setComponentType,
+    isCreateModalOpen,
     isEditModalOpen,
-    editingComponent,
-    resetForm,
-    handleCloseDeleteModal,
-    setComponentItems,
-  } = useComponentManagement(sectionItem.components, courseId, sectionId, itemIdParam);
+    isDeleteModalOpen,
+    selectedComponentType,
+    openCreateModal,
+    closeCreateModal,
+    closeEditModal,
+    openDeleteModal,
+    closeDeleteModal,
+    setSelectedComponentType,
+    moveComponent,
+    handleDragEnd,
+    openEditModal,
+    deleteComponent,
+    getAvailableComponents,
+  } = useComponentContext();
 
-  const componentOptions = [
-    { id: 'TextContent', label: t('sectionItem.textComponentOption') },
-    { id: 'VideoContent', label: t('sectionItem.videoComponentOption') },
-    { id: 'YouTubeContent', label: t('sectionItem.youtubeVideoComponentOption') },
-  ];
-
+  const availableComponents = getAvailableComponents();
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const backend = isTouchDevice ? TouchBackend : HTML5Backend;
 
@@ -104,7 +90,7 @@ const CourseSectionItem = ({
         <Typography component="h1" variant="h4">
           {t('sectionItem.componentsHeader')}
         </Typography>
-        <Button onClick={() => setIsCreateItemModalOpen(true)} startIcon={<AddCircleOutlineIcon />}>
+        <Button onClick={openCreateModal} startIcon={<AddCircleOutlineIcon />}>
           {t('common.create')}
         </Button>
       </Box>
@@ -120,11 +106,10 @@ const CourseSectionItem = ({
                       key={item.component_id}
                       componentItem={item}
                       index={index}
-                      moveComponentItem={moveComponentItem}
-                      handleEdit={(itemId) => handleEdit(itemId)}
+                      moveComponentItem={moveComponent}
+                      handleEdit={(itemId) => openEditModal(itemId)}
                       handleDelete={(itemId, itemType) => {
-                        setComponentItemToDelete({ id: itemId, type: itemType });
-                        setIsDeleteModalOpen(true);
+                        openDeleteModal(itemId, itemType);
                       }}
                       onDragEnd={handleDragEnd}
                     />
@@ -136,7 +121,7 @@ const CourseSectionItem = ({
         ) : (
           <InfoState
             btnLabel={t('sectionItem.createComponent')}
-            btnOnClick={() => setIsCreateItemModalOpen(true)}
+            btnOnClick={openCreateModal}
             subtitle={t('sectionItem.createComponentSubtitle')}
             title={t('sectionItem.createComponentTitle')}
             icon={<AddCircleOutlineIcon />}
@@ -144,62 +129,68 @@ const CourseSectionItem = ({
         )}
       </Box>
 
+      {/* Component Type Selection Modal */}
       <Modal
         title={t('courseSection.createItem')}
-        open={isCreateItemModalOpen}
-        onClose={handleCloseModal}
+        open={isCreateModalOpen}
+        onClose={closeCreateModal}
       >
         <Autocomplete
-          options={componentOptions}
-          value={componentType}
-          onChange={(_event, newValue) => setComponentType(newValue)}
+          options={availableComponents}
+          value={selectedComponentType}
+          onChange={(_event, newValue) => setSelectedComponentType(newValue)}
+          getOptionLabel={(option) => option.label}
           renderInput={(params) => (
             <TextField {...params} label={t('sectionItem.selectComponentType')} />
           )}
         />
-        {componentType && (
-          <ComponentCreationForm
-            componentType={componentType.id}
-            parentId={sectionItem.id}
-            handleCloseModalCallback={handleCloseModal}
-            setComponentItems={setComponentItems}
-          />
-        )}
+        {selectedComponentType && <ComponentFormModal mode="create" />}
       </Modal>
 
-      <Modal title={t('sectionItem.editItem')} open={isEditModalOpen} onClose={resetForm}>
-        {editingComponent.id && (
-          <ComponentCreationForm
-            componentType={
-              componentItems.find((item) => item.component_id === editingComponent.id)
-                ?.__typename as string
-            }
-            parentId={sectionItem.id}
-            handleCloseModalCallback={resetForm}
-            initialData={componentItems.find((item) => item.component_id === editingComponent.id)}
-            onSave={(updatedData) => handleEditComponent(editingComponent.id!, updatedData)}
-            setComponentItems={setComponentItems}
-          />
-        )}
+      {/* Edit Component Modal */}
+      <Modal title={t('sectionItem.editItem')} open={isEditModalOpen} onClose={closeEditModal}>
+        <ComponentFormModal mode="edit" />
       </Modal>
 
+      {/* Delete Confirmation Modal */}
       <Modal
         title={t('sectionItem.deleteComponentConfirmation')}
         open={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
+        onClose={closeDeleteModal}
         maxWidth="xs"
         CTAs={
           <DialogActions>
-            <Button onClick={handleCloseDeleteModal} variant="outlined" fullWidth>
+            <Button onClick={closeDeleteModal} variant="outlined" fullWidth>
               {t('common.cancel')}
             </Button>
-            <Button color="error" onClick={handleDeleteComponent} fullWidth>
+            <Button color="error" onClick={deleteComponent} fullWidth>
               {t('common.confirm')}
             </Button>
           </DialogActions>
         }
       />
     </Container>
+  );
+};
+
+const CourseSectionItem = ({
+  sectionItem,
+  sectionDenomination,
+  courseId,
+  sectionId,
+}: {
+  sectionItem: ItemType;
+  sectionDenomination: string;
+  courseId?: string;
+  sectionId?: string;
+}) => {
+  return (
+    <CourseSectionItemContent
+      sectionItem={sectionItem}
+      sectionDenomination={sectionDenomination}
+      courseId={courseId}
+      sectionId={sectionId}
+    />
   );
 };
 

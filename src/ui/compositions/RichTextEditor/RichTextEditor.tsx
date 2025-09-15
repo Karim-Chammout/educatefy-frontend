@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from '@mui/material';
 import 'quill/dist/quill.snow.css';
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuill } from 'react-quilljs';
 
@@ -72,7 +72,7 @@ const QUILL_MODULES = {
 };
 
 type RichTextEditorProps = {
-  onChange: Dispatch<SetStateAction<string>>;
+  onChange: (content: string) => void;
   initialValue?: string;
   height?: number;
   placeholder?: string;

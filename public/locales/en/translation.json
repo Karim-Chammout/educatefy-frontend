@@ -241,6 +241,7 @@
   "sectionItem.selectComponentType": "Select component type",
   "sectionItem.editItem": "Edit item",
   "sectionItem.deleteComponentConfirmation": "Are you sure you want to delete this component?",
+  "contentComponent.createdSuccessfully": "Component created successfully",
   "contentComponent.title": "Title of component",
   "contentComponent.isPublished": "Is Published",
   "contentComponent.isPublishedHint": "Should this component be visible to students?",

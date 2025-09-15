@@ -107,7 +107,9 @@ export const ComponentFormModal = ({ mode }: { mode: 'create' | 'edit' }) => {
     componentData,
     updateBaseComponentData,
     createComponent,
+    isCreateingComponent,
     updateComponent,
+    isUpdatingComponent,
     closeCreateModal,
     closeEditModal,
   } = useComponentContext();
@@ -198,7 +200,11 @@ export const ComponentFormModal = ({ mode }: { mode: 'create' | 'edit' }) => {
         <Button onClick={handleClose} variant="outlined" fullWidth>
           {t('common.cancel')}
         </Button>
-        <Button onClick={handleSave} disabled={!isValid} fullWidth>
+        <Button
+          onClick={handleSave}
+          disabled={!isValid || isCreateingComponent || isUpdatingComponent}
+          fullWidth
+        >
           {t('common.confirm')}
         </Button>
       </DialogActions>

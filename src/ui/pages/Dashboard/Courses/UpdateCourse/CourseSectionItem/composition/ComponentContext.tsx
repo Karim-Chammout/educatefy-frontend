@@ -52,7 +52,9 @@ type ComponentContextState = {
   resetComponentData: () => void;
 
   createComponent: () => Promise<void>;
+  isCreateingComponent: boolean;
   updateComponent: () => Promise<void>;
+  isUpdatingComponent: boolean;
   deleteComponent: () => Promise<void>;
   moveComponent: (dragIndex: number, hoverIndex: number) => void;
   handleDragEnd: () => Promise<void>;
@@ -122,8 +124,10 @@ const ComponentProvider = ({
 
   const [deleteContentComponent] = useDeleteContentComponentMutation();
   const [updateContentComponentRanks] = useUpdateContentComponentRanksMutation();
-  const [updateContentComponent] = useUpdateContentComponentMutation();
-  const [createContentComponent] = useCreateContentComponentMutation();
+  const [updateContentComponent, { loading: isUpdatingComponent }] =
+    useUpdateContentComponentMutation();
+  const [createContentComponent, { loading: isCreateingComponent }] =
+    useCreateContentComponentMutation();
   const [editableCourseSection] = useEditableCourseSectionLazyQuery();
 
   const resetComponentData = useCallback(() => {
@@ -500,7 +504,9 @@ const ComponentProvider = ({
       resetComponentData,
 
       createComponent,
+      isCreateingComponent,
       updateComponent,
+      isUpdatingComponent,
       deleteComponent,
       moveComponent,
       handleDragEnd,
@@ -519,6 +525,7 @@ const ComponentProvider = ({
       componentItems,
       componentToDelete,
       createComponent,
+      isCreateingComponent,
       deleteComponent,
       editingComponent,
       getAvailableComponents,
@@ -535,6 +542,7 @@ const ComponentProvider = ({
       selectedComponentType,
       updateBaseComponentData,
       updateComponent,
+      isUpdatingComponent,
       updateComponentData,
       uploadVideo,
     ],

@@ -252,6 +252,7 @@
   "sectionItem.selectComponentType": "اختر نوع العنصر",
   "sectionItem.editItem": "تعديل العنصر",
   "sectionItem.deleteComponentConfirmation": "هل أنت متأكد أنك تريد حذف هذا العنصر",
+  "contentComponent.createdSuccessfully": "تم إنشاء العنصر بنجاح",
   "contentComponent.title": "عنوان العنصر",
   "contentComponent.isPublished": "نشر؟",
   "contentComponent.isPublishedHint": "هل هذا العنصر مرئي للطلاب؟",

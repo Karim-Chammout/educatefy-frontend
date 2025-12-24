@@ -49,6 +49,8 @@ export type Account = {
   nickname?: Maybe<Scalars['String']['output']>;
   /** The preferred language for the account */
   preferredLanguage: Scalars['String']['output'];
+  /** Statistics for the current user. */
+  statistics?: Maybe<Statistics>;
   /** Represents the subjects a teacher is specialized in for teaching. */
   subjects: Array<Subject>;
 };
@@ -749,12 +751,16 @@ export type PublicAccount = {
 
 export type Query = {
   __typename: 'Query';
+  /** List of courses the user has completed. */
+  completedCourses: Array<Course>;
   /** List of countries */
   countries: Array<Country>;
   /** Retrieve a course by its slug */
   course?: Maybe<Course>;
   /** Retrieve a course to be edited by the teacher. */
   editableCourse?: Maybe<Course>;
+  /** List of courses the user is enrolled in */
+  enrolledCourses: Array<Course>;
   /** Retrieve the instructor (teacher) account by its id */
   instructor?: Maybe<Teacher>;
   /** List of languages */
@@ -812,6 +818,15 @@ export type RateCourseResult = {
   errors: Array<Error>;
   /** Indicates if the mutation was successful. */
   success: Scalars['Boolean']['output'];
+};
+
+/** Statistics info for the current user. */
+export type Statistics = {
+  __typename: 'Statistics';
+  /** The number of completed courses by the user */
+  completedCoursesCount: Scalars['Int']['output'];
+  /** The number of enrolled courses by the user */
+  enrolledCoursesCount: Scalars['Int']['output'];
 };
 
 /** The subject info */
@@ -1322,6 +1337,15 @@ export type ExploreQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ExploreQuery = { __typename: 'Query', subjectsListWithLinkedCourses: Array<{ __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }> }> };
 
+export type HomeCourseFragment = { __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } };
+
+export type StatisticsFragment = { __typename: 'Statistics', enrolledCoursesCount: number, completedCoursesCount: number };
+
+export type HomeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HomeQuery = { __typename: 'Query', enrolledCourses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, completedCourses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, me: { __typename: 'Account', statistics?: { __typename: 'Statistics', enrolledCoursesCount: number, completedCoursesCount: number } | null } };
+
 export type TeacherFragment = { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }> };
 
 export type InstructorQueryVariables = Exact<{
@@ -1698,6 +1722,28 @@ export const ExploreSubjectFragmentDoc = gql`
     id
     participationCount
   }
+}
+    `;
+export const HomeCourseFragmentDoc = gql`
+    fragment HomeCourse on Course {
+  id
+  denomination
+  slug
+  level
+  image
+  rating
+  participationCount
+  instructor {
+    first_name
+    last_name
+    avatar_url
+  }
+}
+    `;
+export const StatisticsFragmentDoc = gql`
+    fragment Statistics on Statistics {
+  enrolledCoursesCount
+  completedCoursesCount
 }
     `;
 export const TeacherFragmentDoc = gql`
@@ -3066,6 +3112,54 @@ export type ExploreQueryHookResult = ReturnType<typeof useExploreQuery>;
 export type ExploreLazyQueryHookResult = ReturnType<typeof useExploreLazyQuery>;
 export type ExploreSuspenseQueryHookResult = ReturnType<typeof useExploreSuspenseQuery>;
 export type ExploreQueryResult = Apollo.QueryResult<ExploreQuery, ExploreQueryVariables>;
+export const HomeDocument = gql`
+    query Home {
+  enrolledCourses {
+    ...HomeCourse
+  }
+  completedCourses {
+    ...HomeCourse
+  }
+  me {
+    statistics {
+      ...Statistics
+    }
+  }
+}
+    ${HomeCourseFragmentDoc}
+${StatisticsFragmentDoc}`;
+
+/**
+ * __useHomeQuery__
+ *
+ * To run a query within a React component, call `useHomeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useHomeQuery(baseOptions?: Apollo.QueryHookOptions<HomeQuery, HomeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<HomeQuery, HomeQueryVariables>(HomeDocument, options);
+      }
+export function useHomeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeQuery, HomeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HomeQuery, HomeQueryVariables>(HomeDocument, options);
+        }
+export function useHomeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<HomeQuery, HomeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<HomeQuery, HomeQueryVariables>(HomeDocument, options);
+        }
+export type HomeQueryHookResult = ReturnType<typeof useHomeQuery>;
+export type HomeLazyQueryHookResult = ReturnType<typeof useHomeLazyQuery>;
+export type HomeSuspenseQueryHookResult = ReturnType<typeof useHomeSuspenseQuery>;
+export type HomeQueryResult = Apollo.QueryResult<HomeQuery, HomeQueryVariables>;
 export const InstructorDocument = gql`
     query Instructor($id: ID!) {
   instructor(id: $id) {

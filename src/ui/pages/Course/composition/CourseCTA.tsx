@@ -2,7 +2,12 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
-import { CourseFragment, CourseStatus, useUpdateCourseStatusMutation } from '@/generated/graphql';
+import {
+  CourseFragment,
+  CourseStatus,
+  HomeDocument,
+  useUpdateCourseStatusMutation,
+} from '@/generated/graphql';
 import { Button } from '@/ui/components';
 import { AuthContext, ToasterContext } from '@/ui/context';
 import { isLoggedIn } from '@/ui/layout/apolloClient';
@@ -23,7 +28,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
 
   const [updateStatus, { loading }] = useUpdateCourseStatusMutation();
 
-  const handleUpdateCourseStatus = async () => {
+  const handleStatusUpdate = async (status: CourseStatus) => {
     if (!isLoggedIn()) {
       savePostLoginRedirectPath(location.pathname);
       setAuthModalVisibility('login');
@@ -35,10 +40,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
       variables: {
         courseStatusInput: {
           id: course.id,
-          status:
-            isCourseAvailable || isCourseCompleted
-              ? CourseStatus.Enrolled
-              : CourseStatus.Unenrolled,
+          status,
         },
       },
       onCompleted(data) {
@@ -57,20 +59,19 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
           newType: 'error',
         });
       },
+      refetchQueries: [{ query: HomeDocument }],
     });
   };
 
-  const handleCompleteCourse = async () => {
-    if (!isLoggedIn()) return;
+  const handleUpdateCourseStatus = async () => {
+    const status =
+      isCourseAvailable || isCourseCompleted ? CourseStatus.Enrolled : CourseStatus.Unenrolled;
 
-    await updateStatus({
-      variables: {
-        courseStatusInput: {
-          id: course.id,
-          status: CourseStatus.Completed,
-        },
-      },
-    });
+    await handleStatusUpdate(status);
+  };
+
+  const handleCompleteCourse = async () => {
+    await handleStatusUpdate(CourseStatus.Completed);
   };
 
   return (

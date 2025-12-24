@@ -36,7 +36,11 @@ const ExploreContainer = () => {
     return <ErrorPlaceholder />;
   }
 
-  return <Explore subjects={data.subjectsListWithLinkedCourses} />;
+  const filteredSubjects = data.subjectsListWithLinkedCourses.filter(
+    (subject) => subject.courses.length > 0,
+  );
+
+  return <Explore subjects={filteredSubjects} />;
 };
 
 export default ExploreContainer;

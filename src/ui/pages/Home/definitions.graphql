@@ -1,0 +1,33 @@
+fragment HomeCourse on Course {
+  id
+  denomination
+  slug
+  level
+  image
+  rating
+  participationCount
+  instructor {
+    first_name
+    last_name
+    avatar_url
+  }
+}
+
+fragment Statistics on Statistics {
+  enrolledCoursesCount
+  completedCoursesCount
+}
+
+query Home {
+  enrolledCourses {
+    ...HomeCourse
+  }
+  completedCourses {
+    ...HomeCourse
+  }
+  me {
+    statistics {
+      ...Statistics
+    }
+  }
+}

@@ -281,5 +281,11 @@
   "instructor.sutdents_zero": "Students",
   "course.coursesBy": "Courses by {{name}}",
   "theme.dark": "Night Mode",
-  "theme.light": "Day Mode"
+  "theme.light": "Day Mode",
+  "home.hey": "Hey there!",
+  "home.goodToSeeYou": "Good to see you again.",
+  "home.enrolledCoursesContinue": "Continue where you left off",
+  "home.yourCompletedCourses": "Your completed courses",
+  "statistics.enrolledCourses": "Enrolled courses",
+  "statistics.completedCourses": "Completed courses"
 }

@@ -303,5 +303,11 @@
   "instructor.sutdents_zero": "طلاب",
   "course.coursesBy": "الدورات التي أنشأها {{name}}",
   "theme.dark": "الوضع الليلي",
-  "theme.light": "الوضع النهاري"
+  "theme.light": "الوضع النهاري",
+  "home.hey": "مرحبًا!",
+  "home.goodToSeeYou": "سعداء برؤيتك مجددًا.",
+  "home.enrolledCoursesContinue": "تابِع من حيث توقفت",
+  "home.yourCompletedCourses": "دوراتك المُكتملة",
+  "statistics.enrolledCourses": "الدورات المسجلة",
+  "statistics.completedCourses": "الدورات المكتملة"
 }

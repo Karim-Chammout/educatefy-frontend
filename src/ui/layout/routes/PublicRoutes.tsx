@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
 import {
   Course,
@@ -17,11 +17,12 @@ import RouteWrapper from './RouteWrapper';
   list of routes to redirect to login page and show
   an error message if a user tries to visit without loging in.
 */
-const privateRoutes = ['/', '/profile', '/dashboard/*', '/course/:slug/*'];
+const privateRoutes = ['/profile', '/dashboard/*', '/course/:slug/*'];
 
 const PublicRoutes = () => {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/explore" replace />} />
       <Route
         path="/openid/callback"
         element={

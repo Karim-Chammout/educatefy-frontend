@@ -1,25 +1,69 @@
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { Paper, Box, Chip } from '@mui/material';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import Paper from '@mui/material/Paper';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router';
+
 import { CourseSectionFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
+import { AuthContext } from '@/ui/context';
+import { isLoggedIn } from '@/ui/layout/apolloClient';
+import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
+
 import { useSectionProgress } from '../hooks/useSectionProgress';
 import { SectionProgressIndicator } from './SectionProgressIndicator';
 
 type SectionCardType = {
   section: CourseSectionFragment;
-  onSectionClick: (sectionId: string) => void;
-  calculateSectionDuration: (section: CourseSectionFragment) => string;
 };
 
-export const SectionCard = ({
-  section,
-  onSectionClick,
-  calculateSectionDuration,
-}: SectionCardType) => {
+export const SectionCard = ({ section }: SectionCardType) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { slug } = useParams();
+
   const { completedComponents, totalComponents, percentage, isCompleted } =
     useSectionProgress(section);
+
+  const {
+    authModal: { setAuthModalVisibility },
+  } = useContext(AuthContext);
+
+  const handleSectionClick = () => {
+    if (!isLoggedIn()) {
+      savePostLoginRedirectPath(`/course/${slug}/section/${section.id}`);
+      setAuthModalVisibility('login');
+
+      return;
+    }
+
+    navigate(`/course/${slug}/section/${section.id}`);
+  };
+
+  const calculateSectionDuration = () => {
+    const totalMinutes = section.items.reduce((total, item) => total + item.duration, 0);
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    const parts = [];
+
+    if (hours > 0) {
+      parts.push(t('courseSection.duration.hours', { count: hours }));
+    }
+
+    if (minutes > 0) {
+      parts.push(t('courseSection.duration.minutes', { count: minutes }));
+    }
+
+    if (parts.length === 0) {
+      return t('courseSection.duration.minutes', { count: 0 });
+    }
+
+    return parts.join(' ');
+  };
 
   return (
     <Paper
@@ -66,7 +110,7 @@ export const SectionCard = ({
           <Typography variant="body2" color="text.secondary">
             {t('courseSection.itemInfo', {
               count: section.items.length,
-              duration: calculateSectionDuration(section),
+              duration: calculateSectionDuration(),
             })}
           </Typography>
         </Box>
@@ -82,7 +126,7 @@ export const SectionCard = ({
           <Button
             variant="outlined"
             color={isCompleted ? 'success' : 'primary'}
-            onClick={() => onSectionClick(section.id)}
+            onClick={handleSectionClick}
             startIcon={<OpenInNewIcon />}
           >
             {t('common.open')}

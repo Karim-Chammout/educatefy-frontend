@@ -93,7 +93,7 @@ const CourseOverview = ({ courseInfo }: { courseInfo: CourseFragment }) => {
 
       {courseInfo.sections.length > 0 && (
         <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
-          <CourseSections sections={courseInfo.sections} slug={courseInfo.slug} />
+          <CourseSections sections={courseInfo.sections} />
         </Paper>
       )}
     </>

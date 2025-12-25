@@ -232,6 +232,7 @@
   "courseSection.completed": "مكتمل",
   "courseSection.noContent": "لا يوجد محتوى متاح",
   "courseSection.progress": "تم إكمال {{completed}} من {{total}}",
+  "courseSection.stats": "{{sectionsCount}} قسم • {{lecturesCount}} محاضرة • {{duration}} المدة الإجمالية",
   "sectionItem.editCurriculumItem": "تعديل عنصر المنهج",
   "sectionItem.backToSectionBtn": "العودة إلى القسم",
   "sectionItem.noSectionItemSubtitle": "لا يوجد هذا العنصر في القسم",

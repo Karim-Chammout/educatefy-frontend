@@ -221,6 +221,7 @@
   "courseSection.completed": "Completed",
   "courseSection.noContent": "No content available",
   "courseSection.progress": "{{completed}} of {{total}} completed",
+  "courseSection.stats": "{{sectionsCount}} sections • {{lecturesCount}} lectures • {{duration}} total length",
   "sectionItem.backToSectionBtn": "Back to section",
   "sectionItem.editCurriculumItem": "Edit curriculum item",
   "sectionItem.noSectionItemSubtitle": "This section item does not exist",

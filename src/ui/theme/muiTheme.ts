@@ -73,6 +73,7 @@ const muiCustomTheme = (
         md: 990,
         lg: 1200,
         xl: 1400,
+        xxl: 1600,
       },
     },
     components: {

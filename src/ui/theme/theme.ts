@@ -194,11 +194,13 @@ const darkColors = {
 
 const commonTheme = {
   breakpoint: {
+    xxs: 0,
     xs: 360,
     sm: 768,
     md: 990,
     lg: 1200,
-    xlg: 1400,
+    xl: 1400,
+    xxl: 1600,
   },
 };
 

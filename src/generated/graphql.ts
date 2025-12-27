@@ -224,7 +224,7 @@ export type Course = {
   viewerReview?: Maybe<CourseReview>;
 };
 
-/** Input for createing a course record. */
+/** Input for creating a course record. */
 export type CourseInfoInput = {
   /** The denomination of this course. */
   denomination: Scalars['String']['input'];
@@ -329,7 +329,7 @@ export type CourseSection = {
   rank: Scalars['Int']['output'];
 };
 
-/** Input for createing a course section record. */
+/** Input for creating a course section record. */
 export type CourseSectionInfoInput = {
   /** The ID of the course. */
   courseId: Scalars['ID']['input'];
@@ -406,6 +406,17 @@ export type CreateOrUpdateLessonResult = {
   success: Scalars['Boolean']['output'];
 };
 
+/** The result of the creating or updating a program. */
+export type CreateOrUpdateProgramResult = {
+  __typename: 'CreateOrUpdateProgramResult';
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** The created or updated program information. */
+  program?: Maybe<Program>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
+};
+
 /** Input for deleting a course rating */
 export type DeleteCourseRatingInput = {
   /** The ID of the course. */
@@ -473,7 +484,7 @@ export type Lesson = {
   itemId: Scalars['ID']['output'];
 };
 
-/** Input for createing a lesson record. */
+/** Input for creating a lesson record. */
 export type LessonInfoInput = {
   /** The ID of the course. */
   courseId: Scalars['ID']['input'];
@@ -499,6 +510,8 @@ export type Mutation = {
   createCourseSection?: Maybe<CreateOrUpdateCourseSectionResult>;
   /** Creates a lesson. */
   createLesson?: Maybe<CreateOrUpdateLessonResult>;
+  /** Creates a program. */
+  createProgram?: Maybe<CreateOrUpdateProgramResult>;
   /** Deletes a content component. */
   deleteContentComponent?: Maybe<MutationResult>;
   /** Deletes a course. */
@@ -567,6 +580,11 @@ export type MutationCreateCourseSectionArgs = {
 
 export type MutationCreateLessonArgs = {
   lessonInfo: LessonInfoInput;
+};
+
+
+export type MutationCreateProgramArgs = {
+  programInfo: ProgramInfoInput;
 };
 
 
@@ -732,6 +750,58 @@ export type ProfilePictureDetailsInput = {
   uuid: Scalars['String']['input'];
 };
 
+/** The program info. */
+export type Program = {
+  __typename: 'Program';
+  /** The date of when this program was created. */
+  created_at: Scalars['Date']['output'];
+  /** The denomination of this program. */
+  denomination: Scalars['String']['output'];
+  /** The description of this program. */
+  description: Scalars['String']['output'];
+  /** A link to an external resource. */
+  external_resource_link?: Maybe<Scalars['String']['output']>;
+  /** A unique id of this program. */
+  id: Scalars['ID']['output'];
+  /** The image of this program */
+  image?: Maybe<Scalars['String']['output']>;
+  /** A flag to indicate whether this program is published or not */
+  is_published: Scalars['Boolean']['output'];
+  /** The difficulty level of this program. */
+  level: ProgramLevel;
+  /** A unique slug of this program. */
+  slug: Scalars['String']['output'];
+  /** The subtitle of this program. */
+  subtitle: Scalars['String']['output'];
+  /** The date of when this program was last updated. */
+  updated_at: Scalars['Date']['output'];
+};
+
+/** Input for creating a program record. */
+export type ProgramInfoInput = {
+  /** The denomination of this program. */
+  denomination: Scalars['String']['input'];
+  /** The description of this program. */
+  description: Scalars['String']['input'];
+  /** The image of this program. */
+  image?: InputMaybe<Scalars['String']['input']>;
+  /** A flag to indicate whether this program is published or not. */
+  is_published: Scalars['Boolean']['input'];
+  /** The difficulty level of this program. */
+  level: ProgramLevel;
+  /** The slug of this program. */
+  slug: Scalars['String']['input'];
+  /** The subtitle of this program. */
+  subtitle: Scalars['String']['input'];
+};
+
+/** The difficulty level of a program. */
+export enum ProgramLevel {
+  Advanced = 'advanced',
+  Beginner = 'beginner',
+  Intermediate = 'intermediate'
+}
+
 /** The properties of a public account */
 export type PublicAccount = {
   __typename: 'PublicAccount';
@@ -769,6 +839,8 @@ export type Query = {
   me: Account;
   /** List of OpenId clients */
   openIdClients: Array<OpenidClient>;
+  /** Retrieve a program by its slug */
+  program?: Maybe<Program>;
   /** Retrieve a subject by its id */
   subject?: Maybe<Subject>;
   /** List of subjects */
@@ -777,6 +849,8 @@ export type Query = {
   subjectsListWithLinkedCourses: Array<Subject>;
   /** List of courses created by the teacher */
   teacherCourses: Array<Course>;
+  /** List of programs created by the teacher */
+  teacherPrograms: Array<Program>;
 };
 
 
@@ -792,6 +866,11 @@ export type QueryEditableCourseArgs = {
 
 export type QueryInstructorArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryProgramArgs = {
+  slug: Scalars['String']['input'];
 };
 
 
@@ -865,6 +944,8 @@ export type Teacher = {
   name?: Maybe<Scalars['String']['output']>;
   /** The nickname of the teacher */
   nickname?: Maybe<Scalars['String']['output']>;
+  /** List of programs created by the teacher */
+  programs: Array<Program>;
 };
 
 /** A text content component. */
@@ -1330,6 +1411,13 @@ export type TeacherCoursesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TeacherCoursesQuery = { __typename: 'Query', teacherCourses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, is_published: boolean, created_at: any, updated_at: any }> };
 
+export type TeacherProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any };
+
+export type TeacherProgramsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TeacherProgramsQuery = { __typename: 'Query', teacherPrograms: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any }> };
+
 export type ExploreSubjectFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }> };
 
 export type ExploreQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1705,6 +1793,17 @@ export const EditableCourseFragmentDoc = gql`
     `;
 export const TeacherCourseFragmentDoc = gql`
     fragment TeacherCourse on Course {
+  id
+  denomination
+  slug
+  level
+  is_published
+  created_at
+  updated_at
+}
+    `;
+export const TeacherProgramFragmentDoc = gql`
+    fragment TeacherProgram on Program {
   id
   denomination
   slug
@@ -3073,6 +3172,45 @@ export type TeacherCoursesQueryHookResult = ReturnType<typeof useTeacherCoursesQ
 export type TeacherCoursesLazyQueryHookResult = ReturnType<typeof useTeacherCoursesLazyQuery>;
 export type TeacherCoursesSuspenseQueryHookResult = ReturnType<typeof useTeacherCoursesSuspenseQuery>;
 export type TeacherCoursesQueryResult = Apollo.QueryResult<TeacherCoursesQuery, TeacherCoursesQueryVariables>;
+export const TeacherProgramsDocument = gql`
+    query TeacherPrograms {
+  teacherPrograms {
+    ...TeacherProgram
+  }
+}
+    ${TeacherProgramFragmentDoc}`;
+
+/**
+ * __useTeacherProgramsQuery__
+ *
+ * To run a query within a React component, call `useTeacherProgramsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeacherProgramsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeacherProgramsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTeacherProgramsQuery(baseOptions?: Apollo.QueryHookOptions<TeacherProgramsQuery, TeacherProgramsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TeacherProgramsQuery, TeacherProgramsQueryVariables>(TeacherProgramsDocument, options);
+      }
+export function useTeacherProgramsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeacherProgramsQuery, TeacherProgramsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TeacherProgramsQuery, TeacherProgramsQueryVariables>(TeacherProgramsDocument, options);
+        }
+export function useTeacherProgramsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<TeacherProgramsQuery, TeacherProgramsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TeacherProgramsQuery, TeacherProgramsQueryVariables>(TeacherProgramsDocument, options);
+        }
+export type TeacherProgramsQueryHookResult = ReturnType<typeof useTeacherProgramsQuery>;
+export type TeacherProgramsLazyQueryHookResult = ReturnType<typeof useTeacherProgramsLazyQuery>;
+export type TeacherProgramsSuspenseQueryHookResult = ReturnType<typeof useTeacherProgramsSuspenseQuery>;
+export type TeacherProgramsQueryResult = Apollo.QueryResult<TeacherProgramsQuery, TeacherProgramsQueryVariables>;
 export const ExploreDocument = gql`
     query Explore {
   subjectsListWithLinkedCourses {

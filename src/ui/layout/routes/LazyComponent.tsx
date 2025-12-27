@@ -20,6 +20,7 @@ export const Login = lazy(() => import('@/ui/pages/Login'));
 export const LoginCallback = lazy(() => import('@/ui/pages/Login/LoginCallback'));
 export const NotFound = lazy(() => import('@/ui/pages/NotFound'));
 export const Profile = lazy(() => import('@/ui/pages/Profile'));
+export const Programs = lazy(() => import('@/ui/pages/Dashboard/Programs'));
 export const Register = lazy(() => import('@/ui/pages/Register'));
 export const Section = lazy(() => import('@/ui/pages/CourseSection'));
 export const Subject = lazy(() => import('@/ui/pages/Subject'));

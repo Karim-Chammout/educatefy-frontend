@@ -25,6 +25,7 @@ import {
   Instructor,
   NotFound,
   Profile,
+  Programs,
   Section,
   Subject,
   UpdateCourse,
@@ -195,6 +196,14 @@ const PrivatePagesView = () => {
             element={
               <RouteWrapper>
                 <CourseSectionItem />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/dashboard/programs"
+            element={
+              <RouteWrapper>
+                <Programs />
               </RouteWrapper>
             }
           />

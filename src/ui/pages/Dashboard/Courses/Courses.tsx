@@ -151,7 +151,7 @@ const Courses = ({ courses }: { courses: Array<TeacherCourseFragment> }) => {
                       direction={orderBy === key ? order : 'asc'}
                       onClick={() => handleSort(key)}
                     >
-                      {t(`courses.tableHeaders.${key}`)}
+                      {t(`content.tableHeaders.${key}`)}
                     </TableSortLabel>
                   </TableCell>
                 ))}
@@ -171,7 +171,7 @@ const Courses = ({ courses }: { courses: Array<TeacherCourseFragment> }) => {
                     <TableCell>{course.denomination}</TableCell>
                     <TableCell>{course.level}</TableCell>
                     <TableCell>
-                      {course.is_published ? t('courses.published') : t('courses.unpublished')}
+                      {course.is_published ? t('content.published') : t('content.unpublished')}
                     </TableCell>
                     <TableCell>{formatDate(course.updated_at)}</TableCell>
                     <TableCell>{formatDate(course.created_at)}</TableCell>

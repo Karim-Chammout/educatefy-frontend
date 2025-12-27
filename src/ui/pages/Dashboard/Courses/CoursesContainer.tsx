@@ -1,6 +1,6 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import { useTeacherCoursesQuery } from '@/generated/graphql';
 import { Loader } from '@/ui/components';

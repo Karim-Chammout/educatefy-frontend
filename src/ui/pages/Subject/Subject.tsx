@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 
 import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';
-import { SubjectCourseFragment } from '@/generated/graphql';
+import { SubjectContentFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 import { CourseCard } from '@/ui/compositions';
 
 import { StatsContainer, SubjectHeader } from './Subject.styles';
 
-const Subject = ({ subject }: { subject: SubjectCourseFragment }) => {
+const Subject = ({ subject }: { subject: SubjectContentFragment }) => {
   const { t } = useTranslation();
 
   const averageRating =
@@ -24,18 +24,35 @@ const Subject = ({ subject }: { subject: SubjectCourseFragment }) => {
         </Typography>
 
         <StatsContainer>
-          <div>
-            <Typography
-              variant="h4"
-              component="span"
-              sx={{ fontWeight: 'bold', color: 'primary.main' }}
-            >
-              {subject.courses.length}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t('subject.coursesAvailable')}
-            </Typography>
-          </div>
+          {subject.programs.length > 0 && (
+            <div>
+              <Typography
+                variant="h4"
+                component="span"
+                sx={{ fontWeight: 'bold', color: 'primary.main' }}
+              >
+                {subject.programs.length}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('subject.programsAvailable')}
+              </Typography>
+            </div>
+          )}
+
+          {subject.courses.length > 0 && (
+            <div>
+              <Typography
+                variant="h4"
+                component="span"
+                sx={{ fontWeight: 'bold', color: 'primary.main' }}
+              >
+                {subject.courses.length}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('subject.coursesAvailable')}
+              </Typography>
+            </div>
+          )}
 
           {averageRating > 0 && (
             <div>

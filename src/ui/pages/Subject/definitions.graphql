@@ -1,4 +1,4 @@
-fragment SubjectCourse on Subject {
+fragment SubjectContent on Subject {
   id
   denomination
   courses {
@@ -15,10 +15,13 @@ fragment SubjectCourse on Subject {
       avatar_url
     }
   }
+  programs {
+    id
+  }
 }
 
 query Subject($id: ID!) {
   subject(id: $id) {
-    ...SubjectCourse
+    ...SubjectContent
   }
 }

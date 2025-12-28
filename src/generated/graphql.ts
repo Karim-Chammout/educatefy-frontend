@@ -845,8 +845,8 @@ export type Query = {
   subject?: Maybe<Subject>;
   /** List of subjects */
   subjects: Array<Subject>;
-  /** List of subjects that have courses associated with them */
-  subjectsListWithLinkedCourses: Array<Subject>;
+  /** List of subjects that have content associated with them */
+  subjectsWithLinkedContent: Array<Subject>;
   /** List of courses created by the teacher */
   teacherCourses: Array<Course>;
   /** List of programs created by the teacher */
@@ -917,6 +917,8 @@ export type Subject = {
   denomination: Scalars['String']['output'];
   /** A unique id of this subject. */
   id: Scalars['ID']['output'];
+  /** The programs linked to this subject. */
+  programs: Array<Program>;
 };
 
 /** The properties of a teacher account */
@@ -1418,12 +1420,12 @@ export type TeacherProgramsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TeacherProgramsQuery = { __typename: 'Query', teacherPrograms: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any }> };
 
-export type ExploreSubjectFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }> };
+export type ExploreSubjectFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string }> };
 
 export type ExploreQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ExploreQuery = { __typename: 'Query', subjectsListWithLinkedCourses: Array<{ __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }> }> };
+export type ExploreQuery = { __typename: 'Query', subjectsWithLinkedContent: Array<{ __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string }> }> };
 
 export type HomeCourseFragment = { __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } };
 
@@ -1434,14 +1436,14 @@ export type HomeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type HomeQuery = { __typename: 'Query', enrolledCourses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, completedCourses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, me: { __typename: 'Account', statistics?: { __typename: 'Statistics', enrolledCoursesCount: number, completedCoursesCount: number } | null } };
 
-export type TeacherFragment = { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }> };
+export type TeacherFragment = { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string }> };
 
 export type InstructorQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type InstructorQuery = { __typename: 'Query', instructor?: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }> } | null };
+export type InstructorQuery = { __typename: 'Query', instructor?: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string }> } | null };
 
 export type UserFragment = { __typename: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
 
@@ -1469,14 +1471,14 @@ export type RemoveProfilePictureMutationVariables = Exact<{ [key: string]: never
 
 export type RemoveProfilePictureMutation = { __typename: 'Mutation', removeProfilePicture?: { __typename: 'ChangeProfilePictureResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, user?: { __typename: 'Account', id: string, avatar_url?: string | null } | null } | null };
 
-export type SubjectCourseFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> };
+export type SubjectContentFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string }> };
 
 export type SubjectQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type SubjectQuery = { __typename: 'Query', subject?: { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } | null };
+export type SubjectQuery = { __typename: 'Query', subject?: { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string }> } | null };
 
 export const OpenidClientFragmentDoc = gql`
     fragment OpenidClient on OpenidClient {
@@ -1821,6 +1823,9 @@ export const ExploreSubjectFragmentDoc = gql`
     id
     participationCount
   }
+  programs {
+    id
+  }
 }
     `;
 export const HomeCourseFragmentDoc = gql`
@@ -1864,6 +1869,9 @@ export const TeacherFragmentDoc = gql`
     rating
     participationCount
   }
+  programs {
+    id
+  }
 }
     `;
 export const UserFragmentDoc = gql`
@@ -1894,8 +1902,8 @@ export const UserFragmentDoc = gql`
   }
 }
     `;
-export const SubjectCourseFragmentDoc = gql`
-    fragment SubjectCourse on Subject {
+export const SubjectContentFragmentDoc = gql`
+    fragment SubjectContent on Subject {
   id
   denomination
   courses {
@@ -1911,6 +1919,9 @@ export const SubjectCourseFragmentDoc = gql`
       last_name
       avatar_url
     }
+  }
+  programs {
+    id
   }
 }
     `;
@@ -3213,7 +3224,7 @@ export type TeacherProgramsSuspenseQueryHookResult = ReturnType<typeof useTeache
 export type TeacherProgramsQueryResult = Apollo.QueryResult<TeacherProgramsQuery, TeacherProgramsQueryVariables>;
 export const ExploreDocument = gql`
     query Explore {
-  subjectsListWithLinkedCourses {
+  subjectsWithLinkedContent {
     ...ExploreSubject
   }
 }
@@ -3506,10 +3517,10 @@ export type RemoveProfilePictureMutationOptions = Apollo.BaseMutationOptions<Rem
 export const SubjectDocument = gql`
     query Subject($id: ID!) {
   subject(id: $id) {
-    ...SubjectCourse
+    ...SubjectContent
   }
 }
-    ${SubjectCourseFragmentDoc}`;
+    ${SubjectContentFragmentDoc}`;
 
 /**
  * __useSubjectQuery__

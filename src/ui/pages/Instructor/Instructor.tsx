@@ -3,6 +3,7 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import SchoolIcon from '@mui/icons-material/School';
 import StarIcon from '@mui/icons-material/Star';
+import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
@@ -51,6 +52,8 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
       ? instructor.courses.reduce((sum, course) => sum + course.rating, 0) /
         instructor.courses.length
       : 0;
+
+  const programCount = instructor.programs.length;
 
   const courseCount = instructor.courses.length;
 
@@ -108,7 +111,25 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
 
       <Box sx={{ mb: 3 }}>
         <Grid container spacing={3}>
-          <Grid size={{ xxs: 12, sm: 4 }}>
+          <Grid size={{ xxs: 12, sm: 6, md: 3 }}>
+            <StatCard variant="outlined">
+              <StatIcon>
+                <WorkspacesIcon sx={{ fontSize: 32, color: 'primary.main' }} />
+              </StatIcon>
+              <StatContent>
+                <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
+                  {programCount}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {t('instructor.programs', {
+                    count: programCount,
+                  })}
+                </Typography>
+              </StatContent>
+            </StatCard>
+          </Grid>
+
+          <Grid size={{ xxs: 12, sm: 6, md: 3 }}>
             <StatCard variant="outlined">
               <StatIcon>
                 <SchoolIcon sx={{ fontSize: 32, color: 'primary.main' }} />
@@ -126,7 +147,7 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
             </StatCard>
           </Grid>
 
-          <Grid size={{ xxs: 12, sm: 4 }}>
+          <Grid size={{ xxs: 12, sm: 6, md: 3 }}>
             <StatCard variant="outlined">
               <StatIcon>
                 <GroupIcon sx={{ fontSize: 32, color: 'success.main' }} />
@@ -144,7 +165,7 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
             </StatCard>
           </Grid>
 
-          <Grid size={{ xxs: 12, sm: 4 }}>
+          <Grid size={{ xxs: 12, sm: 6, md: 3 }}>
             <StatCard variant="outlined">
               <StatIcon>
                 <StarIcon sx={{ fontSize: 32, color: 'warning.main' }} />

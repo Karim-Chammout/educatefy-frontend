@@ -16,6 +16,9 @@ fragment Teacher on Teacher {
     rating
     participationCount
   }
+  programs {
+    id
+  }
 }
 
 query Instructor($id: ID!) {

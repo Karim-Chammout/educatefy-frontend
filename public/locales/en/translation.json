@@ -271,12 +271,16 @@
   "students.count_other": "{{count}} students",
   "averageRating": "Average rating",
   "subject.coursesAvailable": "Courses available",
+  "subject.programsAvailable": "Programs available",
   "subject.totalStudents": "Total students",
   "account.bio": "Bio",
   "account.about": "About",
   "instructor.courses_one": "Course",
   "instructor.courses_other": "Courses",
   "instructor.courses_zero": "Courses",
+  "instructor.programs_one": "Program",
+  "instructor.programs_other": "Programs",
+  "instructor.programs_zero": "Programs",
   "instructor.sutdents_one": "Student",
   "instructor.sutdents_other": "Students",
   "instructor.sutdents_zero": "Students",
@@ -292,5 +296,7 @@
   "programs.createNewProgram": "Create a new program",
   "programs.searchForProgram": "Search for a program",
   "programs.noProgramsTitle": "No Programs Created",
-  "programs.noProgramsSubtitle": "You have not created any programs yet."
+  "programs.noProgramsSubtitle": "You have not created any programs yet.",
+  "programs.count_one": "{{count}} program",
+  "programs.count_other": "{{count}} programs"
 }

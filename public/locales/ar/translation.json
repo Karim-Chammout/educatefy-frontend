@@ -287,6 +287,7 @@
   "students.count_many": "{{count}} طالب",
   "averageRating": "متوسط التقييم",
   "subject.coursesAvailable": "دورات متاحة",
+  "subject.programsAvailable": "برامج متاحة",
   "subject.totalStudents": "إجمالي الطلاب",
   "account.bio": "السيرة الذاتية القصيرة",
   "account.about": "عن المعلم/ة",
@@ -296,6 +297,12 @@
   "instructor.courses_many": "دورة",
   "instructor.courses_other": "دورة",
   "instructor.courses_zero": "دورة",
+  "instructor.programs_one": "برنامج",
+  "instructor.programs_two": "برنامجان",
+  "instructor.programs_few": "برامج",
+  "instructor.programs_many": "برنامج",
+  "instructor.programs_other": "برنامج",
+  "instructor.programs_zero": "برنامج",
   "instructor.sutdents_one": "طالب",
   "instructor.sutdents_two": "طالبين",
   "instructor.sutdents_few": "طلاب",
@@ -314,5 +321,10 @@
   "programs.createNewProgram": "إنشاء برنامج جديد",
   "programs.searchForProgram": "ابحث عن برنامج",
   "programs.noProgramsTitle": "لم يتم إنشاء برامج",
-  "programs.noProgramsSubtitle": "لم تقم بإنشاء أي برامج بعد."
+  "programs.noProgramsSubtitle": "لم تقم بإنشاء أي برامج بعد.",
+  "programs.count_one": "{{count}} برنامج",
+  "programs.count_two": "{{count}} برنامج",
+  "programs.count_few": "{{count}} برامج",
+  "programs.count_many": "{{count}} برنامج",
+  "programs.count_other": "{{count}} برنامج"
 }

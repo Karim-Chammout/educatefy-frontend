@@ -5,10 +5,13 @@ fragment ExploreSubject on Subject {
     id
     participationCount
   }
+  programs {
+    id
+  }
 }
 
 query Explore {
-  subjectsListWithLinkedCourses {
+  subjectsWithLinkedContent {
     ...ExploreSubject
   }
 }

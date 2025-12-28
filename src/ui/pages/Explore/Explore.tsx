@@ -37,12 +37,23 @@ const Explore = ({ subjects }: { subjects: ExploreSubjectFragment[] }) => {
                     {subject.denomination}
                   </Typography>
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <Chip
-                      label={t('courses.count', { count: subject.courses.length })}
-                      sx={{ width: 'fit-content' }}
-                    />
+                    {subject.courses.length > 0 && (
+                      <Chip
+                        label={t('courses.count', { count: subject.courses.length })}
+                        size="small"
+                        sx={{ width: 'fit-content' }}
+                      />
+                    )}
+                    {subject.programs.length > 0 && (
+                      <Chip
+                        label={t('programs.count', { count: subject.programs.length })}
+                        size="small"
+                        sx={{ width: 'fit-content' }}
+                      />
+                    )}
                     <Chip
                       label={t('students.count', { count: totalStudents })}
+                      size="small"
                       sx={{ width: 'fit-content' }}
                     />
                   </div>

@@ -32,12 +32,12 @@ const ExploreContainer = () => {
     return <Loader />;
   }
 
-  if (error || !data || !data.subjectsListWithLinkedCourses) {
+  if (error || !data || !data.subjectsWithLinkedContent) {
     return <ErrorPlaceholder />;
   }
 
-  const filteredSubjects = data.subjectsListWithLinkedCourses.filter(
-    (subject) => subject.courses.length > 0,
+  const filteredSubjects = data.subjectsWithLinkedContent.filter(
+    (subject) => subject.courses.length > 0 || subject.programs.length > 0,
   );
 
   return <Explore subjects={filteredSubjects} />;

@@ -1453,6 +1453,18 @@ export type TeacherCoursesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TeacherCoursesQuery = { __typename: 'Query', teacherCourses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, is_published: boolean, created_at: any, updated_at: any }> };
 
+export type CreateProgramPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateProgramPageQuery = { __typename: 'Query', subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
+
+export type CreateProgramMutationVariables = Exact<{
+  programInfo: ProgramInfoInput;
+}>;
+
+
+export type CreateProgramMutation = { __typename: 'Mutation', createProgram?: { __typename: 'CreateOrUpdateProgramResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, slug: string } | null } | null };
+
 export type TeacherProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any };
 
 export type TeacherProgramsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -3299,6 +3311,86 @@ export type TeacherCoursesQueryHookResult = ReturnType<typeof useTeacherCoursesQ
 export type TeacherCoursesLazyQueryHookResult = ReturnType<typeof useTeacherCoursesLazyQuery>;
 export type TeacherCoursesSuspenseQueryHookResult = ReturnType<typeof useTeacherCoursesSuspenseQuery>;
 export type TeacherCoursesQueryResult = Apollo.QueryResult<TeacherCoursesQuery, TeacherCoursesQueryVariables>;
+export const CreateProgramPageDocument = gql`
+    query CreateProgramPage {
+  subjects {
+    id
+    denomination
+  }
+}
+    `;
+
+/**
+ * __useCreateProgramPageQuery__
+ *
+ * To run a query within a React component, call `useCreateProgramPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreateProgramPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCreateProgramPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreateProgramPageQuery(baseOptions?: Apollo.QueryHookOptions<CreateProgramPageQuery, CreateProgramPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CreateProgramPageQuery, CreateProgramPageQueryVariables>(CreateProgramPageDocument, options);
+      }
+export function useCreateProgramPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CreateProgramPageQuery, CreateProgramPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CreateProgramPageQuery, CreateProgramPageQueryVariables>(CreateProgramPageDocument, options);
+        }
+export function useCreateProgramPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CreateProgramPageQuery, CreateProgramPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CreateProgramPageQuery, CreateProgramPageQueryVariables>(CreateProgramPageDocument, options);
+        }
+export type CreateProgramPageQueryHookResult = ReturnType<typeof useCreateProgramPageQuery>;
+export type CreateProgramPageLazyQueryHookResult = ReturnType<typeof useCreateProgramPageLazyQuery>;
+export type CreateProgramPageSuspenseQueryHookResult = ReturnType<typeof useCreateProgramPageSuspenseQuery>;
+export type CreateProgramPageQueryResult = Apollo.QueryResult<CreateProgramPageQuery, CreateProgramPageQueryVariables>;
+export const CreateProgramDocument = gql`
+    mutation CreateProgram($programInfo: ProgramInfoInput!) {
+  createProgram(programInfo: $programInfo) {
+    success
+    errors {
+      message
+    }
+    program {
+      id
+      slug
+    }
+  }
+}
+    `;
+export type CreateProgramMutationFn = Apollo.MutationFunction<CreateProgramMutation, CreateProgramMutationVariables>;
+
+/**
+ * __useCreateProgramMutation__
+ *
+ * To run a mutation, you first call `useCreateProgramMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProgramMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProgramMutation, { data, loading, error }] = useCreateProgramMutation({
+ *   variables: {
+ *      programInfo: // value for 'programInfo'
+ *   },
+ * });
+ */
+export function useCreateProgramMutation(baseOptions?: Apollo.MutationHookOptions<CreateProgramMutation, CreateProgramMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProgramMutation, CreateProgramMutationVariables>(CreateProgramDocument, options);
+      }
+export type CreateProgramMutationHookResult = ReturnType<typeof useCreateProgramMutation>;
+export type CreateProgramMutationResult = Apollo.MutationResult<CreateProgramMutation>;
+export type CreateProgramMutationOptions = Apollo.BaseMutationOptions<CreateProgramMutation, CreateProgramMutationVariables>;
 export const TeacherProgramsDocument = gql`
     query TeacherPrograms {
   teacherPrograms {

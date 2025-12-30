@@ -24,10 +24,17 @@ const Explore = ({ subjects }: { subjects: ExploreSubjectFragment[] }) => {
 
       <Grid container spacing={3}>
         {subjects.map((subject) => {
-          const totalStudents = subject.courses.reduce(
+          const totalCourseStudents = subject.courses.reduce(
             (acc, course) => acc + course.participationCount,
             0,
           );
+
+          const totalProgramStudents = subject.programs.reduce(
+            (acc, program) => acc + program.enrolledLearnersCount,
+            0,
+          );
+
+          const totalStudents = totalCourseStudents + totalProgramStudents;
 
           return (
             <Grid key={subject.id} size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}>

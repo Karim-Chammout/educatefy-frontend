@@ -753,24 +753,40 @@ export type ProfilePictureDetailsInput = {
 /** The program info. */
 export type Program = {
   __typename: 'Program';
+  /** The courses linked to this program. */
+  courses: Array<Course>;
   /** The date of when this program was created. */
   created_at: Scalars['Date']['output'];
   /** The denomination of this program. */
   denomination: Scalars['String']['output'];
   /** The description of this program. */
   description: Scalars['String']['output'];
+  /** Number of learners enrolled in this program. */
+  enrolledLearnersCount: Scalars['Int']['output'];
   /** A link to an external resource. */
   external_resource_link?: Maybe<Scalars['String']['output']>;
   /** A unique id of this program. */
   id: Scalars['ID']['output'];
   /** The image of this program */
   image?: Maybe<Scalars['String']['output']>;
+  /** The name of the instructor for this program */
+  instructor: Teacher;
   /** A flag to indicate whether this program is published or not */
   is_published: Scalars['Boolean']['output'];
   /** The difficulty level of this program. */
   level: ProgramLevel;
+  /** The objectives of this program. */
+  objectives: Array<ProgramObjective>;
+  /** Average rating across all courses in this program */
+  rating: Scalars['Float']['output'];
+  /** Total number of course ratings in this program */
+  ratingsCount: Scalars['Int']['output'];
+  /** The requirements of this program. */
+  requirements: Array<ProgramRequirement>;
   /** A unique slug of this program. */
   slug: Scalars['String']['output'];
+  /** The subjects linked to this program. */
+  subjects: Array<Subject>;
   /** The subtitle of this program. */
   subtitle: Scalars['String']['output'];
   /** The date of when this program was last updated. */
@@ -789,8 +805,14 @@ export type ProgramInfoInput = {
   is_published: Scalars['Boolean']['input'];
   /** The difficulty level of this program. */
   level: ProgramLevel;
+  /** List of objectives for the program */
+  objectives?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** List of requirements for the program */
+  requirements?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The slug of this program. */
   slug: Scalars['String']['input'];
+  /** List of subject IDs to associate with the program */
+  subjectIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   /** The subtitle of this program. */
   subtitle: Scalars['String']['input'];
 };
@@ -801,6 +823,24 @@ export enum ProgramLevel {
   Beginner = 'beginner',
   Intermediate = 'intermediate'
 }
+
+/** The program objective info */
+export type ProgramObjective = {
+  __typename: 'ProgramObjective';
+  /** A unique id of this program objective. */
+  id: Scalars['ID']['output'];
+  /** The objective of this program. */
+  objective: Scalars['String']['output'];
+};
+
+/** The program requirement info */
+export type ProgramRequirement = {
+  __typename: 'ProgramRequirement';
+  /** A unique id of this program requirement. */
+  id: Scalars['ID']['output'];
+  /** The requirement of this program. */
+  requirement: Scalars['String']['output'];
+};
 
 /** The properties of a public account */
 export type PublicAccount = {
@@ -1420,12 +1460,12 @@ export type TeacherProgramsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TeacherProgramsQuery = { __typename: 'Query', teacherPrograms: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any }> };
 
-export type ExploreSubjectFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string }> };
+export type ExploreSubjectFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string, enrolledLearnersCount: number }> };
 
 export type ExploreQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ExploreQuery = { __typename: 'Query', subjectsWithLinkedContent: Array<{ __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string }> }> };
+export type ExploreQuery = { __typename: 'Query', subjectsWithLinkedContent: Array<{ __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string, enrolledLearnersCount: number }> }> };
 
 export type HomeCourseFragment = { __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } };
 
@@ -1471,14 +1511,23 @@ export type RemoveProfilePictureMutationVariables = Exact<{ [key: string]: never
 
 export type RemoveProfilePictureMutation = { __typename: 'Mutation', removeProfilePicture?: { __typename: 'ChangeProfilePictureResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, user?: { __typename: 'Account', id: string, avatar_url?: string | null } | null } | null };
 
-export type SubjectContentFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string }> };
+export type ProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, rating: number, ratingsCount: number, enrolledLearnersCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> };
+
+export type ProgramQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+}>;
+
+
+export type ProgramQuery = { __typename: 'Query', program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, rating: number, ratingsCount: number, enrolledLearnersCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } | null };
+
+export type SubjectContentFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, rating: number, ratingsCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, courses: Array<{ __typename: 'Course', id: string }> }> };
 
 export type SubjectQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type SubjectQuery = { __typename: 'Query', subject?: { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string }> } | null };
+export type SubjectQuery = { __typename: 'Query', subject?: { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, rating: number, ratingsCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, courses: Array<{ __typename: 'Course', id: string }> }> } | null };
 
 export const OpenidClientFragmentDoc = gql`
     fragment OpenidClient on OpenidClient {
@@ -1825,6 +1874,7 @@ export const ExploreSubjectFragmentDoc = gql`
   }
   programs {
     id
+    enrolledLearnersCount
   }
 }
     `;
@@ -1902,6 +1952,57 @@ export const UserFragmentDoc = gql`
   }
 }
     `;
+export const ProgramFragmentDoc = gql`
+    fragment Program on Program {
+  id
+  denomination
+  slug
+  subtitle
+  description
+  level
+  image
+  updated_at
+  created_at
+  subjects {
+    id
+    denomination
+  }
+  objectives {
+    id
+    objective
+  }
+  requirements {
+    id
+    requirement
+  }
+  rating
+  ratingsCount
+  enrolledLearnersCount
+  instructor {
+    id
+    first_name
+    last_name
+    avatar_url
+    description
+    isFollowed
+    isAllowedToFollow
+  }
+  courses {
+    id
+    denomination
+    slug
+    level
+    image
+    rating
+    participationCount
+    instructor {
+      first_name
+      last_name
+      avatar_url
+    }
+  }
+}
+    `;
 export const SubjectContentFragmentDoc = gql`
     fragment SubjectContent on Subject {
   id
@@ -1922,6 +2023,21 @@ export const SubjectContentFragmentDoc = gql`
   }
   programs {
     id
+    denomination
+    slug
+    level
+    image
+    enrolledLearnersCount
+    rating
+    ratingsCount
+    instructor {
+      first_name
+      last_name
+      avatar_url
+    }
+    courses {
+      id
+    }
   }
 }
     `;
@@ -3514,6 +3630,46 @@ export function useRemoveProfilePictureMutation(baseOptions?: Apollo.MutationHoo
 export type RemoveProfilePictureMutationHookResult = ReturnType<typeof useRemoveProfilePictureMutation>;
 export type RemoveProfilePictureMutationResult = Apollo.MutationResult<RemoveProfilePictureMutation>;
 export type RemoveProfilePictureMutationOptions = Apollo.BaseMutationOptions<RemoveProfilePictureMutation, RemoveProfilePictureMutationVariables>;
+export const ProgramDocument = gql`
+    query Program($slug: String!) {
+  program(slug: $slug) {
+    ...Program
+  }
+}
+    ${ProgramFragmentDoc}`;
+
+/**
+ * __useProgramQuery__
+ *
+ * To run a query within a React component, call `useProgramQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProgramQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProgramQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useProgramQuery(baseOptions: Apollo.QueryHookOptions<ProgramQuery, ProgramQueryVariables> & ({ variables: ProgramQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProgramQuery, ProgramQueryVariables>(ProgramDocument, options);
+      }
+export function useProgramLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProgramQuery, ProgramQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProgramQuery, ProgramQueryVariables>(ProgramDocument, options);
+        }
+export function useProgramSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ProgramQuery, ProgramQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProgramQuery, ProgramQueryVariables>(ProgramDocument, options);
+        }
+export type ProgramQueryHookResult = ReturnType<typeof useProgramQuery>;
+export type ProgramLazyQueryHookResult = ReturnType<typeof useProgramLazyQuery>;
+export type ProgramSuspenseQueryHookResult = ReturnType<typeof useProgramSuspenseQuery>;
+export type ProgramQueryResult = Apollo.QueryResult<ProgramQuery, ProgramQueryVariables>;
 export const SubjectDocument = gql`
     query Subject($id: ID!) {
   subject(id: $id) {

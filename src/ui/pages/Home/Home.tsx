@@ -31,11 +31,11 @@ const Home = ({
       {statistics && <Statistics statistics={statistics} />}
 
       {enrolledCourses.length > 0 && (
-        <CoursesSection title={t('home.enrolledCoursesContinue')} courses={enrolledCourses} />
+        <CoursesSection title={t('home.enrolledContentsContinue')} courses={enrolledCourses} />
       )}
 
       {completedCourses.length > 0 && (
-        <CoursesSection title={t('home.yourCompletedCourses')} courses={completedCourses} />
+        <CoursesSection title={t('home.yourCompletedContents')} courses={completedCourses} />
       )}
     </div>
   );

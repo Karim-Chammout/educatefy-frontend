@@ -5,7 +5,7 @@ import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';
 import { SubjectContentFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
-import { CourseCard } from '@/ui/compositions';
+import { ContentCard } from '@/ui/compositions';
 
 import { StatsContainer, SubjectHeader } from './Subject.styles';
 
@@ -14,7 +14,18 @@ const Subject = ({ subject }: { subject: SubjectContentFragment }) => {
 
   const averageRating =
     subject.courses.reduce((acc, course) => acc + course.rating, 0) / subject.courses.length;
-  const totalStudents = subject.courses.reduce((acc, course) => acc + course.participationCount, 0);
+
+  const totalCourseStudents = subject.courses.reduce(
+    (acc, course) => acc + course.participationCount,
+    0,
+  );
+
+  const totalProgramStudents = subject.programs.reduce(
+    (acc, program) => acc + program.enrolledLearnersCount,
+    0,
+  );
+
+  const totalStudents = totalCourseStudents + totalProgramStudents;
 
   return (
     <div style={{ marginTop: '16px' }}>
@@ -85,15 +96,36 @@ const Subject = ({ subject }: { subject: SubjectContentFragment }) => {
       </SubjectHeader>
 
       <Grid container spacing={3}>
+        {subject.programs.map((program) => (
+          <Grid
+            key={program.id}
+            size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}
+            sx={{ display: 'flex', justifyContent: 'center' }}
+          >
+            <ContentCard
+              type="program"
+              title={program.denomination}
+              linkPath={`/program/${program.slug}`}
+              teacherName={`${program.instructor.first_name} ${program.instructor.last_name}`}
+              teacherAvatar={program.instructor.avatar_url || person}
+              image={program.image || fallbackImage}
+              difficulty={program.level}
+              rating={program.rating}
+              studentsCount={program.enrolledLearnersCount}
+              coursesCount={program.courses.length}
+            />
+          </Grid>
+        ))}
         {subject.courses.map((course) => (
           <Grid
             key={course.id}
             size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}
             sx={{ display: 'flex', justifyContent: 'center' }}
           >
-            <CourseCard
+            <ContentCard
+              type="course"
               title={course.denomination}
-              slug={course.slug}
+              linkPath={`/course/${course.slug}`}
               teacherName={`${course.instructor.first_name} ${course.instructor.last_name}`}
               teacherAvatar={course.instructor.avatar_url || person}
               image={course.image || fallbackImage}

@@ -5,13 +5,14 @@ export const Courses = lazy(() => import('@/ui/pages/Dashboard/Courses'));
 export const CourseSection = lazy(
   () => import('@/ui/pages/Dashboard/Courses/UpdateCourse/CourseSection'),
 );
-export const CourseSections = lazy(
-  () => import('@/ui/pages/Dashboard/Courses/UpdateCourse/CourseSections'),
-);
 export const CourseSectionItem = lazy(
   () => import('@/ui/pages/Dashboard/Courses/UpdateCourse/CourseSectionItem'),
 );
+export const CourseSections = lazy(
+  () => import('@/ui/pages/Dashboard/Courses/UpdateCourse/CourseSections'),
+);
 export const CreateCourse = lazy(() => import('@/ui/pages/Dashboard/Courses/CreateCourse'));
+export const CreateProgram = lazy(() => import('@/ui/pages/Dashboard/Programs/CreateProgram'));
 export const Dashboard = lazy(() => import('@/ui/pages/Dashboard'));
 export const Explore = lazy(() => import('@/ui/pages/Explore'));
 export const Home = lazy(() => import('@/ui/pages/Home'));

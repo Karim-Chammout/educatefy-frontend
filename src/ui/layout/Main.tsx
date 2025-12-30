@@ -19,6 +19,7 @@ import {
   CourseSectionItem,
   CourseSections,
   CreateCourse,
+  CreateProgram,
   Dashboard,
   Explore,
   Home,
@@ -221,6 +222,14 @@ const PrivatePagesView = () => {
             element={
               <RouteWrapper>
                 <Programs />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/dashboard/programs/create"
+            element={
+              <RouteWrapper>
+                <CreateProgram />
               </RouteWrapper>
             }
           />

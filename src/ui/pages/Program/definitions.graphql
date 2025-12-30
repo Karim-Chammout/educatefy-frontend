@@ -1,0 +1,55 @@
+fragment Program on Program {
+  id
+  denomination
+  slug
+  subtitle
+  description
+  level
+  image
+  updated_at
+  created_at
+  subjects {
+    id
+    denomination
+  }
+  objectives {
+    id
+    objective
+  }
+  requirements {
+    id
+    requirement
+  }
+  rating
+  ratingsCount
+  enrolledLearnersCount
+  instructor {
+    id
+    first_name
+    last_name
+    avatar_url
+    description
+    isFollowed
+    isAllowedToFollow
+  }
+  courses {
+    id
+    denomination
+    slug
+    level
+    image
+    rating
+    participationCount
+    instructor {
+      first_name
+      last_name
+      avatar_url
+    }
+  }
+}
+
+query Program($slug: String!) {
+  program(slug: $slug) {
+    ...Program
+  }
+}

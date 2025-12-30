@@ -1,0 +1,19 @@
+query CreateProgramPage {
+  subjects {
+    id
+    denomination
+  }
+}
+
+mutation CreateProgram($programInfo: ProgramInfoInput!) {
+  createProgram(programInfo: $programInfo) {
+    success
+    errors {
+      message
+    }
+    program {
+      id
+      slug
+    }
+  }
+}

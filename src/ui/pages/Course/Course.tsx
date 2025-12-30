@@ -21,7 +21,7 @@ const Course = ({ courseInfo }: { courseInfo: CourseFragment }) => {
         newText: t('course.mustEnrollFirst'),
       });
     }
-  }, [location.state?.action, setToasterVisibility, t]);
+  }, [location.state?.action]);
 
   return (
     <div style={{ marginTop: '16px' }}>

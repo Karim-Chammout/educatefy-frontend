@@ -289,8 +289,8 @@
   "theme.light": "Day Mode",
   "home.hey": "Hey there!",
   "home.goodToSeeYou": "Good to see you again.",
-  "home.enrolledCoursesContinue": "Continue where you left off",
-  "home.yourCompletedCourses": "Your completed courses",
+  "home.enrolledContentsContinue": "Continue where you left off",
+  "home.yourCompletedContents": "Your completed content",
   "statistics.enrolledCourses": "Enrolled courses",
   "statistics.completedCourses": "Completed courses",
   "programs.createNewProgram": "Create a new program",
@@ -298,5 +298,13 @@
   "programs.noProgramsTitle": "No Programs Created",
   "programs.noProgramsSubtitle": "You have not created any programs yet.",
   "programs.count_one": "{{count}} program",
-  "programs.count_other": "{{count}} programs"
+  "programs.count_other": "{{count}} programs",
+  "programs.programObjectives": "Program objectives",
+  "programs.programRequirements": "Program requirements",
+  "program.notFoundSubtitle": "The program you are looking for does not exist.",
+  "program.notFoundTitle": "Program not found",
+  "program.noCoursesYet": "No Courses Yet",
+  "program.noCoursesSubtitle": "This program is being built. New courses will be added soon.",
+  "common.description": "Description",
+  "common.content": "Content"
 }

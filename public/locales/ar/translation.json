@@ -314,8 +314,8 @@
   "theme.light": "الوضع النهاري",
   "home.hey": "مرحبًا!",
   "home.goodToSeeYou": "سعداء برؤيتك مجددًا.",
-  "home.enrolledCoursesContinue": "تابِع من حيث توقفت",
-  "home.yourCompletedCourses": "دوراتك المُكتملة",
+  "home.enrolledContentsContinue": "تابِع من حيث توقفت",
+  "home.yourCompletedContents": "المحتويات التي أكملتها",
   "statistics.enrolledCourses": "الدورات المسجلة",
   "statistics.completedCourses": "الدورات المكتملة",
   "programs.createNewProgram": "إنشاء برنامج جديد",
@@ -326,5 +326,13 @@
   "programs.count_two": "{{count}} برنامج",
   "programs.count_few": "{{count}} برامج",
   "programs.count_many": "{{count}} برنامج",
-  "programs.count_other": "{{count}} برنامج"
+  "programs.count_other": "{{count}} برنامج",
+  "programs.programObjectives": "أهداف البرنامج",
+  "programs.programRequirements": "متطلبات البرنامج",
+  "program.notFoundSubtitle": "البرنامج الذي تبحث عنه غير موجود.",
+  "program.notFoundTitle": "البرنامج غير موجود",
+  "program.noCoursesYet": "لا توجد دورات حتى الآن",
+  "program.noCoursesSubtitle": "يتم بناء هذا البرنامج. ستتم إضافة دورات جديدة قريبًا.",
+  "common.description": "الوصف",
+  "common.content": "المحتوى"
 }

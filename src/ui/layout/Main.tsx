@@ -25,6 +25,7 @@ import {
   Instructor,
   NotFound,
   Profile,
+  Program,
   Programs,
   Section,
   Subject,
@@ -137,6 +138,22 @@ const PrivatePagesView = () => {
             />
           </Route>
         </Route>
+        <Route
+          path="/program/:programSlug"
+          element={
+            <RouteWrapper>
+              <Program />
+            </RouteWrapper>
+          }
+        />
+        <Route
+          path="/program/:programSlug/course/:slug"
+          element={
+            <RouteWrapper>
+              <Course />
+            </RouteWrapper>
+          }
+        />
 
         <Route
           path="/dashboard"

@@ -7,6 +7,7 @@ import {
   Login,
   LoginCallback,
   NotFound,
+  Program,
   Register,
   Subject,
 } from './LazyComponent';
@@ -73,6 +74,22 @@ const PublicRoutes = () => {
       />
       <Route
         path="/course/:slug"
+        element={
+          <RouteWrapper>
+            <Course />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path="/program/:programSlug"
+        element={
+          <RouteWrapper>
+            <Program />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path="/program/:programSlug/course/:slug"
         element={
           <RouteWrapper>
             <Course />

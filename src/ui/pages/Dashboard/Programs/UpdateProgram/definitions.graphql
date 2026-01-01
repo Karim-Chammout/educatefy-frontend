@@ -1,0 +1,56 @@
+fragment Subject on Subject {
+  id
+  denomination
+}
+
+fragment EditableProgram on Program {
+  id
+  denomination
+  slug
+  subtitle
+  description
+  level
+  image
+  is_published
+  subjects {
+    ...Subject
+  }
+  objectives {
+    id
+    objective
+  }
+  requirements {
+    id
+    requirement
+  }
+}
+
+query EditableProgram($id: ID!) {
+  editableProgram(id: $id) {
+    ...EditableProgram
+  }
+  subjects {
+    ...Subject
+  }
+}
+
+mutation UpdateProgram($updateProgramInfo: UpdateProgramInfoInput!) {
+  updateProgram(updateProgramInfo: $updateProgramInfo) {
+    success
+    errors {
+      message
+    }
+    program {
+      ...EditableProgram
+    }
+  }
+}
+
+mutation DeleteProgram($id: ID!) {
+  deleteProgram(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}

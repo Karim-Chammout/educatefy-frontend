@@ -335,6 +335,13 @@
   "program.programRequirementsSubtitle": "Set the requirements for the program",
   "program.requirement": "Requirement",
   "program.requirementHelperText": "What should the students know before starting this program?",
+  "program.backToPrograms": "Back to Programs",
+  "program.updateSuccess": "Program updated successfully!",
+  "program.updateError": "Failed to update program information. Please try again later!",
+  "program.updateTitle": "Update program",
+  "program.confirmDeleteTitle": "Are you sure you want to delete this program?",
+  "program.confirmDeleteSubtitle": "Students enrolled in this program will no longer be able to access it. Click \"Confirm\" to proceed.",
+  "program.deleteSuccess": "Program deleted successfully!",
   "common.description": "Description",
   "common.content": "Content"
 }

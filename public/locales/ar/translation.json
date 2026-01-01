@@ -363,6 +363,13 @@
   "program.programRequirementsSubtitle": "تعيين متطلبات البرنامج",
   "program.requirement": "الشرط المطلوب",
   "program.requirementHelperText": "ما الذي يجب أن يعرفه الطلاب قبل البدء في هذا البرنامج؟",
+  "program.backToPrograms": "العودة إلى البرامج",
+  "program.updateSuccess": "تم تحديث البرنامج بنجاح!",
+  "program.updateError": "فشل في تحديث معلومات البرنامج. يرجى المحاولة مرة أخرى لاحقًا!",
+  "program.updateTitle": "تحديث البرنامج",
+  "program.confirmDeleteTitle": "هل أنت متأكد أنك تريد حذف هذه البرنامج؟",
+  "program.confirmDeleteSubtitle": "لن يتمكن الطلاب المسجلون في هذا البرنامج من الوصول إليه بعد الآن. انقر على \"تأكيد\" للمتابعة.",
+  "program.deleteSuccess": "تم حذف البرنامج بنجاح!",
   "common.description": "الوصف",
   "common.content": "المحتوى"
 }

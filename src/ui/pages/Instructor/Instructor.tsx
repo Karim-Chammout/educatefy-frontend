@@ -183,15 +183,35 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
         </Grid>
       </Box>
 
-      {instructor.courses.length > 0 && (
-        <>
+      {(instructor.courses.length > 0 || instructor.programs.length > 0) && (
+        <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
           <Typography variant="h4" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
-            {t('course.coursesBy', {
+            {t('instructor.contentBy', {
               name: instructor.first_name,
             })}
           </Typography>
 
           <Grid container spacing={3}>
+            {instructor.programs.map((program) => (
+              <Grid
+                key={program.id}
+                size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}
+                sx={{ display: 'flex', justifyContent: 'center' }}
+              >
+                <ContentCard
+                  type="program"
+                  title={program.denomination}
+                  linkPath={`/program/${program.slug}`}
+                  teacherName={`${program.instructor.first_name} ${program.instructor.last_name}`}
+                  teacherAvatar={program.instructor.avatar_url || person}
+                  image={program.image || fallbackImage}
+                  difficulty={program.level}
+                  rating={program.rating}
+                  studentsCount={program.enrolledLearnersCount}
+                  coursesCount={program.courses.length}
+                />
+              </Grid>
+            ))}
             {instructor.courses.map((course) => (
               <Grid
                 key={course.id}
@@ -212,7 +232,7 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
               </Grid>
             ))}
           </Grid>
-        </>
+        </Paper>
       )}
     </div>
   );

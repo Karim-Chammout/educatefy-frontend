@@ -31,6 +31,7 @@ import {
   Section,
   Subject,
   UpdateCourse,
+  UpdateProgram,
 } from './routes/LazyComponent';
 import PublicRoutes from './routes/PublicRoutes';
 import RouteWrapper from './routes/RouteWrapper';
@@ -230,6 +231,14 @@ const PrivatePagesView = () => {
             element={
               <RouteWrapper>
                 <CreateProgram />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/dashboard/programs/update/:id"
+            element={
+              <RouteWrapper>
+                <UpdateProgram />
               </RouteWrapper>
             }
           />

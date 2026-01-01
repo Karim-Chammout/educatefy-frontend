@@ -524,6 +524,8 @@ export type Mutation = {
   deleteCourseSectionItem?: Maybe<MutationResult>;
   /** Deletes a lesson. */
   deleteLesson?: Maybe<MutationResult>;
+  /** Deletes a program. */
+  deleteProgram?: Maybe<MutationResult>;
   /** Follow or unfollow a teacher. Toggles the follow status. */
   followTeacher?: Maybe<FollowTeacherResult>;
   /** Rate a course. */
@@ -552,6 +554,8 @@ export type Mutation = {
   updateLesson?: Maybe<CreateOrUpdateLessonResult>;
   /** Updates a user profile details. */
   updateProfile?: Maybe<UpdateProfileResult>;
+  /** Updates a program. */
+  updateProgram?: Maybe<CreateOrUpdateProgramResult>;
 };
 
 
@@ -615,6 +619,11 @@ export type MutationDeleteCourseSectionItemArgs = {
 
 
 export type MutationDeleteLessonArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteProgramArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -684,6 +693,11 @@ export type MutationUpdateLessonArgs = {
 
 export type MutationUpdateProfileArgs = {
   profileDetails: ProfileDetailsInput;
+};
+
+
+export type MutationUpdateProgramArgs = {
+  updateProgramInfo: UpdateProgramInfoInput;
 };
 
 /** The result of a mutation. */
@@ -833,6 +847,14 @@ export type ProgramObjective = {
   objective: Scalars['String']['output'];
 };
 
+/** Input for a program objective record. */
+export type ProgramObjectiveInput = {
+  /** A unique id of this program objective. */
+  id: Scalars['ID']['input'];
+  /** The objective of this program. */
+  objective: Scalars['String']['input'];
+};
+
 /** The program requirement info */
 export type ProgramRequirement = {
   __typename: 'ProgramRequirement';
@@ -840,6 +862,14 @@ export type ProgramRequirement = {
   id: Scalars['ID']['output'];
   /** The requirement of this program. */
   requirement: Scalars['String']['output'];
+};
+
+/** Input for a program requirement record. */
+export type ProgramRequirementInput = {
+  /** A unique id of this program requirement. */
+  id: Scalars['ID']['input'];
+  /** The requirement of this program. */
+  requirement: Scalars['String']['input'];
 };
 
 /** The properties of a public account */
@@ -869,6 +899,8 @@ export type Query = {
   course?: Maybe<Course>;
   /** Retrieve a course to be edited by the teacher. */
   editableCourse?: Maybe<Course>;
+  /** Retrieve a program to be edited by the teacher. */
+  editableProgram?: Maybe<Program>;
   /** List of courses the user is enrolled in */
   enrolledCourses: Array<Course>;
   /** Retrieve the instructor (teacher) account by its id */
@@ -900,6 +932,11 @@ export type QueryCourseArgs = {
 
 
 export type QueryEditableCourseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryEditableProgramArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -1139,6 +1176,32 @@ export type UpdateProfileResult = {
   success: Scalars['Boolean']['output'];
   /** The updated user information. */
   user?: Maybe<Account>;
+};
+
+/** Input for updating a program record. */
+export type UpdateProgramInfoInput = {
+  /** The denomination of this program */
+  denomination?: InputMaybe<Scalars['String']['input']>;
+  /** The description of this program */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The ID of this program */
+  id: Scalars['ID']['input'];
+  /** The image of this program */
+  image?: InputMaybe<Scalars['String']['input']>;
+  /** A flag to indicate whether this program is published or not */
+  is_published?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The difficulty level of this program */
+  level?: InputMaybe<ProgramLevel>;
+  /** List of objectives for the program */
+  objectives?: InputMaybe<Array<ProgramObjectiveInput>>;
+  /** List of requirements for the program */
+  requirements?: InputMaybe<Array<ProgramRequirementInput>>;
+  /** The slug of this program */
+  slug?: InputMaybe<Scalars['String']['input']>;
+  /** List of subject IDs to associate with the program */
+  subjectIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** The subtitle of this program */
+  subtitle?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** A video content component. */
@@ -1465,6 +1528,29 @@ export type CreateProgramMutationVariables = Exact<{
 
 export type CreateProgramMutation = { __typename: 'Mutation', createProgram?: { __typename: 'CreateOrUpdateProgramResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, slug: string } | null } | null };
 
+export type EditableProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }> };
+
+export type EditableProgramQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type EditableProgramQuery = { __typename: 'Query', editableProgram?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }> } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
+
+export type UpdateProgramMutationVariables = Exact<{
+  updateProgramInfo: UpdateProgramInfoInput;
+}>;
+
+
+export type UpdateProgramMutation = { __typename: 'Mutation', updateProgram?: { __typename: 'CreateOrUpdateProgramResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }> } | null } | null };
+
+export type DeleteProgramMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteProgramMutation = { __typename: 'Mutation', deleteProgram?: { __typename: 'MutationResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }> } | null };
+
 export type TeacherProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any };
 
 export type TeacherProgramsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1552,12 +1638,6 @@ export const OpenidClientFragmentDoc = gql`
     `;
 export const CountryFragmentDoc = gql`
     fragment Country on Country {
-  id
-  denomination
-}
-    `;
-export const SubjectFragmentDoc = gql`
-    fragment Subject on Subject {
   id
   denomination
 }
@@ -1865,6 +1945,35 @@ export const TeacherCourseFragmentDoc = gql`
   updated_at
 }
     `;
+export const SubjectFragmentDoc = gql`
+    fragment Subject on Subject {
+  id
+  denomination
+}
+    `;
+export const EditableProgramFragmentDoc = gql`
+    fragment EditableProgram on Program {
+  id
+  denomination
+  slug
+  subtitle
+  description
+  level
+  image
+  is_published
+  subjects {
+    ...Subject
+  }
+  objectives {
+    id
+    objective
+  }
+  requirements {
+    id
+    requirement
+  }
+}
+    ${SubjectFragmentDoc}`;
 export const TeacherProgramFragmentDoc = gql`
     fragment TeacherProgram on Program {
   id
@@ -3391,6 +3500,125 @@ export function useCreateProgramMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProgramMutationHookResult = ReturnType<typeof useCreateProgramMutation>;
 export type CreateProgramMutationResult = Apollo.MutationResult<CreateProgramMutation>;
 export type CreateProgramMutationOptions = Apollo.BaseMutationOptions<CreateProgramMutation, CreateProgramMutationVariables>;
+export const EditableProgramDocument = gql`
+    query EditableProgram($id: ID!) {
+  editableProgram(id: $id) {
+    ...EditableProgram
+  }
+  subjects {
+    ...Subject
+  }
+}
+    ${EditableProgramFragmentDoc}
+${SubjectFragmentDoc}`;
+
+/**
+ * __useEditableProgramQuery__
+ *
+ * To run a query within a React component, call `useEditableProgramQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEditableProgramQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEditableProgramQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEditableProgramQuery(baseOptions: Apollo.QueryHookOptions<EditableProgramQuery, EditableProgramQueryVariables> & ({ variables: EditableProgramQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EditableProgramQuery, EditableProgramQueryVariables>(EditableProgramDocument, options);
+      }
+export function useEditableProgramLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EditableProgramQuery, EditableProgramQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EditableProgramQuery, EditableProgramQueryVariables>(EditableProgramDocument, options);
+        }
+export function useEditableProgramSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<EditableProgramQuery, EditableProgramQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<EditableProgramQuery, EditableProgramQueryVariables>(EditableProgramDocument, options);
+        }
+export type EditableProgramQueryHookResult = ReturnType<typeof useEditableProgramQuery>;
+export type EditableProgramLazyQueryHookResult = ReturnType<typeof useEditableProgramLazyQuery>;
+export type EditableProgramSuspenseQueryHookResult = ReturnType<typeof useEditableProgramSuspenseQuery>;
+export type EditableProgramQueryResult = Apollo.QueryResult<EditableProgramQuery, EditableProgramQueryVariables>;
+export const UpdateProgramDocument = gql`
+    mutation UpdateProgram($updateProgramInfo: UpdateProgramInfoInput!) {
+  updateProgram(updateProgramInfo: $updateProgramInfo) {
+    success
+    errors {
+      message
+    }
+    program {
+      ...EditableProgram
+    }
+  }
+}
+    ${EditableProgramFragmentDoc}`;
+export type UpdateProgramMutationFn = Apollo.MutationFunction<UpdateProgramMutation, UpdateProgramMutationVariables>;
+
+/**
+ * __useUpdateProgramMutation__
+ *
+ * To run a mutation, you first call `useUpdateProgramMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProgramMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProgramMutation, { data, loading, error }] = useUpdateProgramMutation({
+ *   variables: {
+ *      updateProgramInfo: // value for 'updateProgramInfo'
+ *   },
+ * });
+ */
+export function useUpdateProgramMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProgramMutation, UpdateProgramMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProgramMutation, UpdateProgramMutationVariables>(UpdateProgramDocument, options);
+      }
+export type UpdateProgramMutationHookResult = ReturnType<typeof useUpdateProgramMutation>;
+export type UpdateProgramMutationResult = Apollo.MutationResult<UpdateProgramMutation>;
+export type UpdateProgramMutationOptions = Apollo.BaseMutationOptions<UpdateProgramMutation, UpdateProgramMutationVariables>;
+export const DeleteProgramDocument = gql`
+    mutation DeleteProgram($id: ID!) {
+  deleteProgram(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type DeleteProgramMutationFn = Apollo.MutationFunction<DeleteProgramMutation, DeleteProgramMutationVariables>;
+
+/**
+ * __useDeleteProgramMutation__
+ *
+ * To run a mutation, you first call `useDeleteProgramMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProgramMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProgramMutation, { data, loading, error }] = useDeleteProgramMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteProgramMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProgramMutation, DeleteProgramMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProgramMutation, DeleteProgramMutationVariables>(DeleteProgramDocument, options);
+      }
+export type DeleteProgramMutationHookResult = ReturnType<typeof useDeleteProgramMutation>;
+export type DeleteProgramMutationResult = Apollo.MutationResult<DeleteProgramMutation>;
+export type DeleteProgramMutationOptions = Apollo.BaseMutationOptions<DeleteProgramMutation, DeleteProgramMutationVariables>;
 export const TeacherProgramsDocument = gql`
     query TeacherPrograms {
   teacherPrograms {

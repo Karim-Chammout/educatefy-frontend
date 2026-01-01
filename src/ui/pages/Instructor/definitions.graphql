@@ -18,6 +18,21 @@ fragment Teacher on Teacher {
   }
   programs {
     id
+    denomination
+    slug
+    level
+    image
+    enrolledLearnersCount
+    rating
+    ratingsCount
+    instructor {
+      first_name
+      last_name
+      avatar_url
+    }
+    courses {
+      id
+    }
   }
 }
 

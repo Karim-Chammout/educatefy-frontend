@@ -1,6 +1,5 @@
 export { default as AuthView } from './AuthView';
 export { default as ContentCard } from './ContentCard';
-export { default as CourseCard } from './CourseCard';
 export { default as ErrorPlaceholder } from './ErrorPlaceholder';
 export { default as FileDropzone } from './FileDropzone';
 export { default as InfoState } from './InfoState';

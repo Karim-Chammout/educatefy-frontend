@@ -4,7 +4,7 @@ import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';
 import { HomeCourseFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
-import { CourseCard } from '@/ui/compositions';
+import { ContentCard } from '@/ui/compositions';
 
 const CoursesSection = ({ title, courses }: { title: string; courses: HomeCourseFragment[] }) => {
   return (
@@ -19,9 +19,10 @@ const CoursesSection = ({ title, courses }: { title: string; courses: HomeCourse
             size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}
             sx={{ display: 'flex', justifyContent: 'center' }}
           >
-            <CourseCard
+            <ContentCard
+              type="course"
               title={course.denomination}
-              slug={course.slug}
+              linkPath={`/course/${course.slug}`}
               teacherName={`${course.instructor.first_name} ${course.instructor.last_name}`}
               teacherAvatar={course.instructor.avatar_url || person}
               image={course.image || fallbackImage}

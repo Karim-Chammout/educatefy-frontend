@@ -15,7 +15,7 @@ import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';
 import { TeacherFragment, useFollowTeacherMutation } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
-import { CourseCard } from '@/ui/compositions';
+import { ContentCard } from '@/ui/compositions';
 
 import { HeaderSection, InstructorInfo, StatCard, StatContent, StatIcon } from './Instructor.style';
 
@@ -198,9 +198,10 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
                 size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}
                 sx={{ display: 'flex', justifyContent: 'center' }}
               >
-                <CourseCard
+                <ContentCard
+                  type="course"
                   title={course.denomination}
-                  slug={course.slug}
+                  linkPath={`/course/${course.slug}`}
                   teacherName={`${instructor.first_name} ${instructor.last_name}`}
                   teacherAvatar={instructor.avatar_url || person}
                   image={course.image || fallbackImage}

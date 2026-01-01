@@ -51,7 +51,9 @@ export const DashboardRoutes = ({ hasPermission }: { hasPermission: boolean }) =
           {navigationItems.map((item) => (
             <div key={item.path}>
               <ListItemButton
-                selected={location.pathname === item.path}
+                selected={
+                  location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+                }
                 onClick={() => handleNavigation(item.path)}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>

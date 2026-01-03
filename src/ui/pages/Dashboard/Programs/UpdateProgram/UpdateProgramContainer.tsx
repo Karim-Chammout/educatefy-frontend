@@ -38,7 +38,13 @@ const UpdateProgramContainer = () => {
     );
   }
 
-  return <UpdateProgram program={data.editableProgram} subjectsList={data.subjects} />;
+  return (
+    <UpdateProgram
+      program={data.editableProgram}
+      teacherCourses={data.teacherCourses}
+      subjectsList={data.subjects}
+    />
+  );
 };
 
 export default UpdateProgramContainer;

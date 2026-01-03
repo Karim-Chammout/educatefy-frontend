@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router';
 
 import {
   EditableProgramFragment,
+  ProgramCourseFragment,
   SubjectFragment,
   useDeleteProgramMutation,
   useUpdateProgramMutation,
@@ -21,6 +22,7 @@ import { ServerErrorType } from '@/utils/ServerErrorType';
 
 import {
   BasicInfoSection,
+  CoursesSection,
   DeleteConfirmationModal,
   LearningOutcomesSection,
   ProgramImageSection,
@@ -30,17 +32,18 @@ import { useUpdateProgramForm } from './hooks/useUpdateProgramForm';
 
 type UpdateProgramType = {
   program: EditableProgramFragment;
+  teacherCourses: ProgramCourseFragment[];
   subjectsList: SubjectFragment[];
 };
 
-const UpdateProgram = ({ program, subjectsList }: UpdateProgramType) => {
+const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramType) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { setToasterVisibility } = useContext(ToasterContext);
 
   const [descriptionContent, setDescriptionContent] = useState(program.description);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-
+  const [selectedCourses, setSelectedCourses] = useState(program.courses || []);
   const [updateProgram, { loading: updateProgramLoading }] = useUpdateProgramMutation();
   const [deleteProgram] = useDeleteProgramMutation();
 
@@ -113,6 +116,8 @@ const UpdateProgram = ({ program, subjectsList }: UpdateProgramType) => {
       requirement: item.requirement,
     }));
 
+    const courseIds = selectedCourses.map((course) => course.id);
+
     await updateProgram({
       variables: {
         updateProgramInfo: {
@@ -127,6 +132,7 @@ const UpdateProgram = ({ program, subjectsList }: UpdateProgramType) => {
           subjectIds,
           objectives,
           requirements,
+          courseIds,
         },
       },
       onCompleted(data) {
@@ -221,6 +227,13 @@ const UpdateProgram = ({ program, subjectsList }: UpdateProgramType) => {
             setRequirementItem={setRequirementItem}
             onAddRequirement={handleAddRequirement}
             onDeleteRequirement={handleDeleteRequirement}
+          />
+
+          <CoursesSection
+            programId={program.id}
+            availableCourses={teacherCourses}
+            selectedCourses={selectedCourses}
+            onCoursesChange={setSelectedCourses}
           />
 
           <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>

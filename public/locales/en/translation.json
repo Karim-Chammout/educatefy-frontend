@@ -342,6 +342,14 @@
   "program.confirmDeleteTitle": "Are you sure you want to delete this program?",
   "program.confirmDeleteSubtitle": "Students enrolled in this program will no longer be able to access it. Click \"Confirm\" to proceed.",
   "program.deleteSuccess": "Program deleted successfully!",
+  "program.courses": "Courses",
+  "program.coursesDesc": "Add and organize courses for this program. Drag to reorder.",
+  "program.selectCourse": "Select a course",
+  "program.searchCourse": "Search for a course...",
+  "program.noCourses": "No courses available",
+  "program.selectedCourses": "Selected courses",
+  "program.noCoursesSelected": "No courses added yet. Select a course above to get started.",
+  "common.dragToReorder": "Drag to reorder",
   "common.description": "Description",
   "common.content": "Content"
 }

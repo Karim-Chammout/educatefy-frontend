@@ -370,6 +370,14 @@
   "program.confirmDeleteTitle": "هل أنت متأكد أنك تريد حذف هذه البرنامج؟",
   "program.confirmDeleteSubtitle": "لن يتمكن الطلاب المسجلون في هذا البرنامج من الوصول إليه بعد الآن. انقر على \"تأكيد\" للمتابعة.",
   "program.deleteSuccess": "تم حذف البرنامج بنجاح!",
+  "program.courses": "الدورات",
+  "program.coursesDesc": "أضف ونظّم الدورات لهذا البرنامج. اسحب لإعادة الترتيب.",
+  "program.selectCourse": "اختر دورة",
+  "program.searchCourse": "ابحث عن دورة...",
+  "program.noCourses": "لا توجد دورات متاحة",
+  "program.selectedCourses": "الدورات المحددة",
+  "program.noCoursesSelected": "لم تتم إضافة أي دورات بعد. اختر دورة أعلاه للبدء.",
+  "common.dragToReorder": "اسحب لإعادة الترتيب",
   "common.description": "الوصف",
   "common.content": "المحتوى"
 }

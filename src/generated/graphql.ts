@@ -556,6 +556,8 @@ export type Mutation = {
   updateProfile?: Maybe<UpdateProfileResult>;
   /** Updates a program. */
   updateProgram?: Maybe<CreateOrUpdateProgramResult>;
+  /** Updates the ranks of multiple courses within a program. */
+  updateProgramCourseRanks?: Maybe<MutationResult>;
 };
 
 
@@ -698,6 +700,12 @@ export type MutationUpdateProfileArgs = {
 
 export type MutationUpdateProgramArgs = {
   updateProgramInfo: UpdateProgramInfoInput;
+};
+
+
+export type MutationUpdateProgramCourseRanksArgs = {
+  courseRanks: Array<UpdateProgramCourseRankInput>;
+  programId: Scalars['ID']['input'];
 };
 
 /** The result of a mutation. */
@@ -1178,8 +1186,18 @@ export type UpdateProfileResult = {
   user?: Maybe<Account>;
 };
 
+/** Input for updating a program courses rank */
+export type UpdateProgramCourseRankInput = {
+  /** The ID of the course */
+  id: Scalars['String']['input'];
+  /** The new rank of the course */
+  rank: Scalars['Int']['input'];
+};
+
 /** Input for updating a program record. */
 export type UpdateProgramInfoInput = {
+  /** List of course IDs to link to the program */
+  courseIds?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   /** The denomination of this program */
   denomination?: InputMaybe<Scalars['String']['input']>;
   /** The description of this program */
@@ -1528,21 +1546,23 @@ export type CreateProgramMutationVariables = Exact<{
 
 export type CreateProgramMutation = { __typename: 'Mutation', createProgram?: { __typename: 'CreateOrUpdateProgramResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, slug: string } | null } | null };
 
-export type EditableProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }> };
+export type ProgramCourseFragment = { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any };
+
+export type EditableProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, courses: Array<{ __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any }> };
 
 export type EditableProgramQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type EditableProgramQuery = { __typename: 'Query', editableProgram?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }> } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
+export type EditableProgramQuery = { __typename: 'Query', editableProgram?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, courses: Array<{ __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any }> } | null, teacherCourses: Array<{ __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any }>, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
 
 export type UpdateProgramMutationVariables = Exact<{
   updateProgramInfo: UpdateProgramInfoInput;
 }>;
 
 
-export type UpdateProgramMutation = { __typename: 'Mutation', updateProgram?: { __typename: 'CreateOrUpdateProgramResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }> } | null } | null };
+export type UpdateProgramMutation = { __typename: 'Mutation', updateProgram?: { __typename: 'CreateOrUpdateProgramResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, courses: Array<{ __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any }> } | null } | null };
 
 export type DeleteProgramMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1550,6 +1570,14 @@ export type DeleteProgramMutationVariables = Exact<{
 
 
 export type DeleteProgramMutation = { __typename: 'Mutation', deleteProgram?: { __typename: 'MutationResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }> } | null };
+
+export type UpdateProgramCourseRanksMutationVariables = Exact<{
+  programId: Scalars['ID']['input'];
+  courseRanks: Array<UpdateProgramCourseRankInput> | UpdateProgramCourseRankInput;
+}>;
+
+
+export type UpdateProgramCourseRanksMutation = { __typename: 'Mutation', updateProgramCourseRanks?: { __typename: 'MutationResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }> } | null };
 
 export type TeacherProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any };
 
@@ -1951,6 +1979,16 @@ export const SubjectFragmentDoc = gql`
   denomination
 }
     `;
+export const ProgramCourseFragmentDoc = gql`
+    fragment ProgramCourse on Course {
+  id
+  denomination
+  image
+  slug
+  level
+  updated_at
+}
+    `;
 export const EditableProgramFragmentDoc = gql`
     fragment EditableProgram on Program {
   id
@@ -1972,8 +2010,12 @@ export const EditableProgramFragmentDoc = gql`
     id
     requirement
   }
+  courses {
+    ...ProgramCourse
+  }
 }
-    ${SubjectFragmentDoc}`;
+    ${SubjectFragmentDoc}
+${ProgramCourseFragmentDoc}`;
 export const TeacherProgramFragmentDoc = gql`
     fragment TeacherProgram on Program {
   id
@@ -3520,11 +3562,15 @@ export const EditableProgramDocument = gql`
   editableProgram(id: $id) {
     ...EditableProgram
   }
+  teacherCourses {
+    ...ProgramCourse
+  }
   subjects {
     ...Subject
   }
 }
     ${EditableProgramFragmentDoc}
+${ProgramCourseFragmentDoc}
 ${SubjectFragmentDoc}`;
 
 /**
@@ -3634,6 +3680,43 @@ export function useDeleteProgramMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProgramMutationHookResult = ReturnType<typeof useDeleteProgramMutation>;
 export type DeleteProgramMutationResult = Apollo.MutationResult<DeleteProgramMutation>;
 export type DeleteProgramMutationOptions = Apollo.BaseMutationOptions<DeleteProgramMutation, DeleteProgramMutationVariables>;
+export const UpdateProgramCourseRanksDocument = gql`
+    mutation UpdateProgramCourseRanks($programId: ID!, $courseRanks: [UpdateProgramCourseRankInput!]!) {
+  updateProgramCourseRanks(programId: $programId, courseRanks: $courseRanks) {
+    success
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type UpdateProgramCourseRanksMutationFn = Apollo.MutationFunction<UpdateProgramCourseRanksMutation, UpdateProgramCourseRanksMutationVariables>;
+
+/**
+ * __useUpdateProgramCourseRanksMutation__
+ *
+ * To run a mutation, you first call `useUpdateProgramCourseRanksMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProgramCourseRanksMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProgramCourseRanksMutation, { data, loading, error }] = useUpdateProgramCourseRanksMutation({
+ *   variables: {
+ *      programId: // value for 'programId'
+ *      courseRanks: // value for 'courseRanks'
+ *   },
+ * });
+ */
+export function useUpdateProgramCourseRanksMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProgramCourseRanksMutation, UpdateProgramCourseRanksMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProgramCourseRanksMutation, UpdateProgramCourseRanksMutationVariables>(UpdateProgramCourseRanksDocument, options);
+      }
+export type UpdateProgramCourseRanksMutationHookResult = ReturnType<typeof useUpdateProgramCourseRanksMutation>;
+export type UpdateProgramCourseRanksMutationResult = Apollo.MutationResult<UpdateProgramCourseRanksMutation>;
+export type UpdateProgramCourseRanksMutationOptions = Apollo.BaseMutationOptions<UpdateProgramCourseRanksMutation, UpdateProgramCourseRanksMutationVariables>;
 export const TeacherProgramsDocument = gql`
     query TeacherPrograms {
   teacherPrograms {

@@ -3,6 +3,15 @@ fragment Subject on Subject {
   denomination
 }
 
+fragment ProgramCourse on Course {
+  id
+  denomination
+  image
+  slug
+  level
+  updated_at
+}
+
 fragment EditableProgram on Program {
   id
   denomination
@@ -23,11 +32,17 @@ fragment EditableProgram on Program {
     id
     requirement
   }
+  courses {
+    ...ProgramCourse
+  }
 }
 
 query EditableProgram($id: ID!) {
   editableProgram(id: $id) {
     ...EditableProgram
+  }
+  teacherCourses {
+    ...ProgramCourse
   }
   subjects {
     ...Subject
@@ -48,6 +63,15 @@ mutation UpdateProgram($updateProgramInfo: UpdateProgramInfoInput!) {
 
 mutation DeleteProgram($id: ID!) {
   deleteProgram(id: $id) {
+    success
+    errors {
+      message
+    }
+  }
+}
+
+mutation UpdateProgramCourseRanks($programId: ID!, $courseRanks: [UpdateProgramCourseRankInput!]!) {
+  updateProgramCourseRanks(programId: $programId, courseRanks: $courseRanks) {
     success
     errors {
       message

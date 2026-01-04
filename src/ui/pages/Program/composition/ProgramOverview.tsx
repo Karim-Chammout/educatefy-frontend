@@ -13,8 +13,6 @@ import { Typography } from '@/ui/components';
 import { SectionTitle } from '../Program.styles';
 
 const ProgramOverview = ({ program }: { program: ProgramFragment }) => {
-  console.log('🚀 ~ :16 ~ program ======> ', program);
-
   const { t } = useTranslation();
 
   return (

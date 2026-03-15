@@ -10,7 +10,7 @@ import { Link } from 'react-router';
 
 import fallbackImage from '@/assets/educatefy_background.png';
 import { ProgramFragment } from '@/generated/graphql';
-import { Button, Typography } from '@/ui/components';
+import { Typography } from '@/ui/components';
 
 import {
   MetaItem,
@@ -21,6 +21,7 @@ import {
   RatingContainer,
   SubjectsContainer,
 } from '../Program.styles';
+import ProgramCTA from './ProgramCTA';
 
 const ProgramHeader = ({ program }: { program: ProgramFragment }) => {
   const { t } = useTranslation();
@@ -83,8 +84,9 @@ const ProgramHeader = ({ program }: { program: ProgramFragment }) => {
             ))}
           </SubjectsContainer>
 
-          {/* TODO: Create ProgramCTA component to handle enrollment logic */}
-          <Button onClick={() => console.log('Clicked enroll')}>Enroll</Button>
+          <div>
+            <ProgramCTA program={program} />
+          </div>
         </ProgramInfo>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <ProgramImage src={program.image || fallbackImage} alt={program.denomination} />

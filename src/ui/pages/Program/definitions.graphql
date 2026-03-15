@@ -20,6 +20,7 @@ fragment Program on Program {
     id
     requirement
   }
+  status
   rating
   ratingsCount
   enrolledLearnersCount
@@ -38,6 +39,7 @@ fragment Program on Program {
     slug
     level
     image
+    status
     rating
     participationCount
     instructor {
@@ -51,5 +53,40 @@ fragment Program on Program {
 query Program($slug: String!) {
   program(slug: $slug) {
     ...Program
+  }
+}
+
+mutation EnrollInProgram($programId: ID!) {
+  enrollInProgram(programId: $programId) {
+    success
+    errors {
+      message
+    }
+    program {
+      id
+      status
+    }
+  }
+}
+
+mutation UnenrollFromProgram($programId: ID!) {
+  unenrollFromProgram(programId: $programId) {
+    success
+    errors {
+      message
+    }
+    program {
+      id
+      status
+    }
+  }
+}
+
+mutation TrackProgramProgress($programId: ID!, $shouldMarkProgramAsCompleted: Boolean!) {
+  trackProgramProgress(programId: $programId, shouldMarkProgramAsCompleted: $shouldMarkProgramAsCompleted) {
+    success
+    errors {
+      message
+    }
   }
 }

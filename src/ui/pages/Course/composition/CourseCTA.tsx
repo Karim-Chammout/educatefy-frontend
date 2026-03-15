@@ -83,7 +83,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
           onClick={handleUpdateCourseStatus}
           disabled={loading}
         >
-          {t('course.enroll')}
+          {t('content.enroll')}
         </Button>
       )}
 
@@ -95,7 +95,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
             onClick={handleUpdateCourseStatus}
             disabled={loading}
           >
-            {t('course.unenroll')}
+            {t('content.unenroll')}
           </Button>
           <Button
             variant="contained"

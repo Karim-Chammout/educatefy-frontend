@@ -526,12 +526,18 @@ export type Mutation = {
   deleteLesson?: Maybe<MutationResult>;
   /** Deletes a program. */
   deleteProgram?: Maybe<MutationResult>;
+  /** Enrolls an account in a program. */
+  enrollInProgram?: Maybe<UpdateProgramStatusResult>;
   /** Follow or unfollow a teacher. Toggles the follow status. */
   followTeacher?: Maybe<FollowTeacherResult>;
   /** Rate a course. */
   rateCourse?: Maybe<RateCourseResult>;
   /** Remove the profile picture of a user. */
   removeProfilePicture?: Maybe<ChangeProfilePictureResult>;
+  /** Updates the last_viewed_at timestamp for a program progress. */
+  trackProgramProgress?: Maybe<MutationResult>;
+  /** Unenrolls an account from a program. */
+  unenrollFromProgram?: Maybe<UpdateProgramStatusResult>;
   /** Updates a user account information. */
   updateAccountInfo?: Maybe<MutationResult>;
   /** Updates a content component. */
@@ -630,6 +636,11 @@ export type MutationDeleteProgramArgs = {
 };
 
 
+export type MutationEnrollInProgramArgs = {
+  programId: Scalars['ID']['input'];
+};
+
+
 export type MutationFollowTeacherArgs = {
   followTeacherInfo: FollowTeacherInput;
 };
@@ -637,6 +648,17 @@ export type MutationFollowTeacherArgs = {
 
 export type MutationRateCourseArgs = {
   ratingInfo: RateCourse;
+};
+
+
+export type MutationTrackProgramProgressArgs = {
+  programId: Scalars['ID']['input'];
+  shouldMarkProgramAsCompleted: Scalars['Boolean']['input'];
+};
+
+
+export type MutationUnenrollFromProgramArgs = {
+  programId: Scalars['ID']['input'];
 };
 
 
@@ -807,6 +829,8 @@ export type Program = {
   requirements: Array<ProgramRequirement>;
   /** A unique slug of this program. */
   slug: Scalars['String']['output'];
+  /** The status of the program for the current user */
+  status: ProgramStatus;
   /** The subjects linked to this program. */
   subjects: Array<Subject>;
   /** The subtitle of this program. */
@@ -879,6 +903,18 @@ export type ProgramRequirementInput = {
   /** The requirement of this program. */
   requirement: Scalars['String']['input'];
 };
+
+/** The status of the program for the current user. */
+export enum ProgramStatus {
+  /** This program has been completed by the user. */
+  Completed = 'completed',
+  /** The user is currently in progress in this program. */
+  InProgress = 'in_progress',
+  /** This program is not started yet. */
+  NotStarted = 'not_started',
+  /** The user unenrolled from this program. */
+  Unenrolled = 'unenrolled'
+}
 
 /** The properties of a public account */
 export type PublicAccount = {
@@ -1220,6 +1256,17 @@ export type UpdateProgramInfoInput = {
   subjectIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   /** The subtitle of this program */
   subtitle?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The result of the enrolling or unenrolling from a program. */
+export type UpdateProgramStatusResult = {
+  __typename: 'UpdateProgramStatusResult';
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** The updated course information. */
+  program?: Maybe<Program>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
 };
 
 /** A video content component. */
@@ -1637,14 +1684,36 @@ export type RemoveProfilePictureMutationVariables = Exact<{ [key: string]: never
 
 export type RemoveProfilePictureMutation = { __typename: 'Mutation', removeProfilePicture?: { __typename: 'ChangeProfilePictureResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, user?: { __typename: 'Account', id: string, avatar_url?: string | null } | null } | null };
 
-export type ProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, rating: number, ratingsCount: number, enrolledLearnersCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> };
+export type ProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, status: ProgramStatus, rating: number, ratingsCount: number, enrolledLearnersCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, status: CourseStatus, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> };
 
 export type ProgramQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type ProgramQuery = { __typename: 'Query', program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, rating: number, ratingsCount: number, enrolledLearnersCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } | null };
+export type ProgramQuery = { __typename: 'Query', program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, status: ProgramStatus, rating: number, ratingsCount: number, enrolledLearnersCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, status: CourseStatus, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } | null };
+
+export type EnrollInProgramMutationVariables = Exact<{
+  programId: Scalars['ID']['input'];
+}>;
+
+
+export type EnrollInProgramMutation = { __typename: 'Mutation', enrollInProgram?: { __typename: 'UpdateProgramStatusResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, status: ProgramStatus } | null } | null };
+
+export type UnenrollFromProgramMutationVariables = Exact<{
+  programId: Scalars['ID']['input'];
+}>;
+
+
+export type UnenrollFromProgramMutation = { __typename: 'Mutation', unenrollFromProgram?: { __typename: 'UpdateProgramStatusResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, status: ProgramStatus } | null } | null };
+
+export type TrackProgramProgressMutationVariables = Exact<{
+  programId: Scalars['ID']['input'];
+  shouldMarkProgramAsCompleted: Scalars['Boolean']['input'];
+}>;
+
+
+export type TrackProgramProgressMutation = { __typename: 'Mutation', trackProgramProgress?: { __typename: 'MutationResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }> } | null };
 
 export type SubjectContentFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, rating: number, ratingsCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, courses: Array<{ __typename: 'Course', id: string }> }> };
 
@@ -2153,6 +2222,7 @@ export const ProgramFragmentDoc = gql`
     id
     requirement
   }
+  status
   rating
   ratingsCount
   enrolledLearnersCount
@@ -2171,6 +2241,7 @@ export const ProgramFragmentDoc = gql`
     slug
     level
     image
+    status
     rating
     participationCount
     instructor {
@@ -4088,6 +4159,126 @@ export type ProgramQueryHookResult = ReturnType<typeof useProgramQuery>;
 export type ProgramLazyQueryHookResult = ReturnType<typeof useProgramLazyQuery>;
 export type ProgramSuspenseQueryHookResult = ReturnType<typeof useProgramSuspenseQuery>;
 export type ProgramQueryResult = Apollo.QueryResult<ProgramQuery, ProgramQueryVariables>;
+export const EnrollInProgramDocument = gql`
+    mutation EnrollInProgram($programId: ID!) {
+  enrollInProgram(programId: $programId) {
+    success
+    errors {
+      message
+    }
+    program {
+      id
+      status
+    }
+  }
+}
+    `;
+export type EnrollInProgramMutationFn = Apollo.MutationFunction<EnrollInProgramMutation, EnrollInProgramMutationVariables>;
+
+/**
+ * __useEnrollInProgramMutation__
+ *
+ * To run a mutation, you first call `useEnrollInProgramMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEnrollInProgramMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [enrollInProgramMutation, { data, loading, error }] = useEnrollInProgramMutation({
+ *   variables: {
+ *      programId: // value for 'programId'
+ *   },
+ * });
+ */
+export function useEnrollInProgramMutation(baseOptions?: Apollo.MutationHookOptions<EnrollInProgramMutation, EnrollInProgramMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EnrollInProgramMutation, EnrollInProgramMutationVariables>(EnrollInProgramDocument, options);
+      }
+export type EnrollInProgramMutationHookResult = ReturnType<typeof useEnrollInProgramMutation>;
+export type EnrollInProgramMutationResult = Apollo.MutationResult<EnrollInProgramMutation>;
+export type EnrollInProgramMutationOptions = Apollo.BaseMutationOptions<EnrollInProgramMutation, EnrollInProgramMutationVariables>;
+export const UnenrollFromProgramDocument = gql`
+    mutation UnenrollFromProgram($programId: ID!) {
+  unenrollFromProgram(programId: $programId) {
+    success
+    errors {
+      message
+    }
+    program {
+      id
+      status
+    }
+  }
+}
+    `;
+export type UnenrollFromProgramMutationFn = Apollo.MutationFunction<UnenrollFromProgramMutation, UnenrollFromProgramMutationVariables>;
+
+/**
+ * __useUnenrollFromProgramMutation__
+ *
+ * To run a mutation, you first call `useUnenrollFromProgramMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnenrollFromProgramMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unenrollFromProgramMutation, { data, loading, error }] = useUnenrollFromProgramMutation({
+ *   variables: {
+ *      programId: // value for 'programId'
+ *   },
+ * });
+ */
+export function useUnenrollFromProgramMutation(baseOptions?: Apollo.MutationHookOptions<UnenrollFromProgramMutation, UnenrollFromProgramMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnenrollFromProgramMutation, UnenrollFromProgramMutationVariables>(UnenrollFromProgramDocument, options);
+      }
+export type UnenrollFromProgramMutationHookResult = ReturnType<typeof useUnenrollFromProgramMutation>;
+export type UnenrollFromProgramMutationResult = Apollo.MutationResult<UnenrollFromProgramMutation>;
+export type UnenrollFromProgramMutationOptions = Apollo.BaseMutationOptions<UnenrollFromProgramMutation, UnenrollFromProgramMutationVariables>;
+export const TrackProgramProgressDocument = gql`
+    mutation TrackProgramProgress($programId: ID!, $shouldMarkProgramAsCompleted: Boolean!) {
+  trackProgramProgress(
+    programId: $programId
+    shouldMarkProgramAsCompleted: $shouldMarkProgramAsCompleted
+  ) {
+    success
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type TrackProgramProgressMutationFn = Apollo.MutationFunction<TrackProgramProgressMutation, TrackProgramProgressMutationVariables>;
+
+/**
+ * __useTrackProgramProgressMutation__
+ *
+ * To run a mutation, you first call `useTrackProgramProgressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTrackProgramProgressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [trackProgramProgressMutation, { data, loading, error }] = useTrackProgramProgressMutation({
+ *   variables: {
+ *      programId: // value for 'programId'
+ *      shouldMarkProgramAsCompleted: // value for 'shouldMarkProgramAsCompleted'
+ *   },
+ * });
+ */
+export function useTrackProgramProgressMutation(baseOptions?: Apollo.MutationHookOptions<TrackProgramProgressMutation, TrackProgramProgressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<TrackProgramProgressMutation, TrackProgramProgressMutationVariables>(TrackProgramProgressDocument, options);
+      }
+export type TrackProgramProgressMutationHookResult = ReturnType<typeof useTrackProgramProgressMutation>;
+export type TrackProgramProgressMutationResult = Apollo.MutationResult<TrackProgramProgressMutation>;
+export type TrackProgramProgressMutationOptions = Apollo.BaseMutationOptions<TrackProgramProgressMutation, TrackProgramProgressMutationVariables>;
 export const SubjectDocument = gql`
     query Subject($id: ID!) {
   subject(id: $id) {

@@ -14,7 +14,8 @@ const FileDropzone = ({
   onFilesSelected,
   maxFiles = 1,
   accept = {
-    'image/*': ['.png', '.jpg', '.jpeg'],
+    'image/png': ['.png'],
+    'image/jpeg': ['.jpg', '.jpeg'],
   },
   disabled = false,
   isUploading = false,

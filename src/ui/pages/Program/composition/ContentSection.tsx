@@ -10,18 +10,27 @@ import { Typography } from '@/ui/components';
 import { ContentCard } from '@/ui/compositions';
 
 import { SectionTitle } from '../Program.styles';
+import VersionUpgradeBanner from './VersionUpgradeBanner';
 
 const ContentSection = ({ program }: { program: ProgramFragment }) => {
   const { t } = useTranslation();
+
+  const hasNewerVersion =
+    program.latestVersionNumber != null &&
+    program.currentVersion != null &&
+    program.latestVersionNumber > program.currentVersion.version_number;
 
   return (
     <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
       <SectionTitle component="h3" variant="h6" gutterBottom>
         {t('common.content')}
       </SectionTitle>
-      {program.courses.length > 0 ? (
+
+      {hasNewerVersion && <VersionUpgradeBanner programId={program.id} />}
+
+      {program.currentVersion.courses.length > 0 ? (
         <Grid container spacing={3}>
-          {program.courses.map((course) => (
+          {program.currentVersion.courses.map((course) => (
             <Grid
               key={course.id}
               size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}

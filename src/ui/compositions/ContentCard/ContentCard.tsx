@@ -27,9 +27,9 @@ type ContentCardType = {
   teacherName: string;
   teacherAvatar: string;
   image: string;
-  rating: number;
   studentsCount: number;
   difficulty: CourseLevel | ProgramLevel;
+  rating?: number;
   coursesCount?: number;
 };
 
@@ -45,6 +45,8 @@ const ContentCard = ({
   difficulty,
   coursesCount,
 }: ContentCardType) => {
+  console.log('🚀 ~ :48 ~ rating ======> ', typeof rating);
+
   const { t } = useTranslation();
 
   return (
@@ -76,7 +78,7 @@ const ContentCard = ({
                   {studentsCount}
                 </Typography>
               </Statistic>
-              {rating > 0 && (
+              {rating !== undefined && rating > 0 && (
                 <Statistic>
                   <StarIcon />
                   <Typography variant="body2" color="text.secondary">

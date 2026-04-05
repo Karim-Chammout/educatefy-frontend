@@ -110,9 +110,8 @@ const Subject = ({ subject }: { subject: SubjectContentFragment }) => {
               teacherAvatar={program.instructor.avatar_url || person}
               image={program.image || fallbackImage}
               difficulty={program.level}
-              rating={program.rating}
               studentsCount={program.enrolledLearnersCount}
-              coursesCount={program.courses.length}
+              coursesCount={program.currentVersion.courses.length}
             />
           </Grid>
         ))}

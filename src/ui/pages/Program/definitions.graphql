@@ -21,8 +21,6 @@ fragment Program on Program {
     requirement
   }
   status
-  rating
-  ratingsCount
   enrolledLearnersCount
   instructor {
     id
@@ -33,21 +31,26 @@ fragment Program on Program {
     isFollowed
     isAllowedToFollow
   }
-  courses {
+  currentVersion {
     id
-    denomination
-    slug
-    level
-    image
-    status
-    rating
-    participationCount
-    instructor {
-      first_name
-      last_name
-      avatar_url
+    version_number
+    courses {
+      id
+      denomination
+      slug
+      level
+      image
+      status
+      rating
+      participationCount
+      instructor {
+        first_name
+        last_name
+        avatar_url
+      }
     }
   }
+  latestVersionNumber
 }
 
 query Program($slug: String!) {
@@ -65,6 +68,7 @@ mutation EnrollInProgram($programId: ID!) {
     program {
       id
       status
+      latestVersionNumber
     }
   }
 }
@@ -78,15 +82,39 @@ mutation UnenrollFromProgram($programId: ID!) {
     program {
       id
       status
+      latestVersionNumber
     }
   }
 }
 
-mutation TrackProgramProgress($programId: ID!, $shouldMarkProgramAsCompleted: Boolean!) {
-  trackProgramProgress(programId: $programId, shouldMarkProgramAsCompleted: $shouldMarkProgramAsCompleted) {
+mutation UpgradeToLatestProgramVersion($programId: ID!) {
+  upgradeToLatestProgramVersion(programId: $programId) {
     success
     errors {
       message
+    }
+    program {
+      id
+      status
+      latestVersionNumber
+      currentVersion {
+        id
+        version_number
+        courses {
+          id
+          denomination
+          slug
+          level
+          image
+          status
+          participationCount
+          instructor {
+            first_name
+            last_name
+            avatar_url
+          }
+        }
+      }
     }
   }
 }

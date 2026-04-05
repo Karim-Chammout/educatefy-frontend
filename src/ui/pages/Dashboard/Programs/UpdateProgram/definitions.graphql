@@ -12,6 +12,23 @@ fragment ProgramCourse on Course {
   updated_at
 }
 
+fragment ProgramVersionCourseEntry on ProgramVersionCourseEntry {
+  rank
+  prerequisiteCourseId
+  course {
+    ...ProgramCourse
+  }
+}
+
+fragment ProgramVersion on ProgramVersion {
+  id
+  status
+  version_number
+  courseEntries {
+    ...ProgramVersionCourseEntry
+  }
+}
+
 fragment EditableProgram on Program {
   id
   denomination
@@ -32,8 +49,8 @@ fragment EditableProgram on Program {
     id
     requirement
   }
-  courses {
-    ...ProgramCourse
+  editableVersion {
+    ...ProgramVersion
   }
 }
 
@@ -70,11 +87,41 @@ mutation DeleteProgram($id: ID!) {
   }
 }
 
-mutation UpdateProgramCourseRanks($programId: ID!, $courseRanks: [UpdateProgramCourseRankInput!]!) {
-  updateProgramCourseRanks(programId: $programId, courseRanks: $courseRanks) {
+mutation UpdateProgramVersionCourses(
+  $updateProgramVersionCoursesInfo: UpdateProgramVersionCoursesInput!
+) {
+  updateProgramVersionCourses(updateProgramVersionCoursesInfo: $updateProgramVersionCoursesInfo) {
     success
     errors {
       message
+    }
+    programVersion {
+      ...ProgramVersion
+    }
+  }
+}
+
+mutation PublishProgramVersion($programId: ID!) {
+  publishProgramVersion(programId: $programId) {
+    success
+    errors {
+      message
+    }
+    programVersion {
+      ...ProgramVersion
+      published_at
+    }
+  }
+}
+
+mutation CreateProgramVersion($programId: ID!) {
+  createProgramVersion(programId: $programId) {
+    success
+    errors {
+      message
+    }
+    programVersion {
+      ...ProgramVersion
     }
   }
 }

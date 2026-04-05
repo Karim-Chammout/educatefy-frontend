@@ -76,8 +76,12 @@ const ProgramCTA = ({ program }: { program: ProgramFragment }) => {
     });
   };
 
-  const enrolledCourse = program.courses.find((c) => c.status === CourseStatus.Enrolled);
-  const availableCourse = program.courses.find((c) => c.status === CourseStatus.Available);
+  const enrolledCourse = program.currentVersion.courses.find(
+    (c) => c.status === CourseStatus.Enrolled,
+  );
+  const availableCourse = program.currentVersion.courses.find(
+    (c) => c.status === CourseStatus.Available,
+  );
 
   return (
     <>

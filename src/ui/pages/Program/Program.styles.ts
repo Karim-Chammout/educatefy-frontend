@@ -38,12 +38,6 @@ export const ProgramMeta = styled(Box)`
   flex-wrap: wrap;
 `;
 
-export const RatingContainer = styled(Box)`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
 export const MetaItem = styled(Box)`
   display: flex;
   align-items: center;

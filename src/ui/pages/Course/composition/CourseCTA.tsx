@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 
 import {
   CourseFragment,
@@ -16,6 +16,7 @@ import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 const CourseCTA = ({ course }: { course: CourseFragment }) => {
   const { t } = useTranslation();
   const location = useLocation();
+  const { programSlug } = useParams();
 
   const {
     authModal: { setAuthModalVisibility },
@@ -41,6 +42,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
         courseStatusInput: {
           id: course.id,
           status,
+          programSlug,
         },
       },
       onCompleted(data) {

@@ -22,15 +22,15 @@ fragment SubjectContent on Subject {
     level
     image
     enrolledLearnersCount
-    rating
-    ratingsCount
     instructor {
       first_name
       last_name
       avatar_url
     }
-    courses {
-      id
+    currentVersion {
+      courses {
+        id
+      }
     }
   }
 }

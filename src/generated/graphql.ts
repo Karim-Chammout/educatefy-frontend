@@ -358,6 +358,8 @@ export enum CourseStatus {
 export type CourseStatusInput = {
   /** The ID of the course */
   id: Scalars['ID']['input'];
+  /** The slug of the program the course belongs to */
+  programSlug?: InputMaybe<Scalars['String']['input']>;
   /** The new status of the course */
   status: CourseStatus;
 };
@@ -413,6 +415,17 @@ export type CreateOrUpdateProgramResult = {
   errors: Array<Error>;
   /** The created or updated program information. */
   program?: Maybe<Program>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
+};
+
+/** The result of creating a new program version. */
+export type CreateProgramVersionResult = {
+  __typename: 'CreateProgramVersionResult';
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** The newly created draft program version. */
+  programVersion?: Maybe<ProgramVersion>;
   /** Indicates if the mutation was successful. */
   success: Scalars['Boolean']['output'];
 };
@@ -512,6 +525,8 @@ export type Mutation = {
   createLesson?: Maybe<CreateOrUpdateLessonResult>;
   /** Creates a program. */
   createProgram?: Maybe<CreateOrUpdateProgramResult>;
+  /** Creates a new draft version of a program, copying the course list from the latest published version. */
+  createProgramVersion?: Maybe<CreateProgramVersionResult>;
   /** Deletes a content component. */
   deleteContentComponent?: Maybe<MutationResult>;
   /** Deletes a course. */
@@ -530,12 +545,12 @@ export type Mutation = {
   enrollInProgram?: Maybe<UpdateProgramStatusResult>;
   /** Follow or unfollow a teacher. Toggles the follow status. */
   followTeacher?: Maybe<FollowTeacherResult>;
+  /** Publishes the current draft version of a program. */
+  publishProgramVersion?: Maybe<PublishProgramVersionResult>;
   /** Rate a course. */
   rateCourse?: Maybe<RateCourseResult>;
   /** Remove the profile picture of a user. */
   removeProfilePicture?: Maybe<ChangeProfilePictureResult>;
-  /** Updates the last_viewed_at timestamp for a program progress. */
-  trackProgramProgress?: Maybe<MutationResult>;
   /** Unenrolls an account from a program. */
   unenrollFromProgram?: Maybe<UpdateProgramStatusResult>;
   /** Updates a user account information. */
@@ -562,8 +577,10 @@ export type Mutation = {
   updateProfile?: Maybe<UpdateProfileResult>;
   /** Updates a program. */
   updateProgram?: Maybe<CreateOrUpdateProgramResult>;
-  /** Updates the ranks of multiple courses within a program. */
-  updateProgramCourseRanks?: Maybe<MutationResult>;
+  /** Updates the courses linked to the current draft version of a program. */
+  updateProgramVersionCourses?: Maybe<UpdateProgramVersionCoursesResult>;
+  /** Upgrades an enrolled student to the latest published version of a program, preserving all existing course enrollment records. */
+  upgradeToLatestProgramVersion?: Maybe<UpgradeToLatestProgramVersionResult>;
 };
 
 
@@ -597,6 +614,11 @@ export type MutationCreateLessonArgs = {
 
 export type MutationCreateProgramArgs = {
   programInfo: ProgramInfoInput;
+};
+
+
+export type MutationCreateProgramVersionArgs = {
+  programId: Scalars['ID']['input'];
 };
 
 
@@ -646,14 +668,13 @@ export type MutationFollowTeacherArgs = {
 };
 
 
-export type MutationRateCourseArgs = {
-  ratingInfo: RateCourse;
+export type MutationPublishProgramVersionArgs = {
+  programId: Scalars['ID']['input'];
 };
 
 
-export type MutationTrackProgramProgressArgs = {
-  programId: Scalars['ID']['input'];
-  shouldMarkProgramAsCompleted: Scalars['Boolean']['input'];
+export type MutationRateCourseArgs = {
+  ratingInfo: RateCourse;
 };
 
 
@@ -725,8 +746,12 @@ export type MutationUpdateProgramArgs = {
 };
 
 
-export type MutationUpdateProgramCourseRanksArgs = {
-  courseRanks: Array<UpdateProgramCourseRankInput>;
+export type MutationUpdateProgramVersionCoursesArgs = {
+  updateProgramVersionCoursesInfo: UpdateProgramVersionCoursesInput;
+};
+
+
+export type MutationUpgradeToLatestProgramVersionArgs = {
   programId: Scalars['ID']['input'];
 };
 
@@ -797,39 +822,37 @@ export type ProfilePictureDetailsInput = {
 /** The program info. */
 export type Program = {
   __typename: 'Program';
-  /** The courses linked to this program. */
-  courses: Array<Course>;
   /** The date of when this program was created. */
   created_at: Scalars['Date']['output'];
+  /** The relevant program version for the current user. Returns the draft version for the owning teacher, the enrolled version for an enrolled student, and the latest published version for everyone else. */
+  currentVersion: ProgramVersion;
   /** The denomination of this program. */
   denomination: Scalars['String']['output'];
   /** The description of this program. */
   description: Scalars['String']['output'];
-  /** Number of learners enrolled in this program. */
+  /** The version the owning teacher should edit. Returns the current draft if one exists, otherwise the latest published version. */
+  editableVersion: ProgramVersion;
+  /** Number of learners currently enrolled in this program. */
   enrolledLearnersCount: Scalars['Int']['output'];
-  /** A link to an external resource. */
-  external_resource_link?: Maybe<Scalars['String']['output']>;
   /** A unique id of this program. */
   id: Scalars['ID']['output'];
-  /** The image of this program */
+  /** The image of this program. */
   image?: Maybe<Scalars['String']['output']>;
-  /** The name of the instructor for this program */
+  /** The instructor of this program. */
   instructor: Teacher;
-  /** A flag to indicate whether this program is published or not */
+  /** A flag to indicate whether this program is published or not. */
   is_published: Scalars['Boolean']['output'];
+  /** The latest program version number. */
+  latestVersionNumber?: Maybe<Scalars['Int']['output']>;
   /** The difficulty level of this program. */
   level: ProgramLevel;
   /** The objectives of this program. */
   objectives: Array<ProgramObjective>;
-  /** Average rating across all courses in this program */
-  rating: Scalars['Float']['output'];
-  /** Total number of course ratings in this program */
-  ratingsCount: Scalars['Int']['output'];
   /** The requirements of this program. */
   requirements: Array<ProgramRequirement>;
   /** A unique slug of this program. */
   slug: Scalars['String']['output'];
-  /** The status of the program for the current user */
+  /** The status of the program for the current user. */
   status: ProgramStatus;
   /** The subjects linked to this program. */
   subjects: Array<Subject>;
@@ -911,9 +934,58 @@ export enum ProgramStatus {
   /** The user is currently in progress in this program. */
   InProgress = 'in_progress',
   /** This program is not started yet. */
-  NotStarted = 'not_started',
-  /** The user unenrolled from this program. */
-  Unenrolled = 'unenrolled'
+  NotStarted = 'not_started'
+}
+
+/** A versioned snapshot of a program's course list. */
+export type ProgramVersion = {
+  __typename: 'ProgramVersion';
+  /** The ordered list of course entries in this program version, including rank and prerequisite metadata. */
+  courseEntries: Array<ProgramVersionCourseEntry>;
+  /** The ordered list of courses in this program version. */
+  courses: Array<Course>;
+  /** The date this program version was created. */
+  created_at: Scalars['Date']['output'];
+  /** A unique id of this program version. */
+  id: Scalars['ID']['output'];
+  /** The ID of the program this version belongs to. */
+  program_id: Scalars['ID']['output'];
+  /** The date this version was published. Null if not yet published. */
+  published_at?: Maybe<Scalars['Date']['output']>;
+  /** The lifecycle status of this program version. */
+  status: ProgramVersionStatus;
+  /** The date this program version was last updated. */
+  updated_at: Scalars['Date']['output'];
+  /** The sequential version number of this program version. */
+  version_number: Scalars['Int']['output'];
+};
+
+/** A course entry within a program version, including its rank and prerequisite course. */
+export type ProgramVersionCourseEntry = {
+  __typename: 'ProgramVersionCourseEntry';
+  /** The course in this program version. */
+  course: Course;
+  /** The ID of the course that must be completed before this one. Null means no prerequisite. */
+  prerequisiteCourseId?: Maybe<Scalars['ID']['output']>;
+  /** The position of this course within the program version. */
+  rank: Scalars['Int']['output'];
+};
+
+/** Input for a single course entry in a program version. */
+export type ProgramVersionCourseInput = {
+  /** The ID of the course to link to the program version. */
+  courseId: Scalars['ID']['input'];
+  /** The ID of the course that must be completed before this one. Null means no prerequisite. */
+  prerequisiteCourseId?: InputMaybe<Scalars['ID']['input']>;
+  /** The position of this course within the program version. */
+  rank: Scalars['Int']['input'];
+};
+
+/** The lifecycle status of a program version. */
+export enum ProgramVersionStatus {
+  Archived = 'archived',
+  Draft = 'draft',
+  Published = 'published'
 }
 
 /** The properties of a public account */
@@ -931,6 +1003,17 @@ export type PublicAccount = {
   name?: Maybe<Scalars['String']['output']>;
   /** The nickname of the account */
   nickname?: Maybe<Scalars['String']['output']>;
+};
+
+/** The result of publishing a program version. */
+export type PublishProgramVersionResult = {
+  __typename: 'PublishProgramVersionResult';
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** The newly published program version. */
+  programVersion?: Maybe<ProgramVersion>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
 };
 
 export type Query = {
@@ -1222,18 +1305,8 @@ export type UpdateProfileResult = {
   user?: Maybe<Account>;
 };
 
-/** Input for updating a program courses rank */
-export type UpdateProgramCourseRankInput = {
-  /** The ID of the course */
-  id: Scalars['String']['input'];
-  /** The new rank of the course */
-  rank: Scalars['Int']['input'];
-};
-
 /** Input for updating a program record. */
 export type UpdateProgramInfoInput = {
-  /** List of course IDs to link to the program */
-  courseIds?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
   /** The denomination of this program */
   denomination?: InputMaybe<Scalars['String']['input']>;
   /** The description of this program */
@@ -1264,6 +1337,36 @@ export type UpdateProgramStatusResult = {
   /** A list of errors that occurred executing this mutation. */
   errors: Array<Error>;
   /** The updated course information. */
+  program?: Maybe<Program>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
+};
+
+/** Input for updating the courses linked to the current draft version of a program. */
+export type UpdateProgramVersionCoursesInput = {
+  /** The full ordered list of courses for this version. This is a full replace — existing links are deleted and re-inserted. */
+  courses: Array<ProgramVersionCourseInput>;
+  /** The ID of the program whose draft version will be updated. */
+  programId: Scalars['ID']['input'];
+};
+
+/** The result of updating the courses in a program version. */
+export type UpdateProgramVersionCoursesResult = {
+  __typename: 'UpdateProgramVersionCoursesResult';
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** The updated program version. */
+  programVersion?: Maybe<ProgramVersion>;
+  /** Indicates if the mutation was successful. */
+  success: Scalars['Boolean']['output'];
+};
+
+/** The result of upgrading a student to the latest published program version. */
+export type UpgradeToLatestProgramVersionResult = {
+  __typename: 'UpgradeToLatestProgramVersionResult';
+  /** A list of errors that occurred executing this mutation. */
+  errors: Array<Error>;
+  /** The program after the version upgrade. */
   program?: Maybe<Program>;
   /** Indicates if the mutation was successful. */
   success: Scalars['Boolean']['output'];
@@ -1595,21 +1698,25 @@ export type CreateProgramMutation = { __typename: 'Mutation', createProgram?: { 
 
 export type ProgramCourseFragment = { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any };
 
-export type EditableProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, courses: Array<{ __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any }> };
+export type ProgramVersionCourseEntryFragment = { __typename: 'ProgramVersionCourseEntry', rank: number, prerequisiteCourseId?: string | null, course: { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any } };
+
+export type ProgramVersionFragment = { __typename: 'ProgramVersion', id: string, status: ProgramVersionStatus, version_number: number, courseEntries: Array<{ __typename: 'ProgramVersionCourseEntry', rank: number, prerequisiteCourseId?: string | null, course: { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any } }> };
+
+export type EditableProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, editableVersion: { __typename: 'ProgramVersion', id: string, status: ProgramVersionStatus, version_number: number, courseEntries: Array<{ __typename: 'ProgramVersionCourseEntry', rank: number, prerequisiteCourseId?: string | null, course: { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any } }> } };
 
 export type EditableProgramQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type EditableProgramQuery = { __typename: 'Query', editableProgram?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, courses: Array<{ __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any }> } | null, teacherCourses: Array<{ __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any }>, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
+export type EditableProgramQuery = { __typename: 'Query', editableProgram?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, editableVersion: { __typename: 'ProgramVersion', id: string, status: ProgramVersionStatus, version_number: number, courseEntries: Array<{ __typename: 'ProgramVersionCourseEntry', rank: number, prerequisiteCourseId?: string | null, course: { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any } }> } } | null, teacherCourses: Array<{ __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any }>, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
 
 export type UpdateProgramMutationVariables = Exact<{
   updateProgramInfo: UpdateProgramInfoInput;
 }>;
 
 
-export type UpdateProgramMutation = { __typename: 'Mutation', updateProgram?: { __typename: 'CreateOrUpdateProgramResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, courses: Array<{ __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any }> } | null } | null };
+export type UpdateProgramMutation = { __typename: 'Mutation', updateProgram?: { __typename: 'CreateOrUpdateProgramResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, is_published: boolean, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, editableVersion: { __typename: 'ProgramVersion', id: string, status: ProgramVersionStatus, version_number: number, courseEntries: Array<{ __typename: 'ProgramVersionCourseEntry', rank: number, prerequisiteCourseId?: string | null, course: { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any } }> } } | null } | null };
 
 export type DeleteProgramMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1618,13 +1725,26 @@ export type DeleteProgramMutationVariables = Exact<{
 
 export type DeleteProgramMutation = { __typename: 'Mutation', deleteProgram?: { __typename: 'MutationResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }> } | null };
 
-export type UpdateProgramCourseRanksMutationVariables = Exact<{
-  programId: Scalars['ID']['input'];
-  courseRanks: Array<UpdateProgramCourseRankInput> | UpdateProgramCourseRankInput;
+export type UpdateProgramVersionCoursesMutationVariables = Exact<{
+  updateProgramVersionCoursesInfo: UpdateProgramVersionCoursesInput;
 }>;
 
 
-export type UpdateProgramCourseRanksMutation = { __typename: 'Mutation', updateProgramCourseRanks?: { __typename: 'MutationResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }> } | null };
+export type UpdateProgramVersionCoursesMutation = { __typename: 'Mutation', updateProgramVersionCourses?: { __typename: 'UpdateProgramVersionCoursesResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, programVersion?: { __typename: 'ProgramVersion', id: string, status: ProgramVersionStatus, version_number: number, courseEntries: Array<{ __typename: 'ProgramVersionCourseEntry', rank: number, prerequisiteCourseId?: string | null, course: { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any } }> } | null } | null };
+
+export type PublishProgramVersionMutationVariables = Exact<{
+  programId: Scalars['ID']['input'];
+}>;
+
+
+export type PublishProgramVersionMutation = { __typename: 'Mutation', publishProgramVersion?: { __typename: 'PublishProgramVersionResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, programVersion?: { __typename: 'ProgramVersion', published_at?: any | null, id: string, status: ProgramVersionStatus, version_number: number, courseEntries: Array<{ __typename: 'ProgramVersionCourseEntry', rank: number, prerequisiteCourseId?: string | null, course: { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any } }> } | null } | null };
+
+export type CreateProgramVersionMutationVariables = Exact<{
+  programId: Scalars['ID']['input'];
+}>;
+
+
+export type CreateProgramVersionMutation = { __typename: 'Mutation', createProgramVersion?: { __typename: 'CreateProgramVersionResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, programVersion?: { __typename: 'ProgramVersion', id: string, status: ProgramVersionStatus, version_number: number, courseEntries: Array<{ __typename: 'ProgramVersionCourseEntry', rank: number, prerequisiteCourseId?: string | null, course: { __typename: 'Course', id: string, denomination: string, image?: string | null, slug: string, level: CourseLevel, updated_at: any } }> } | null } | null };
 
 export type TeacherProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any };
 
@@ -1649,14 +1769,14 @@ export type HomeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type HomeQuery = { __typename: 'Query', enrolledCourses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, completedCourses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, me: { __typename: 'Account', statistics?: { __typename: 'Statistics', enrolledCoursesCount: number, completedCoursesCount: number } | null } };
 
-export type TeacherFragment = { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, rating: number, ratingsCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, courses: Array<{ __typename: 'Course', id: string }> }> };
+export type TeacherFragment = { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, currentVersion: { __typename: 'ProgramVersion', courses: Array<{ __typename: 'Course', id: string }> } }> };
 
 export type InstructorQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type InstructorQuery = { __typename: 'Query', instructor?: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, rating: number, ratingsCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, courses: Array<{ __typename: 'Course', id: string }> }> } | null };
+export type InstructorQuery = { __typename: 'Query', instructor?: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, bio?: string | null, isFollowed: boolean, isAllowedToFollow: boolean, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, currentVersion: { __typename: 'ProgramVersion', courses: Array<{ __typename: 'Course', id: string }> } }> } | null };
 
 export type UserFragment = { __typename: 'Account', id: string, name?: string | null, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, accountRole: AccountRole, preferredLanguage: string, bio?: string | null, description?: string | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
 
@@ -1684,45 +1804,44 @@ export type RemoveProfilePictureMutationVariables = Exact<{ [key: string]: never
 
 export type RemoveProfilePictureMutation = { __typename: 'Mutation', removeProfilePicture?: { __typename: 'ChangeProfilePictureResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, user?: { __typename: 'Account', id: string, avatar_url?: string | null } | null } | null };
 
-export type ProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, status: ProgramStatus, rating: number, ratingsCount: number, enrolledLearnersCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, status: CourseStatus, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> };
+export type ProgramFragment = { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, status: ProgramStatus, enrolledLearnersCount: number, latestVersionNumber?: number | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, currentVersion: { __typename: 'ProgramVersion', id: string, version_number: number, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, status: CourseStatus, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } };
 
 export type ProgramQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type ProgramQuery = { __typename: 'Query', program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, status: ProgramStatus, rating: number, ratingsCount: number, enrolledLearnersCount: number, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, status: CourseStatus, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } | null };
+export type ProgramQuery = { __typename: 'Query', program?: { __typename: 'Program', id: string, denomination: string, slug: string, subtitle: string, description: string, level: ProgramLevel, image?: string | null, updated_at: any, created_at: any, status: ProgramStatus, enrolledLearnersCount: number, latestVersionNumber?: number | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }>, objectives: Array<{ __typename: 'ProgramObjective', id: string, objective: string }>, requirements: Array<{ __typename: 'ProgramRequirement', id: string, requirement: string }>, instructor: { __typename: 'Teacher', id: string, first_name?: string | null, last_name?: string | null, avatar_url?: string | null, description?: string | null, isFollowed: boolean, isAllowedToFollow: boolean }, currentVersion: { __typename: 'ProgramVersion', id: string, version_number: number, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, status: CourseStatus, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } } | null };
 
 export type EnrollInProgramMutationVariables = Exact<{
   programId: Scalars['ID']['input'];
 }>;
 
 
-export type EnrollInProgramMutation = { __typename: 'Mutation', enrollInProgram?: { __typename: 'UpdateProgramStatusResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, status: ProgramStatus } | null } | null };
+export type EnrollInProgramMutation = { __typename: 'Mutation', enrollInProgram?: { __typename: 'UpdateProgramStatusResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, status: ProgramStatus, latestVersionNumber?: number | null } | null } | null };
 
 export type UnenrollFromProgramMutationVariables = Exact<{
   programId: Scalars['ID']['input'];
 }>;
 
 
-export type UnenrollFromProgramMutation = { __typename: 'Mutation', unenrollFromProgram?: { __typename: 'UpdateProgramStatusResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, status: ProgramStatus } | null } | null };
+export type UnenrollFromProgramMutation = { __typename: 'Mutation', unenrollFromProgram?: { __typename: 'UpdateProgramStatusResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, status: ProgramStatus, latestVersionNumber?: number | null } | null } | null };
 
-export type TrackProgramProgressMutationVariables = Exact<{
+export type UpgradeToLatestProgramVersionMutationVariables = Exact<{
   programId: Scalars['ID']['input'];
-  shouldMarkProgramAsCompleted: Scalars['Boolean']['input'];
 }>;
 
 
-export type TrackProgramProgressMutation = { __typename: 'Mutation', trackProgramProgress?: { __typename: 'MutationResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }> } | null };
+export type UpgradeToLatestProgramVersionMutation = { __typename: 'Mutation', upgradeToLatestProgramVersion?: { __typename: 'UpgradeToLatestProgramVersionResult', success: boolean, errors: Array<{ __typename: 'Error', message: string }>, program?: { __typename: 'Program', id: string, status: ProgramStatus, latestVersionNumber?: number | null, currentVersion: { __typename: 'ProgramVersion', id: string, version_number: number, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, status: CourseStatus, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }> } } | null } | null };
 
-export type SubjectContentFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, rating: number, ratingsCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, courses: Array<{ __typename: 'Course', id: string }> }> };
+export type SubjectContentFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, currentVersion: { __typename: 'ProgramVersion', courses: Array<{ __typename: 'Course', id: string }> } }> };
 
 export type SubjectQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type SubjectQuery = { __typename: 'Query', subject?: { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, rating: number, ratingsCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, courses: Array<{ __typename: 'Course', id: string }> }> } | null };
+export type SubjectQuery = { __typename: 'Query', subject?: { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, denomination: string, slug: string, level: CourseLevel, image?: string | null, rating: number, participationCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null } }>, programs: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, image?: string | null, enrolledLearnersCount: number, instructor: { __typename: 'Teacher', first_name?: string | null, last_name?: string | null, avatar_url?: string | null }, currentVersion: { __typename: 'ProgramVersion', courses: Array<{ __typename: 'Course', id: string }> } }> } | null };
 
 export const OpenidClientFragmentDoc = gql`
     fragment OpenidClient on OpenidClient {
@@ -2058,6 +2177,25 @@ export const ProgramCourseFragmentDoc = gql`
   updated_at
 }
     `;
+export const ProgramVersionCourseEntryFragmentDoc = gql`
+    fragment ProgramVersionCourseEntry on ProgramVersionCourseEntry {
+  rank
+  prerequisiteCourseId
+  course {
+    ...ProgramCourse
+  }
+}
+    ${ProgramCourseFragmentDoc}`;
+export const ProgramVersionFragmentDoc = gql`
+    fragment ProgramVersion on ProgramVersion {
+  id
+  status
+  version_number
+  courseEntries {
+    ...ProgramVersionCourseEntry
+  }
+}
+    ${ProgramVersionCourseEntryFragmentDoc}`;
 export const EditableProgramFragmentDoc = gql`
     fragment EditableProgram on Program {
   id
@@ -2079,12 +2217,12 @@ export const EditableProgramFragmentDoc = gql`
     id
     requirement
   }
-  courses {
-    ...ProgramCourse
+  editableVersion {
+    ...ProgramVersion
   }
 }
     ${SubjectFragmentDoc}
-${ProgramCourseFragmentDoc}`;
+${ProgramVersionFragmentDoc}`;
 export const TeacherProgramFragmentDoc = gql`
     fragment TeacherProgram on Program {
   id
@@ -2158,15 +2296,15 @@ export const TeacherFragmentDoc = gql`
     level
     image
     enrolledLearnersCount
-    rating
-    ratingsCount
     instructor {
       first_name
       last_name
       avatar_url
     }
-    courses {
-      id
+    currentVersion {
+      courses {
+        id
+      }
     }
   }
 }
@@ -2223,8 +2361,6 @@ export const ProgramFragmentDoc = gql`
     requirement
   }
   status
-  rating
-  ratingsCount
   enrolledLearnersCount
   instructor {
     id
@@ -2235,21 +2371,26 @@ export const ProgramFragmentDoc = gql`
     isFollowed
     isAllowedToFollow
   }
-  courses {
+  currentVersion {
     id
-    denomination
-    slug
-    level
-    image
-    status
-    rating
-    participationCount
-    instructor {
-      first_name
-      last_name
-      avatar_url
+    version_number
+    courses {
+      id
+      denomination
+      slug
+      level
+      image
+      status
+      rating
+      participationCount
+      instructor {
+        first_name
+        last_name
+        avatar_url
+      }
     }
   }
+  latestVersionNumber
 }
     `;
 export const SubjectContentFragmentDoc = gql`
@@ -2277,15 +2418,15 @@ export const SubjectContentFragmentDoc = gql`
     level
     image
     enrolledLearnersCount
-    rating
-    ratingsCount
     instructor {
       first_name
       last_name
       avatar_url
     }
-    courses {
-      id
+    currentVersion {
+      courses {
+        id
+      }
     }
   }
 }
@@ -3751,43 +3892,126 @@ export function useDeleteProgramMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProgramMutationHookResult = ReturnType<typeof useDeleteProgramMutation>;
 export type DeleteProgramMutationResult = Apollo.MutationResult<DeleteProgramMutation>;
 export type DeleteProgramMutationOptions = Apollo.BaseMutationOptions<DeleteProgramMutation, DeleteProgramMutationVariables>;
-export const UpdateProgramCourseRanksDocument = gql`
-    mutation UpdateProgramCourseRanks($programId: ID!, $courseRanks: [UpdateProgramCourseRankInput!]!) {
-  updateProgramCourseRanks(programId: $programId, courseRanks: $courseRanks) {
+export const UpdateProgramVersionCoursesDocument = gql`
+    mutation UpdateProgramVersionCourses($updateProgramVersionCoursesInfo: UpdateProgramVersionCoursesInput!) {
+  updateProgramVersionCourses(
+    updateProgramVersionCoursesInfo: $updateProgramVersionCoursesInfo
+  ) {
     success
     errors {
       message
     }
+    programVersion {
+      ...ProgramVersion
+    }
   }
 }
-    `;
-export type UpdateProgramCourseRanksMutationFn = Apollo.MutationFunction<UpdateProgramCourseRanksMutation, UpdateProgramCourseRanksMutationVariables>;
+    ${ProgramVersionFragmentDoc}`;
+export type UpdateProgramVersionCoursesMutationFn = Apollo.MutationFunction<UpdateProgramVersionCoursesMutation, UpdateProgramVersionCoursesMutationVariables>;
 
 /**
- * __useUpdateProgramCourseRanksMutation__
+ * __useUpdateProgramVersionCoursesMutation__
  *
- * To run a mutation, you first call `useUpdateProgramCourseRanksMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProgramCourseRanksMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateProgramVersionCoursesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProgramVersionCoursesMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateProgramCourseRanksMutation, { data, loading, error }] = useUpdateProgramCourseRanksMutation({
+ * const [updateProgramVersionCoursesMutation, { data, loading, error }] = useUpdateProgramVersionCoursesMutation({
  *   variables: {
- *      programId: // value for 'programId'
- *      courseRanks: // value for 'courseRanks'
+ *      updateProgramVersionCoursesInfo: // value for 'updateProgramVersionCoursesInfo'
  *   },
  * });
  */
-export function useUpdateProgramCourseRanksMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProgramCourseRanksMutation, UpdateProgramCourseRanksMutationVariables>) {
+export function useUpdateProgramVersionCoursesMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProgramVersionCoursesMutation, UpdateProgramVersionCoursesMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateProgramCourseRanksMutation, UpdateProgramCourseRanksMutationVariables>(UpdateProgramCourseRanksDocument, options);
+        return Apollo.useMutation<UpdateProgramVersionCoursesMutation, UpdateProgramVersionCoursesMutationVariables>(UpdateProgramVersionCoursesDocument, options);
       }
-export type UpdateProgramCourseRanksMutationHookResult = ReturnType<typeof useUpdateProgramCourseRanksMutation>;
-export type UpdateProgramCourseRanksMutationResult = Apollo.MutationResult<UpdateProgramCourseRanksMutation>;
-export type UpdateProgramCourseRanksMutationOptions = Apollo.BaseMutationOptions<UpdateProgramCourseRanksMutation, UpdateProgramCourseRanksMutationVariables>;
+export type UpdateProgramVersionCoursesMutationHookResult = ReturnType<typeof useUpdateProgramVersionCoursesMutation>;
+export type UpdateProgramVersionCoursesMutationResult = Apollo.MutationResult<UpdateProgramVersionCoursesMutation>;
+export type UpdateProgramVersionCoursesMutationOptions = Apollo.BaseMutationOptions<UpdateProgramVersionCoursesMutation, UpdateProgramVersionCoursesMutationVariables>;
+export const PublishProgramVersionDocument = gql`
+    mutation PublishProgramVersion($programId: ID!) {
+  publishProgramVersion(programId: $programId) {
+    success
+    errors {
+      message
+    }
+    programVersion {
+      ...ProgramVersion
+      published_at
+    }
+  }
+}
+    ${ProgramVersionFragmentDoc}`;
+export type PublishProgramVersionMutationFn = Apollo.MutationFunction<PublishProgramVersionMutation, PublishProgramVersionMutationVariables>;
+
+/**
+ * __usePublishProgramVersionMutation__
+ *
+ * To run a mutation, you first call `usePublishProgramVersionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublishProgramVersionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publishProgramVersionMutation, { data, loading, error }] = usePublishProgramVersionMutation({
+ *   variables: {
+ *      programId: // value for 'programId'
+ *   },
+ * });
+ */
+export function usePublishProgramVersionMutation(baseOptions?: Apollo.MutationHookOptions<PublishProgramVersionMutation, PublishProgramVersionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PublishProgramVersionMutation, PublishProgramVersionMutationVariables>(PublishProgramVersionDocument, options);
+      }
+export type PublishProgramVersionMutationHookResult = ReturnType<typeof usePublishProgramVersionMutation>;
+export type PublishProgramVersionMutationResult = Apollo.MutationResult<PublishProgramVersionMutation>;
+export type PublishProgramVersionMutationOptions = Apollo.BaseMutationOptions<PublishProgramVersionMutation, PublishProgramVersionMutationVariables>;
+export const CreateProgramVersionDocument = gql`
+    mutation CreateProgramVersion($programId: ID!) {
+  createProgramVersion(programId: $programId) {
+    success
+    errors {
+      message
+    }
+    programVersion {
+      ...ProgramVersion
+    }
+  }
+}
+    ${ProgramVersionFragmentDoc}`;
+export type CreateProgramVersionMutationFn = Apollo.MutationFunction<CreateProgramVersionMutation, CreateProgramVersionMutationVariables>;
+
+/**
+ * __useCreateProgramVersionMutation__
+ *
+ * To run a mutation, you first call `useCreateProgramVersionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProgramVersionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProgramVersionMutation, { data, loading, error }] = useCreateProgramVersionMutation({
+ *   variables: {
+ *      programId: // value for 'programId'
+ *   },
+ * });
+ */
+export function useCreateProgramVersionMutation(baseOptions?: Apollo.MutationHookOptions<CreateProgramVersionMutation, CreateProgramVersionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProgramVersionMutation, CreateProgramVersionMutationVariables>(CreateProgramVersionDocument, options);
+      }
+export type CreateProgramVersionMutationHookResult = ReturnType<typeof useCreateProgramVersionMutation>;
+export type CreateProgramVersionMutationResult = Apollo.MutationResult<CreateProgramVersionMutation>;
+export type CreateProgramVersionMutationOptions = Apollo.BaseMutationOptions<CreateProgramVersionMutation, CreateProgramVersionMutationVariables>;
 export const TeacherProgramsDocument = gql`
     query TeacherPrograms {
   teacherPrograms {
@@ -4169,6 +4393,7 @@ export const EnrollInProgramDocument = gql`
     program {
       id
       status
+      latestVersionNumber
     }
   }
 }
@@ -4209,6 +4434,7 @@ export const UnenrollFromProgramDocument = gql`
     program {
       id
       status
+      latestVersionNumber
     }
   }
 }
@@ -4239,46 +4465,65 @@ export function useUnenrollFromProgramMutation(baseOptions?: Apollo.MutationHook
 export type UnenrollFromProgramMutationHookResult = ReturnType<typeof useUnenrollFromProgramMutation>;
 export type UnenrollFromProgramMutationResult = Apollo.MutationResult<UnenrollFromProgramMutation>;
 export type UnenrollFromProgramMutationOptions = Apollo.BaseMutationOptions<UnenrollFromProgramMutation, UnenrollFromProgramMutationVariables>;
-export const TrackProgramProgressDocument = gql`
-    mutation TrackProgramProgress($programId: ID!, $shouldMarkProgramAsCompleted: Boolean!) {
-  trackProgramProgress(
-    programId: $programId
-    shouldMarkProgramAsCompleted: $shouldMarkProgramAsCompleted
-  ) {
+export const UpgradeToLatestProgramVersionDocument = gql`
+    mutation UpgradeToLatestProgramVersion($programId: ID!) {
+  upgradeToLatestProgramVersion(programId: $programId) {
     success
     errors {
       message
     }
+    program {
+      id
+      status
+      latestVersionNumber
+      currentVersion {
+        id
+        version_number
+        courses {
+          id
+          denomination
+          slug
+          level
+          image
+          status
+          participationCount
+          instructor {
+            first_name
+            last_name
+            avatar_url
+          }
+        }
+      }
+    }
   }
 }
     `;
-export type TrackProgramProgressMutationFn = Apollo.MutationFunction<TrackProgramProgressMutation, TrackProgramProgressMutationVariables>;
+export type UpgradeToLatestProgramVersionMutationFn = Apollo.MutationFunction<UpgradeToLatestProgramVersionMutation, UpgradeToLatestProgramVersionMutationVariables>;
 
 /**
- * __useTrackProgramProgressMutation__
+ * __useUpgradeToLatestProgramVersionMutation__
  *
- * To run a mutation, you first call `useTrackProgramProgressMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useTrackProgramProgressMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpgradeToLatestProgramVersionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpgradeToLatestProgramVersionMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [trackProgramProgressMutation, { data, loading, error }] = useTrackProgramProgressMutation({
+ * const [upgradeToLatestProgramVersionMutation, { data, loading, error }] = useUpgradeToLatestProgramVersionMutation({
  *   variables: {
  *      programId: // value for 'programId'
- *      shouldMarkProgramAsCompleted: // value for 'shouldMarkProgramAsCompleted'
  *   },
  * });
  */
-export function useTrackProgramProgressMutation(baseOptions?: Apollo.MutationHookOptions<TrackProgramProgressMutation, TrackProgramProgressMutationVariables>) {
+export function useUpgradeToLatestProgramVersionMutation(baseOptions?: Apollo.MutationHookOptions<UpgradeToLatestProgramVersionMutation, UpgradeToLatestProgramVersionMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<TrackProgramProgressMutation, TrackProgramProgressMutationVariables>(TrackProgramProgressDocument, options);
+        return Apollo.useMutation<UpgradeToLatestProgramVersionMutation, UpgradeToLatestProgramVersionMutationVariables>(UpgradeToLatestProgramVersionDocument, options);
       }
-export type TrackProgramProgressMutationHookResult = ReturnType<typeof useTrackProgramProgressMutation>;
-export type TrackProgramProgressMutationResult = Apollo.MutationResult<TrackProgramProgressMutation>;
-export type TrackProgramProgressMutationOptions = Apollo.BaseMutationOptions<TrackProgramProgressMutation, TrackProgramProgressMutationVariables>;
+export type UpgradeToLatestProgramVersionMutationHookResult = ReturnType<typeof useUpgradeToLatestProgramVersionMutation>;
+export type UpgradeToLatestProgramVersionMutationResult = Apollo.MutationResult<UpgradeToLatestProgramVersionMutation>;
+export type UpgradeToLatestProgramVersionMutationOptions = Apollo.BaseMutationOptions<UpgradeToLatestProgramVersionMutation, UpgradeToLatestProgramVersionMutationVariables>;
 export const SubjectDocument = gql`
     query Subject($id: ID!) {
   subject(id: $id) {

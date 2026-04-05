@@ -1,7 +1,6 @@
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import SchoolIcon from '@mui/icons-material/School';
-import StarIcon from '@mui/icons-material/Star';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import { format } from 'date-fns';
@@ -18,7 +17,6 @@ import {
   ProgramImage,
   ProgramInfo,
   ProgramMeta,
-  RatingContainer,
   SubjectsContainer,
 } from '../Program.styles';
 import ProgramCTA from './ProgramCTA';
@@ -38,15 +36,6 @@ const ProgramHeader = ({ program }: { program: ProgramFragment }) => {
           </Typography>
 
           <ProgramMeta>
-            {program.rating > 0 && program.ratingsCount > 0 && (
-              <RatingContainer>
-                <StarIcon color="warning" />
-                <Typography variant="body1">
-                  {program.rating.toFixed(1)} ({program.ratingsCount} {t('course.reviews')})
-                </Typography>
-              </RatingContainer>
-            )}
-
             <MetaItem>
               <PersonOutlineIcon />
               <Typography variant="body1">

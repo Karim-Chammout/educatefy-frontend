@@ -45,8 +45,6 @@ const ContentCard = ({
   difficulty,
   coursesCount,
 }: ContentCardType) => {
-  console.log('🚀 ~ :48 ~ rating ======> ', typeof rating);
-
   const { t } = useTranslation();
 
   return (

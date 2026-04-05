@@ -372,6 +372,7 @@
   "program.coursesLockedDesc": "This version is published and its course list is locked. Create a new version to make changes.",
   "program.prerequisite": "Prerequisite",
   "program.noPrerequisite": "No prerequisite",
+  "program.prerequisiteCycleError": "This prerequisite creates a cycle — course A cannot require course B if B already requires A (directly or transitively).",
   "program.coursesSaveSuccess": "Courses updated successfully.",
   "program.coursesSaveError": "Failed to save course changes. Please try again.",
   "program.publishVersion": "Publish Version",

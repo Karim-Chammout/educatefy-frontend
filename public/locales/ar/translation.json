@@ -400,6 +400,7 @@
   "program.coursesLockedDesc": "هذا الإصدار منشور وقائمة دوره مؤمنة. أنشئ إصدارًا جديدًا لإجراء التغييرات.",
   "program.prerequisite": "المتطلبات السابقة",
   "program.noPrerequisite": "لا توجد متطلبات سابقة",
+  "program.prerequisiteCycleError": "هذا الشرط المسبق يُنشئ حلقة مغلقة — لا يمكن أن تتطلب الدورة (أ) الدورة (ب) إذا كانت (ب) تتطلب (أ) بالفعل، سواء بشكل مباشر أو غير مباشر.",
   "program.coursesSaveSuccess": "تم تحديث الدورات بنجاح.",
   "program.coursesSaveError": "فشل حفظ تغييرات الدورات. يُرجى المحاولة مرة أخرى.",
   "program.publishVersion": "نشر الإصدار",

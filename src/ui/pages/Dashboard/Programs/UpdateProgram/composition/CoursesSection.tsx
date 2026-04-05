@@ -66,6 +66,34 @@ const toCourseList = (entries: ProgramVersionCourseEntryFragment[]): ProgramCour
 const toPrerequisiteMap = (entries: ProgramVersionCourseEntryFragment[]): PrerequisiteMap =>
   Object.fromEntries(entries.map((e) => [e.course.id, e.prerequisiteCourseId ?? null]));
 
+const hasPrerequisiteCycle = (courses: ProgramCourseFragment[], prereqMap: PrerequisiteMap) => {
+  const map = courses.reduce<Map<string, string>>((acc, course) => {
+    const prereq = prereqMap[course.id];
+    if (prereq) acc.set(course.id, prereq);
+
+    return acc;
+  }, new Map());
+
+  const visited = new Set<string>();
+  const inStack = new Set<string>();
+
+  const dfs = (id: string) => {
+    if (inStack.has(id)) return true;
+    if (visited.has(id)) return false;
+
+    visited.add(id);
+    inStack.add(id);
+
+    const next = map.get(id);
+    if (next !== undefined && dfs(next)) return true;
+    inStack.delete(id);
+
+    return false;
+  };
+
+  return [...map.keys()].some((id) => dfs(id));
+};
+
 const CoursesSection = ({
   programId,
   availableCourses,
@@ -87,6 +115,7 @@ const CoursesSection = ({
 
   const [draftCourses, setDraftCourses] = useState<ProgramCourseFragment[]>([]);
   const [draftPrereqMap, setDraftPrereqMap] = useState<PrerequisiteMap>({});
+  const [prereqCycleError, setPrereqCycleError] = useState<string | null>(null);
   const [draftSelectedCourse, setDraftSelectedCourse] = useState<ProgramCourseFragment | null>(
     null,
   );
@@ -133,6 +162,7 @@ const CoursesSection = ({
 
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
+    setPrereqCycleError(null);
   };
 
   const handleDraftAddCourse = () => {
@@ -140,6 +170,7 @@ const CoursesSection = ({
     setDraftCourses((prev) => [...prev, draftSelectedCourse]);
     setDraftPrereqMap((prev) => ({ ...prev, [draftSelectedCourse.id]: null }));
     setDraftSelectedCourse(null);
+    setPrereqCycleError(null);
   };
 
   const handleDraftRemoveCourse = (courseId: string) => {
@@ -153,9 +184,17 @@ const CoursesSection = ({
 
       return updated;
     });
+    setPrereqCycleError(null);
   };
 
   const handleDraftPrerequisiteChange = (courseId: string, prereqId: string | null) => {
+    setPrereqCycleError(null);
+
+    const candidate = { ...draftPrereqMap, [courseId]: prereqId };
+    if (prereqId !== null && hasPrerequisiteCycle(draftCourses, candidate)) {
+      setPrereqCycleError(t('program.prerequisiteCycleError'));
+    }
+
     setDraftPrereqMap((prev) => ({ ...prev, [courseId]: prereqId }));
   };
 
@@ -172,6 +211,12 @@ const CoursesSection = ({
   const handleDraftDragEnd = async () => {};
 
   const handleSave = async () => {
+    if (hasPrerequisiteCycle(draftCourses, draftPrereqMap)) {
+      setPrereqCycleError(t('program.prerequisiteCycleError'));
+
+      return;
+    }
+
     await updateProgramVersionCourses({
       variables: {
         updateProgramVersionCoursesInfo: {
@@ -202,6 +247,8 @@ const CoursesSection = ({
         }
       },
     });
+
+    setPrereqCycleError(null);
   };
 
   const handlePublishConfirm = async () => {
@@ -494,6 +541,12 @@ const CoursesSection = ({
 
           <Divider sx={{ mb: 2 }} />
 
+          {prereqCycleError && (
+            <Alert severity="error" onClose={() => setPrereqCycleError(null)} sx={{ mb: 2 }}>
+              {prereqCycleError}
+            </Alert>
+          )}
+
           {draftCourses.length > 0 ? (
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -551,7 +604,7 @@ const CoursesSection = ({
           <Button onClick={handleCloseEditModal} variant="outlined" disabled={saveLoading}>
             {t('common.cancel')}
           </Button>
-          <Button onClick={handleSave} disabled={saveLoading}>
+          <Button onClick={handleSave} disabled={saveLoading || prereqCycleError !== null}>
             {t('common.saveChanges')}
           </Button>
         </DialogActions>

@@ -43,7 +43,7 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
 
   const [descriptionContent, setDescriptionContent] = useState(program.description);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-  const [selectedCourses, setSelectedCourses] = useState(program.courses || []);
+
   const [updateProgram, { loading: updateProgramLoading }] = useUpdateProgramMutation();
   const [deleteProgram] = useDeleteProgramMutation();
 
@@ -66,10 +66,7 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
     setRequirementItem,
     handleAddRequirement,
     handleDeleteRequirement,
-  } = useUpdateProgramForm({
-    program,
-    descriptionContent,
-  });
+  } = useUpdateProgramForm({ program, descriptionContent });
 
   const onSubmit = async (values: FieldValues) => {
     if (!isValidSlug(values.slug)) {
@@ -91,9 +88,9 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
       !values.subjects ||
       values.subjects.length === 0 ||
       !objectivesList ||
-      (objectivesList && objectivesList.length === 0) ||
+      objectivesList.length === 0 ||
       !requirementsList ||
-      (requirementsList && requirementsList.length === 0)
+      requirementsList.length === 0
     ) {
       setToasterVisibility({
         newDuration: 5000,
@@ -105,18 +102,12 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
     }
 
     const imageToUpdate = currentImage ? getS3FilePathFromUrl(currentImage) : null;
-
     const subjectIds = values.subjects.map((subject: { id: string }) => subject.id);
-    const objectives = objectivesList.map((item) => ({
-      id: item.id,
-      objective: item.objective,
-    }));
+    const objectives = objectivesList.map((item) => ({ id: item.id, objective: item.objective }));
     const requirements = requirementsList.map((item) => ({
       id: item.id,
       requirement: item.requirement,
     }));
-
-    const courseIds = selectedCourses.map((course) => course.id);
 
     await updateProgram({
       variables: {
@@ -132,7 +123,6 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
           subjectIds,
           objectives,
           requirements,
-          courseIds,
         },
       },
       onCompleted(data) {
@@ -232,8 +222,9 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
           <CoursesSection
             programId={program.id}
             availableCourses={teacherCourses}
-            selectedCourses={selectedCourses}
-            onCoursesChange={setSelectedCourses}
+            initialCourseEntries={program.editableVersion.courseEntries}
+            versionStatus={program.editableVersion.status}
+            versionNumber={program.editableVersion.version_number}
           />
 
           <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>

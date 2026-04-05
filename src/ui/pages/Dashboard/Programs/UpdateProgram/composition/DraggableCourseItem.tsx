@@ -3,31 +3,42 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 
 import fallbackImage from '@/assets/educatefy_background.png';
+import { ProgramCourseFragment } from '@/generated/graphql';
 import useDND from '@/hooks/useDND';
 import { Button, Typography } from '@/ui/components';
-import { ProgramCourseFragment } from '@/generated/graphql';
 
 type DraggableCourseItemType = {
   course: ProgramCourseFragment;
   index: number;
+  otherCourses: ProgramCourseFragment[];
+  prerequisiteCourseId: string | null;
+  onPrerequisiteChange: (courseId: string, prerequisiteCourseId: string | null) => void;
   onRemove: (courseId: string) => void;
   moveItem: (dragIndex: number, hoverIndex: number) => void;
   onDragEnd: () => Promise<void>;
 };
 
 const COURSE_ITEM_TYPE = 'COURSE_ITEM';
+const NO_PREREQUISITE_VALUE = '__none__';
 
 const DraggableCourseItem = ({
   course,
   index,
+  otherCourses,
+  prerequisiteCourseId,
+  onPrerequisiteChange,
   onRemove,
   moveItem,
   onDragEnd,
@@ -41,6 +52,11 @@ const DraggableCourseItem = ({
     moveItem,
     onDragEnd,
   });
+
+  const handlePrerequisiteChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value;
+    onPrerequisiteChange(course.id, value === NO_PREREQUISITE_VALUE ? null : value);
+  };
 
   return (
     <Box
@@ -63,6 +79,7 @@ const DraggableCourseItem = ({
         <IconButton sx={{ cursor: 'move', mr: 1 }}>
           <DragIndicatorIcon />
         </IconButton>
+
         <Box sx={{ display: 'flex', gap: '16px', alignItems: 'center', flex: 1 }}>
           <img
             src={course.image || fallbackImage}
@@ -84,14 +101,33 @@ const DraggableCourseItem = ({
                 />
               </Box>
             }
-            slotProps={{
-              primary: {
-                fontWeight: 500,
-              },
-            }}
+            slotProps={{ primary: { fontWeight: 500 } }}
           />
         </Box>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+
+        {otherCourses.length > 0 && (
+          <FormControl size="small" sx={{ minWidth: 200 }}>
+            <InputLabel>{t('program.prerequisite')}</InputLabel>
+            <Select
+              value={prerequisiteCourseId ?? NO_PREREQUISITE_VALUE}
+              label={t('program.prerequisite')}
+              onChange={handlePrerequisiteChange}
+            >
+              <MenuItem value={NO_PREREQUISITE_VALUE}>
+                <Typography variant="body2" color="text.secondary">
+                  {t('program.noPrerequisite')}
+                </Typography>
+              </MenuItem>
+              {otherCourses.map((c) => (
+                <MenuItem key={c.id} value={c.id}>
+                  {c.denomination}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
           <IconButton color="error" size="small" onClick={() => onRemove(course.id)}>
             <DeleteIcon />
           </IconButton>
@@ -105,7 +141,7 @@ const DraggableCourseItem = ({
           >
             {t('common.open')}
           </Button>
-        </div>
+        </Box>
       </ListItem>
     </Box>
   );

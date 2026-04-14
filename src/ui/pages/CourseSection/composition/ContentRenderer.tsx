@@ -1,11 +1,13 @@
 import { ContentComponentsType } from '@/types/types';
+import { RichTextContent } from '@/ui/compositions';
 import { getMediaUrl } from '@/utils/getMediaUrl';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
-import { TextContent, VideoComponent } from '../Section.style';
+import { VideoComponent } from '../Section.style';
 
 const ContentRenderer = ({ component }: { component: Partial<ContentComponentsType> }) => {
-  if (component.__typename === 'TextContent' && component.content) {
-    return <TextContent dangerouslySetInnerHTML={{ __html: component.content }} />;
+  if (component.__typename === 'TextContent' && hasRichTextContent(component.content)) {
+    return <RichTextContent value={component.content} />;
   }
 
   if (component.__typename === 'VideoContent' && component.url) {
@@ -29,12 +31,8 @@ const ContentRenderer = ({ component }: { component: Partial<ContentComponentsTy
           style={{ border: 0 }}
           allowFullScreen
         />
-        {component.description && (
-          <TextContent
-            dangerouslySetInnerHTML={{
-              __html: component.description,
-            }}
-          />
+        {hasRichTextContent(component.description) && (
+          <RichTextContent value={component.description} />
         )}
       </div>
     );

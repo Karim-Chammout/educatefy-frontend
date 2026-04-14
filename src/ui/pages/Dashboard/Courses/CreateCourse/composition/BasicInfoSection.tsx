@@ -197,7 +197,7 @@ export const BasicInfoSection = ({
         <Box>
           <RichTextEditor
             onChange={setDescriptionContent}
-            initialValue={descriptionContent}
+            value={descriptionContent}
             placeholder={t('course.descriptionPlaceholder')}
           />
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>

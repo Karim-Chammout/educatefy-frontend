@@ -1,3 +1,6 @@
+import { JSONContent } from '@tiptap/react';
+import { Dispatch, SetStateAction } from 'react';
+
 type ObjectiveItem = {
   id: number;
   objective: string;
@@ -16,7 +19,7 @@ export type FormState = {
   language: any;
   subjects: any[];
   externalResourceLink: string;
-  descriptionContent: string;
+  descriptionContent: JSONContent | null;
   objectiveItem: string;
   objectivesList: ObjectiveItem[] | null;
   requirementItem: string;
@@ -25,11 +28,11 @@ export type FormState = {
   uploadedImageDetails: any;
   isImageLoading: boolean;
   createCourseLoading: boolean;
-  hasDescription: string;
+  hasDescription: boolean;
 };
 
 export type FormHandlers = {
-  setDescriptionContent: React.Dispatch<React.SetStateAction<string>>;
+  setDescriptionContent: Dispatch<SetStateAction<JSONContent | null>>;
   setObjectiveItem: (item: string) => void;
   setRequirementItem: (item: string) => void;
   generateSlug: () => void;

@@ -123,7 +123,7 @@ const BasicInfoSection = ({
         <Box>
           <RichTextEditor
             onChange={setDescriptionContent}
-            initialValue={descriptionContent}
+            value={descriptionContent}
             placeholder={t('program.descriptionPlaceholder')}
           />
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>

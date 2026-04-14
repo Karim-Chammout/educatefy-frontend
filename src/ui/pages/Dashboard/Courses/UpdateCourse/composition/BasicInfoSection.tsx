@@ -1,12 +1,14 @@
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import { JSONContent } from '@tiptap/react';
+import { Dispatch, SetStateAction } from 'react';
 import { Control } from 'react-hook-form';
 import { AutocompleteElement, TextFieldElement } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
-// @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
-import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+// @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
+import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 
 import {
   CourseLevel,
@@ -15,9 +17,9 @@ import {
   SubjectFragment,
 } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
+import { RichTextEditor } from '@/ui/compositions';
 import { isValidSlug } from '@/utils/isValidSlug';
 import { isValidUrl } from '@/utils/isValidUrl';
-import { RichTextEditor } from '@/ui/compositions';
 
 type BasicInfoSectionType = {
   control: Control<any>;
@@ -28,8 +30,8 @@ type BasicInfoSectionType = {
     slug: string;
   };
   course: EditableCourseFragment;
-  descriptionContent: string;
-  setDescriptionContent: React.Dispatch<React.SetStateAction<string>>;
+  descriptionContent: JSONContent | null;
+  setDescriptionContent: Dispatch<SetStateAction<JSONContent | null>>;
 };
 
 const BasicInfoSection = ({
@@ -207,7 +209,7 @@ const BasicInfoSection = ({
         <Box sx={{ minHeight: 200 }}>
           <RichTextEditor
             onChange={setDescriptionContent}
-            initialValue={descriptionContent}
+            value={descriptionContent}
             placeholder={t('course.descriptionPlaceholder')}
           />
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>

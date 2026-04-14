@@ -30,7 +30,7 @@ import {
 } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { Button, Modal, Typography } from '@/ui/components';
-import { FileDropzone, LanguageSelector } from '@/ui/compositions';
+import { FileDropzone, LanguageSelector, RichTextContent } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 
 import { EditProfile, InfoSection, ProfileField } from './compositions';
@@ -286,11 +286,7 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   {t('profile.description')}:
                 </Typography>
-                <Typography
-                  dangerouslySetInnerHTML={{
-                    __html: userInfo.description || '',
-                  }}
-                />
+                <RichTextContent value={userInfo.description} />
               </Box>
             </InfoSection>
           </Grid>

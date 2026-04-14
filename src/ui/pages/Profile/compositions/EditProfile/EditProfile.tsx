@@ -20,7 +20,7 @@ import { Button } from '@/ui/components';
 import { RichTextEditor } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 import { genderOptions } from '@/utils/genderOptions';
-import { removeHtmlTags } from '@/utils/removeHTMLTags';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 const EditProfile = ({
   userInfo,
@@ -34,9 +34,9 @@ const EditProfile = ({
   setIsEditModalOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation();
-  const [descriptionContent, setDescriptionContent] = useState(userInfo.description || '');
+  const [descriptionContent, setDescriptionContent] = useState(userInfo.description || null);
 
-  const hasDescription = removeHtmlTags(descriptionContent);
+  const hasDescription = hasRichTextContent(descriptionContent);
 
   const { setToasterVisibility } = useContext(ToasterContext);
 
@@ -220,7 +220,7 @@ const EditProfile = ({
               />
               <RichTextEditor
                 onChange={setDescriptionContent}
-                initialValue={descriptionContent}
+                value={descriptionContent}
                 placeholder={t('profile.descriptionPlaceholder')}
               />
             </>

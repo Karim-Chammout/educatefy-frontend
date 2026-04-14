@@ -26,7 +26,7 @@ import { useLanguageSelection } from '@/hooks';
 import { Button, Loader, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
 import { genderOptions } from '@/utils/genderOptions';
-import { removeHtmlTags } from '@/utils/removeHTMLTags';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 import ErrorPlaceholder from '../ErrorPlaceholder';
 import LanguageSelector from '../LanguageSelector';
@@ -49,7 +49,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       nationality: userInfo.nationality || null,
       country: userInfo.country || null,
       dateOfBirth: userInfo.date_of_birth ? new Date(userInfo.date_of_birth) : null,
-      subjects: userInfo.subjects.map((s) => s.id) || [],
+      subjects: userInfo.subjects || [],
       bio: userInfo.bio || null,
     },
   });
@@ -123,6 +123,13 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           });
         }
       },
+      onError: () => {
+        setToasterVisibility({
+          newDuration: 5000,
+          newText: t('setupProfile.updateFailed'),
+          newType: 'error',
+        });
+      },
     });
   };
 
@@ -134,7 +141,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
     return <ErrorPlaceholder />;
   }
 
-  const hasDescription = removeHtmlTags(descriptionContent);
+  const hasDescription = hasRichTextContent(descriptionContent);
 
   return (
     <Container maxWidth="xs" sx={{ my: 2 }}>
@@ -210,6 +217,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
                   // Seems like there is a bug in the library and the limitTags option doesn't work
                   // Workaround for disabling the option when the limit is reached
                   getOptionDisabled: () => subjects.length >= 3,
+                  blurOnSelect: true,
                 }}
                 options={data.subjects.map((s) => ({
                   id: s.id,
@@ -229,7 +237,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
               />
               <RichTextEditor
                 onChange={setDescriptionContent}
-                initialValue={descriptionContent}
+                value={descriptionContent}
                 placeholder={t('setupProfile.descriptionPlaceholder')}
               />
             </>

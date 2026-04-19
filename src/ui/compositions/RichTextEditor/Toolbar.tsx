@@ -3,6 +3,8 @@ import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
 import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
+import FormatColorTextIcon from '@mui/icons-material/FormatColorText';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
@@ -12,13 +14,19 @@ import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import ImageIcon from '@mui/icons-material/Image';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import RedoIcon from '@mui/icons-material/Redo';
+import TableChartIcon from '@mui/icons-material/TableChart';
 import TitleIcon from '@mui/icons-material/Title';
+import TuneIcon from '@mui/icons-material/Tune';
 import UndoIcon from '@mui/icons-material/Undo';
 import WebIcon from '@mui/icons-material/Web';
 import {
+  Box,
   CircularProgress,
   IconButton,
+  MenuItem,
   Popover,
+  Select,
+  SelectChangeEvent,
   Stack,
   TextField,
   Tooltip,
@@ -46,6 +54,31 @@ import { ToolbarDivider, ToolbarWrapper } from './RichTextEditor.style';
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
 
+const FONT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '32px'];
+const HEADING_LEVELS = [1, 2, 3, 4, 5, 6] as const;
+
+// Preset swatches for color + highlight
+const COLOR_SWATCHES = [
+  '#000000',
+  '#434343',
+  '#666666',
+  '#999999',
+  '#b7b7b7',
+  '#ffffff',
+  '#ff0000',
+  '#ff9900',
+  '#ffff00',
+  '#00ff00',
+  '#00ffff',
+  '#0000ff',
+  '#9900ff',
+  '#ff00ff',
+  '#ea4335',
+  '#fbbc04',
+  '#34a853',
+  '#4285f4',
+];
+
 type ToolbarProps = {
   editor: Editor;
   uploadEndpoint: string;
@@ -60,57 +93,122 @@ type ToolbarButtonProps = {
   children: ReactNode;
 };
 
-const ToolbarButton = ({ label, onClick, active, disabled, children }: ToolbarButtonProps) => {
-  return (
-    <Tooltip title={label} placement="top" arrow>
-      <span>
-        <IconButton
-          size="small"
-          onClick={onClick}
-          disabled={disabled}
-          color={active ? 'primary' : 'default'}
-          sx={{
-            borderRadius: 1,
-            width: 28,
-            height: 28,
-            backgroundColor: active ? 'primary.main' : 'transparent',
-            color: active ? 'primary.contrastText' : 'text.primary',
-            '&:hover': {
-              backgroundColor: active ? 'primary.dark' : 'action.hover',
-            },
-          }}
-        >
-          {children}
-        </IconButton>
-      </span>
-    </Tooltip>
-  );
-};
+const ToolbarButton = ({ label, onClick, active, disabled, children }: ToolbarButtonProps) => (
+  <Tooltip title={label} placement="top" arrow>
+    <span>
+      <IconButton
+        size="small"
+        onClick={onClick}
+        disabled={disabled}
+        color={active ? 'primary' : 'default'}
+        sx={{
+          borderRadius: 1,
+          width: 28,
+          height: 28,
+          backgroundColor: active ? 'primary.main' : 'transparent',
+          color: active ? 'primary.contrastText' : 'text.primary',
+          '&:hover': {
+            backgroundColor: active ? 'primary.dark' : 'action.hover',
+          },
+        }}
+      >
+        {children}
+      </IconButton>
+    </span>
+  </Tooltip>
+);
+
+// ── Small swatch grid used inside color popovers ──────────────────────────────
+const SwatchGrid = ({
+  onSelect,
+  onClear,
+  clearLabel,
+}: {
+  onSelect: (color: string) => void;
+  onClear: () => void;
+  clearLabel: string;
+}) => (
+  <Stack spacing={1}>
+    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 0.5 }}>
+      {COLOR_SWATCHES.map((color) => (
+        <Tooltip key={color} title={color} placement="top" arrow>
+          <Box
+            onClick={() => onSelect(color)}
+            sx={{
+              width: 22,
+              height: 22,
+              borderRadius: 0.5,
+              backgroundColor: color,
+              border: '1px solid',
+              borderColor: 'divider',
+              cursor: 'pointer',
+              '&:hover': { transform: 'scale(1.15)', transition: 'transform 0.1s' },
+            }}
+          />
+        </Tooltip>
+      ))}
+    </Box>
+    <Button size="small" variant="text" onClick={onClear} sx={{ alignSelf: 'flex-start', px: 0 }}>
+      {clearLabel}
+    </Button>
+  </Stack>
+);
 
 const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textColorInputRef = useRef<HTMLInputElement>(null);
+  const highlightColorInputRef = useRef<HTMLInputElement>(null);
+
   const [imageUploading, setImageUploading] = useState(false);
   const [imageError, setImageError] = useState<string | null>(null);
 
-  // Popovers
+  // ── Popover anchors ───────────────────────────────────────────────
+  const [headingAnchor, setHeadingAnchor] = useState<HTMLElement | null>(null);
   const [linkAnchor, setLinkAnchor] = useState<HTMLElement | null>(null);
   const [linkUrl, setLinkUrl] = useState('');
-
   const [iframeAnchor, setIframeAnchor] = useState<HTMLElement | null>(null);
   const [iframeUrl, setIframeUrl] = useState('');
-
   const [imageUrlAnchor, setImageUrlAnchor] = useState<HTMLElement | null>(null);
   const [imageUrl, setImageUrl] = useState('');
+  const [tableAnchor, setTableAnchor] = useState<HTMLElement | null>(null);
+  const [tableRows, setTableRows] = useState(3);
+  const [tableCols, setTableCols] = useState(3);
+  const [tableActionsAnchor, setTableActionsAnchor] = useState<HTMLElement | null>(null);
+  const [textColorAnchor, setTextColorAnchor] = useState<HTMLElement | null>(null);
+  const [highlightAnchor, setHighlightAnchor] = useState<HTMLElement | null>(null);
 
-  // ─── Image upload ────────────────────────────────────────────────
+  // ── Active color indicators ───────────────────────────────────────
+  const activeTextColor = (editor.getAttributes('textStyle').color as string | undefined) ?? null;
+  const activeHighlight = (editor.getAttributes('highlight').color as string | undefined) ?? null;
+
+  // ── Font size ─────────────────────────────────────────────────────
+  const activeFontSize = (editor.getAttributes('textStyle').fontSize as string | undefined) ?? '';
+
+  const handleFontSizeChange = (e: SelectChangeEvent) => {
+    const val = e.target.value;
+    if (val === '') {
+      editor.chain().focus().unsetFontSize().run();
+    } else {
+      editor.chain().focus().setFontSize(val).run();
+    }
+  };
+
+  // ── Headings ──────────────────────────────────────────────────────
+  const activeHeading = HEADING_LEVELS.find((l) => editor.isActive('heading', { level: l }));
+  const headingLabel = activeHeading ? `H${activeHeading}` : 'H';
+
+  const handleHeadingSelect = (level: (typeof HEADING_LEVELS)[number]) => {
+    editor.chain().focus().toggleHeading({ level }).run();
+    setHeadingAnchor(null);
+  };
+
+  // ── Image upload ──────────────────────────────────────────────────
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!fileInputRef.current) return;
     fileInputRef.current.value = '';
     if (!file) return;
-
     setImageError(null);
-
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
       setImageError('Only image files are allowed (JPEG, PNG, GIF, WebP, SVG).');
 
@@ -121,17 +219,14 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
 
       return;
     }
-
     try {
       setImageUploading(true);
       const formData = new FormData();
       formData.append('file', file);
       formData.append('destinationFolder', 'text-editor');
-
       const response = await api.post<FileResponseType>(uploadEndpoint, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
       if (response.success) {
         editor
           .chain()
@@ -148,27 +243,11 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
     }
   };
 
-  const handleClickUpload = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleInsertImageUrl = useCallback(() => {
-    if (imageUrl.trim()) {
-      editor.chain().focus().setImage({ src: imageUrl.trim() }).run();
-    }
-    setImageUrl('');
-    setImageUrlAnchor(null);
-  }, [editor, imageUrl]);
-
-  // ─── Link ────────────────────────────────────────────────────────
+  // ── Link ──────────────────────────────────────────────────────────
   const handleOpenLink = (e: MouseEvent<HTMLButtonElement>) => {
-    const existing = editor.getAttributes('link').href ?? '';
-    setLinkUrl(existing);
+    setLinkUrl(editor.getAttributes('link').href ?? '');
     setLinkAnchor(e.currentTarget);
   };
-
-  const handleCloseLinkPopover = () => setLinkAnchor(null);
-
   const handleInsertLink = useCallback(() => {
     if (!linkUrl.trim()) {
       editor.chain().focus().unsetLink().run();
@@ -179,36 +258,16 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
     setLinkAnchor(null);
   }, [editor, linkUrl]);
 
-  const handleLinkUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLinkUrl(e.target.value);
-  };
+  // ── Image URL ─────────────────────────────────────────────────────
+  const handleInsertImageUrl = useCallback(() => {
+    if (imageUrl.trim()) {
+      editor.chain().focus().setImage({ src: imageUrl.trim() }).run();
+    }
+    setImageUrl('');
+    setImageUrlAnchor(null);
+  }, [editor, imageUrl]);
 
-  const handleLinkKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') handleInsertLink();
-  };
-
-  // ─── Image URL popover ───────────────────────────────────────────
-  const handleOpenImageUrl = (e: MouseEvent<HTMLButtonElement>) => {
-    setImageUrlAnchor(e.currentTarget);
-  };
-
-  const handleCloseImageUrlPopover = () => setImageUrlAnchor(null);
-
-  const handleImageUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setImageUrl(e.target.value);
-  };
-
-  const handleImageUrlKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') handleInsertImageUrl();
-  };
-
-  // ─── Iframe ──────────────────────────────────────────────────────
-  const handleOpenIframe = (e: MouseEvent<HTMLButtonElement>) => {
-    setIframeAnchor(e.currentTarget);
-  };
-
-  const handleCloseIframePopover = () => setIframeAnchor(null);
-
+  // ── iFrame ────────────────────────────────────────────────────────
   const handleInsertIframe = useCallback(() => {
     if (iframeUrl.trim()) {
       editor.chain().focus().setIframe({ src: iframeUrl.trim() }).run();
@@ -217,82 +276,104 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
     setIframeAnchor(null);
   }, [editor, iframeUrl]);
 
-  const handleIframeUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIframeUrl(e.target.value);
-  };
-
-  const handleIframeKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') handleInsertIframe();
-  };
-
-  // ─── Editor commands ─────────────────────────────────────────────
-  const handleUndo = () => editor.chain().focus().undo().run();
-  const handleRedo = () => editor.chain().focus().redo().run();
-  const handleH1 = () => editor.chain().focus().toggleHeading({ level: 1 }).run();
-  const handleH2 = () => editor.chain().focus().toggleHeading({ level: 2 }).run();
-  const handleH3 = () => editor.chain().focus().toggleHeading({ level: 3 }).run();
-  const handleBold = () => editor.chain().focus().toggleBold().run();
-  const handleItalic = () => editor.chain().focus().toggleItalic().run();
-  const handleStrike = () => editor.chain().focus().toggleStrike().run();
-  const handleCode = () => editor.chain().focus().toggleCode().run();
-  const handleAlignLeft = () => editor.chain().focus().setTextAlign('left').run();
-  const handleAlignCenter = () => editor.chain().focus().setTextAlign('center').run();
-  const handleAlignRight = () => editor.chain().focus().setTextAlign('right').run();
-  const handleBulletList = () => editor.chain().focus().toggleBulletList().run();
-  const handleOrderedList = () => editor.chain().focus().toggleOrderedList().run();
-  const handleBlockquote = () => editor.chain().focus().toggleBlockquote().run();
-  const handleHorizontalRule = () => editor.chain().focus().setHorizontalRule().run();
+  // ── Table ─────────────────────────────────────────────────────────
+  const handleInsertTable = useCallback(() => {
+    editor
+      .chain()
+      .focus()
+      .insertTable({ rows: tableRows, cols: tableCols, withHeaderRow: true })
+      .run();
+    setTableAnchor(null);
+  }, [editor, tableRows, tableCols]);
 
   return (
     <ToolbarWrapper>
-      {/* History */}
-      <ToolbarButton label="Undo" onClick={handleUndo} disabled={disabled || !editor.can().undo()}>
+      {/* ── History ── */}
+      <ToolbarButton
+        label="Undo"
+        onClick={() => editor.chain().focus().undo().run()}
+        disabled={disabled || !editor.can().undo()}
+      >
         <UndoIcon fontSize="small" />
       </ToolbarButton>
-      <ToolbarButton label="Redo" onClick={handleRedo} disabled={disabled || !editor.can().redo()}>
+      <ToolbarButton
+        label="Redo"
+        onClick={() => editor.chain().focus().redo().run()}
+        disabled={disabled || !editor.can().redo()}
+      >
         <RedoIcon fontSize="small" />
       </ToolbarButton>
 
       <ToolbarDivider />
 
-      {/* Headings */}
-      <ToolbarButton
-        label="Heading 1"
-        onClick={handleH1}
-        active={editor.isActive('heading', { level: 1 })}
-        disabled={disabled}
+      {/* ── Headings (grouped dropdown) ── */}
+      <Tooltip title="Heading" placement="top" arrow>
+        <span>
+          <IconButton
+            size="small"
+            disabled={disabled}
+            onClick={(e) => setHeadingAnchor(e.currentTarget)}
+            sx={{
+              borderRadius: 1,
+              width: 36,
+              height: 28,
+              backgroundColor: activeHeading ? 'primary.main' : 'transparent',
+              color: activeHeading ? 'primary.contrastText' : 'text.primary',
+              '&:hover': { backgroundColor: activeHeading ? 'primary.dark' : 'action.hover' },
+            }}
+          >
+            <Typography variant="caption" fontWeight={700} lineHeight={1}>
+              {headingLabel}
+            </Typography>
+          </IconButton>
+        </span>
+      </Tooltip>
+      <Popover
+        open={Boolean(headingAnchor)}
+        anchorEl={headingAnchor}
+        onClose={() => setHeadingAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        slotProps={{ paper: { sx: { p: 1 } } }}
       >
-        <Typography variant="caption" fontWeight={700} lineHeight={1}>
-          H1
-        </Typography>
-      </ToolbarButton>
-      <ToolbarButton
-        label="Heading 2"
-        onClick={handleH2}
-        active={editor.isActive('heading', { level: 2 })}
-        disabled={disabled}
-      >
-        <Typography variant="caption" fontWeight={700} lineHeight={1}>
-          H2
-        </Typography>
-      </ToolbarButton>
-      <ToolbarButton
-        label="Heading 3"
-        onClick={handleH3}
-        active={editor.isActive('heading', { level: 3 })}
-        disabled={disabled}
-      >
-        <Typography variant="caption" fontWeight={700} lineHeight={1}>
-          H3
-        </Typography>
-      </ToolbarButton>
+        <Stack direction="row" spacing={0.5}>
+          {HEADING_LEVELS.map((level) => (
+            <Tooltip key={level} title={`Heading ${level}`} placement="top" arrow>
+              <IconButton
+                size="small"
+                onClick={() => handleHeadingSelect(level)}
+                sx={{
+                  borderRadius: 1,
+                  width: 32,
+                  height: 28,
+                  backgroundColor: editor.isActive('heading', { level })
+                    ? 'primary.main'
+                    : 'transparent',
+                  color: editor.isActive('heading', { level })
+                    ? 'primary.contrastText'
+                    : 'text.primary',
+                  '&:hover': {
+                    backgroundColor: editor.isActive('heading', { level })
+                      ? 'primary.dark'
+                      : 'action.hover',
+                  },
+                }}
+              >
+                <Typography variant="caption" fontWeight={700} lineHeight={1}>
+                  H{level}
+                </Typography>
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Stack>
+      </Popover>
 
       <ToolbarDivider />
 
-      {/* Inline marks */}
+      {/* ── Inline marks ── */}
       <ToolbarButton
         label="Bold"
-        onClick={handleBold}
+        onClick={() => editor.chain().focus().toggleBold().run()}
         active={editor.isActive('bold')}
         disabled={disabled}
       >
@@ -300,7 +381,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
       </ToolbarButton>
       <ToolbarButton
         label="Italic"
-        onClick={handleItalic}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
         active={editor.isActive('italic')}
         disabled={disabled}
       >
@@ -308,7 +389,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
       </ToolbarButton>
       <ToolbarButton
         label="Strikethrough"
-        onClick={handleStrike}
+        onClick={() => editor.chain().focus().toggleStrike().run()}
         active={editor.isActive('strike')}
         disabled={disabled}
       >
@@ -316,7 +397,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
       </ToolbarButton>
       <ToolbarButton
         label="Inline Code"
-        onClick={handleCode}
+        onClick={() => editor.chain().focus().toggleCode().run()}
         active={editor.isActive('code')}
         disabled={disabled}
       >
@@ -325,10 +406,182 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
 
       <ToolbarDivider />
 
-      {/* Alignment */}
+      {/* ── Font size ── */}
+      <Tooltip title="Font Size" placement="top" arrow>
+        <Select
+          size="small"
+          value={activeFontSize}
+          onChange={handleFontSizeChange}
+          disabled={disabled}
+          displayEmpty
+          renderValue={(val) => (
+            <Typography variant="caption" fontWeight={500}>
+              {val || 'Size'}
+            </Typography>
+          )}
+          sx={{
+            height: 28,
+            fontSize: '0.75rem',
+            '.MuiOutlinedInput-notchedOutline': { border: 'none' },
+            '.MuiSelect-select': { py: 0, px: 1 },
+            minWidth: 58,
+            borderRadius: 1,
+            '&:hover': { backgroundColor: 'action.hover' },
+          }}
+        >
+          <MenuItem value="">
+            <Typography variant="caption">Default</Typography>
+          </MenuItem>
+          {FONT_SIZES.map((size) => (
+            <MenuItem key={size} value={size}>
+              <Typography variant="caption">{size}</Typography>
+            </MenuItem>
+          ))}
+        </Select>
+      </Tooltip>
+
+      {/* ── Text color ── */}
+      <Tooltip title="Text Color" placement="top" arrow>
+        <span>
+          <IconButton
+            size="small"
+            disabled={disabled}
+            onClick={(e) => setTextColorAnchor(e.currentTarget)}
+            sx={{ borderRadius: 1, width: 28, height: 28 }}
+          >
+            <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <FormatColorTextIcon fontSize="small" />
+              <Box
+                sx={{
+                  position: 'absolute',
+                  bottom: -3,
+                  left: 1,
+                  right: 1,
+                  height: 3,
+                  borderRadius: 0.5,
+                  backgroundColor: activeTextColor ?? 'text.primary',
+                }}
+              />
+            </Box>
+          </IconButton>
+        </span>
+      </Tooltip>
+      <Popover
+        open={Boolean(textColorAnchor)}
+        anchorEl={textColorAnchor}
+        onClose={() => setTextColorAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        slotProps={{ paper: { sx: { p: 1.5 } } }}
+      >
+        <Stack spacing={1}>
+          <Typography variant="caption" fontWeight={600}>
+            Text Color
+          </Typography>
+          <SwatchGrid
+            onSelect={(color) => {
+              editor.chain().focus().setColor(color).run();
+              setTextColorAnchor(null);
+            }}
+            onClear={() => {
+              editor.chain().focus().unsetColor().run();
+              setTextColorAnchor(null);
+            }}
+            clearLabel="Remove color"
+          />
+          {/* Native color picker for custom colors */}
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Typography variant="caption" color="text.secondary">
+              Custom:
+            </Typography>
+            <input
+              ref={textColorInputRef}
+              type="color"
+              defaultValue={activeTextColor ?? '#000000'}
+              style={{ width: 28, height: 28, border: 'none', cursor: 'pointer', padding: 0 }}
+              onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
+            />
+          </Stack>
+        </Stack>
+      </Popover>
+
+      {/* ── Highlight ── */}
+      <Tooltip title="Highlight" placement="top" arrow>
+        <span>
+          <IconButton
+            size="small"
+            disabled={disabled}
+            onClick={(e) => setHighlightAnchor(e.currentTarget)}
+            sx={{
+              borderRadius: 1,
+              width: 28,
+              height: 28,
+              backgroundColor: activeHighlight ? `${activeHighlight}55` : 'transparent',
+            }}
+          >
+            <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <FormatColorFillIcon fontSize="small" />
+              <Box
+                sx={{
+                  position: 'absolute',
+                  bottom: -3,
+                  left: 1,
+                  right: 1,
+                  height: 3,
+                  borderRadius: 0.5,
+                  backgroundColor: activeHighlight ?? 'warning.main',
+                }}
+              />
+            </Box>
+          </IconButton>
+        </span>
+      </Tooltip>
+      <Popover
+        open={Boolean(highlightAnchor)}
+        anchorEl={highlightAnchor}
+        onClose={() => setHighlightAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        slotProps={{ paper: { sx: { p: 1.5 } } }}
+      >
+        <Stack spacing={1}>
+          <Typography variant="caption" fontWeight={600}>
+            Highlight Color
+          </Typography>
+          <SwatchGrid
+            onSelect={(color) => {
+              editor.chain().focus().toggleHighlight({ color }).run();
+              setHighlightAnchor(null);
+            }}
+            onClear={() => {
+              editor.chain().focus().unsetHighlight().run();
+              setHighlightAnchor(null);
+            }}
+            clearLabel="Remove highlight"
+          />
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Typography variant="caption" color="text.secondary">
+              Custom:
+            </Typography>
+            <input
+              ref={highlightColorInputRef}
+              type="color"
+              defaultValue={activeHighlight ?? '#ffff00'}
+              style={{ width: 28, height: 28, border: 'none', cursor: 'pointer', padding: 0 }}
+              onChange={(e) =>
+                editor.chain().focus().toggleHighlight({ color: e.target.value }).run()
+              }
+            />
+          </Stack>
+        </Stack>
+      </Popover>
+
+      <ToolbarDivider />
+
+      {/* ── Alignment ── */}
       <ToolbarButton
         label="Align Left"
-        onClick={handleAlignLeft}
+        onClick={() => editor.chain().focus().setTextAlign('left').run()}
         active={editor.isActive({ textAlign: 'left' })}
         disabled={disabled}
       >
@@ -336,7 +589,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
       </ToolbarButton>
       <ToolbarButton
         label="Align Center"
-        onClick={handleAlignCenter}
+        onClick={() => editor.chain().focus().setTextAlign('center').run()}
         active={editor.isActive({ textAlign: 'center' })}
         disabled={disabled}
       >
@@ -344,7 +597,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
       </ToolbarButton>
       <ToolbarButton
         label="Align Right"
-        onClick={handleAlignRight}
+        onClick={() => editor.chain().focus().setTextAlign('right').run()}
         active={editor.isActive({ textAlign: 'right' })}
         disabled={disabled}
       >
@@ -353,10 +606,10 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
 
       <ToolbarDivider />
 
-      {/* Lists & blocks */}
+      {/* ── Lists & blocks ── */}
       <ToolbarButton
         label="Bullet List"
-        onClick={handleBulletList}
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
         active={editor.isActive('bulletList')}
         disabled={disabled}
       >
@@ -364,7 +617,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
       </ToolbarButton>
       <ToolbarButton
         label="Numbered List"
-        onClick={handleOrderedList}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
         active={editor.isActive('orderedList')}
         disabled={disabled}
       >
@@ -372,19 +625,127 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
       </ToolbarButton>
       <ToolbarButton
         label="Blockquote"
-        onClick={handleBlockquote}
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
         active={editor.isActive('blockquote')}
         disabled={disabled}
       >
         <FormatQuoteIcon fontSize="small" />
       </ToolbarButton>
-      <ToolbarButton label="Divider" onClick={handleHorizontalRule} disabled={disabled}>
+      <ToolbarButton
+        label="Divider"
+        onClick={() => editor.chain().focus().setHorizontalRule().run()}
+        disabled={disabled}
+      >
         <HorizontalRuleIcon fontSize="small" />
       </ToolbarButton>
 
       <ToolbarDivider />
 
-      {/* Link */}
+      {/* ── Table ── */}
+      <ToolbarButton
+        label="Insert Table"
+        onClick={(e) => setTableAnchor(e.currentTarget)}
+        disabled={disabled}
+      >
+        <TableChartIcon fontSize="small" />
+      </ToolbarButton>
+      {editor.isActive('table') && (
+        <ToolbarButton
+          label="Table Actions"
+          onClick={(e) => setTableActionsAnchor(e.currentTarget)}
+          disabled={disabled}
+        >
+          <TuneIcon fontSize="small" />
+        </ToolbarButton>
+      )}
+      <Popover
+        open={Boolean(tableAnchor)}
+        anchorEl={tableAnchor}
+        onClose={() => setTableAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        slotProps={{ paper: { sx: { p: 2, width: 220 } } }}
+      >
+        <Stack spacing={1.5}>
+          <Typography variant="subtitle2">Insert Table</Typography>
+          <Stack direction="row" spacing={1}>
+            <TextField
+              size="small"
+              label="Rows"
+              type="number"
+              value={tableRows}
+              onChange={(e) => setTableRows(Math.max(1, Number(e.target.value)))}
+              slotProps={{
+                htmlInput: { min: 1, max: 20 },
+              }}
+              sx={{ flex: 1 }}
+            />
+            <TextField
+              size="small"
+              label="Cols"
+              type="number"
+              value={tableCols}
+              onChange={(e) => setTableCols(Math.max(1, Number(e.target.value)))}
+              slotProps={{
+                htmlInput: { min: 1, max: 20 },
+              }}
+              sx={{ flex: 1 }}
+            />
+          </Stack>
+          <Stack direction="row" spacing={1} justifyContent="flex-end">
+            <Button size="small" onClick={() => setTableAnchor(null)}>
+              Cancel
+            </Button>
+            <Button size="small" onClick={handleInsertTable}>
+              Insert
+            </Button>
+          </Stack>
+        </Stack>
+      </Popover>
+      <Popover
+        open={Boolean(tableActionsAnchor)}
+        anchorEl={tableActionsAnchor}
+        onClose={() => setTableActionsAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+        slotProps={{ paper: { sx: { p: 1, minWidth: 190 } } }}
+      >
+        <Stack spacing={0.25}>
+          {[
+            { label: 'Add row before', cmd: () => editor.chain().focus().addRowBefore().run() },
+            { label: 'Add row after', cmd: () => editor.chain().focus().addRowAfter().run() },
+            { label: 'Delete row', cmd: () => editor.chain().focus().deleteRow().run() },
+            {
+              label: 'Add column before',
+              cmd: () => editor.chain().focus().addColumnBefore().run(),
+            },
+            { label: 'Add column after', cmd: () => editor.chain().focus().addColumnAfter().run() },
+            { label: 'Delete column', cmd: () => editor.chain().focus().deleteColumn().run() },
+            { label: 'Merge cells', cmd: () => editor.chain().focus().mergeCells().run() },
+            { label: 'Split cell', cmd: () => editor.chain().focus().splitCell().run() },
+            { label: 'Delete table', cmd: () => editor.chain().focus().deleteTable().run() },
+          ].map(({ label, cmd }) => (
+            <Button
+              key={label}
+              size="small"
+              onClick={() => {
+                cmd();
+                setTableActionsAnchor(null);
+              }}
+              sx={{
+                justifyContent: 'flex-start',
+                color: label === 'Delete table' ? 'error.main' : 'text.primary',
+              }}
+            >
+              {label}
+            </Button>
+          ))}
+        </Stack>
+      </Popover>
+
+      <ToolbarDivider />
+
+      {/* ── Link ── */}
       <ToolbarButton
         label="Insert Link"
         onClick={handleOpenLink}
@@ -394,13 +755,13 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
         <InsertLinkIcon fontSize="small" />
       </ToolbarButton>
 
-      {/* Image — file upload */}
+      {/* ── Image upload ── */}
       <Tooltip title={imageUploading ? 'Uploading…' : 'Upload Image'} placement="top" arrow>
         <span>
           <IconButton
             size="small"
             disabled={disabled || imageUploading}
-            onClick={handleClickUpload}
+            onClick={() => fileInputRef.current?.click()}
             sx={{ borderRadius: 1, width: 28, height: 28 }}
           >
             {imageUploading ? <CircularProgress size={14} /> : <ImageIcon fontSize="small" />}
@@ -415,27 +776,29 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
         onChange={handleFileChange}
       />
 
-      {/* Image — by URL */}
-      <ToolbarButton label="Image by URL" onClick={handleOpenImageUrl} disabled={disabled}>
+      {/* ── Image by URL ── */}
+      <ToolbarButton
+        label="Image by URL"
+        onClick={(e) => setImageUrlAnchor(e.currentTarget)}
+        disabled={disabled}
+      >
         <TitleIcon fontSize="small" sx={{ transform: 'rotate(90deg)' }} />
       </ToolbarButton>
 
-      {/* iFrame embed */}
+      {/* ── iFrame embed ── */}
       <ToolbarButton
         label="Embed (YouTube, Vimeo, URL…)"
-        onClick={handleOpenIframe}
+        onClick={(e) => setIframeAnchor(e.currentTarget)}
         disabled={disabled}
       >
         <WebIcon fontSize="small" />
       </ToolbarButton>
 
-      {/* ── Popovers ── */}
-
-      {/* Link popover */}
+      {/* ── Popovers: Link / Image URL / iFrame ── */}
       <Popover
         open={Boolean(linkAnchor)}
         anchorEl={linkAnchor}
-        onClose={handleCloseLinkPopover}
+        onClose={() => setLinkAnchor(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         slotProps={{ paper: { sx: { p: 2, width: 320 } } }}
@@ -448,12 +811,14 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
             label="URL"
             placeholder="https://example.com"
             value={linkUrl}
-            onChange={handleLinkUrlChange}
-            onKeyDown={handleLinkKeyDown}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            onKeyDown={(e: KeyboardEvent) => {
+              if (e.key === 'Enter') handleInsertLink();
+            }}
             fullWidth
           />
           <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <Button size="small" variant="outlined" onClick={handleCloseLinkPopover}>
+            <Button size="small" onClick={() => setLinkAnchor(null)}>
               Cancel
             </Button>
             <Button size="small" onClick={handleInsertLink}>
@@ -463,11 +828,10 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
         </Stack>
       </Popover>
 
-      {/* Image URL popover */}
       <Popover
         open={Boolean(imageUrlAnchor)}
         anchorEl={imageUrlAnchor}
-        onClose={handleCloseImageUrlPopover}
+        onClose={() => setImageUrlAnchor(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         slotProps={{ paper: { sx: { p: 2, width: 320 } } }}
@@ -480,12 +844,14 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
             label="Image URL"
             placeholder="https://example.com/image.png"
             value={imageUrl}
-            onChange={handleImageUrlChange}
-            onKeyDown={handleImageUrlKeyDown}
+            onChange={(e) => setImageUrl(e.target.value)}
+            onKeyDown={(e: KeyboardEvent) => {
+              if (e.key === 'Enter') handleInsertImageUrl();
+            }}
             fullWidth
           />
           <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <Button size="small" variant="outlined" onClick={handleCloseImageUrlPopover}>
+            <Button size="small" onClick={() => setImageUrlAnchor(null)}>
               Cancel
             </Button>
             <Button size="small" onClick={handleInsertImageUrl}>
@@ -495,11 +861,10 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
         </Stack>
       </Popover>
 
-      {/* iFrame popover */}
       <Popover
         open={Boolean(iframeAnchor)}
         anchorEl={iframeAnchor}
-        onClose={handleCloseIframePopover}
+        onClose={() => setIframeAnchor(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         slotProps={{ paper: { sx: { p: 2, width: 320 } } }}
@@ -516,12 +881,14 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
             label="URL"
             placeholder="https://www.youtube.com/watch?v=…"
             value={iframeUrl}
-            onChange={handleIframeUrlChange}
-            onKeyDown={handleIframeKeyDown}
+            onChange={(e) => setIframeUrl(e.target.value)}
+            onKeyDown={(e: KeyboardEvent) => {
+              if (e.key === 'Enter') handleInsertIframe();
+            }}
             fullWidth
           />
           <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <Button size="small" variant="outlined" onClick={handleCloseIframePopover}>
+            <Button size="small" onClick={() => setIframeAnchor(null)}>
               Cancel
             </Button>
             <Button size="small" onClick={handleInsertIframe}>
@@ -531,7 +898,6 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
         </Stack>
       </Popover>
 
-      {/* Upload error snackbar-style */}
       {imageError && (
         <Typography variant="caption" color="error" sx={{ ml: 1, alignSelf: 'center' }}>
           {imageError}

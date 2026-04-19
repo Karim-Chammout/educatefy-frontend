@@ -1,4 +1,6 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from '@mui/material/InputAdornment';
 import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -131,11 +133,20 @@ const Programs = ({ programs }: { programs: Array<TeacherProgramFragment> }) => 
         </div>
         <div style={{ flex: 1 }}>
           <TextField
+            size="small"
             label={t('programs.searchForProgram')}
-            variant="outlined"
             value={searchTerm}
             onChange={handleSearchChange}
             fullWidth
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" />
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
         </div>
       </div>

@@ -19,19 +19,17 @@ import TitleIcon from '@mui/icons-material/Title';
 import TuneIcon from '@mui/icons-material/Tune';
 import UndoIcon from '@mui/icons-material/Undo';
 import WebIcon from '@mui/icons-material/Web';
-import {
-  Box,
-  CircularProgress,
-  IconButton,
-  MenuItem,
-  Popover,
-  Select,
-  SelectChangeEvent,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { SelectChangeEvent } from '@mui/material';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import Popover from '@mui/material/Popover';
+import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import { Editor } from '@tiptap/react';
 import {
   ChangeEvent,

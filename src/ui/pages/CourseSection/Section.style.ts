@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 import ListItemButton from '@mui/material/ListItemButton';
 
-import { Typography } from '@/ui/components';
 import { min } from '@/utils/mediaQuery';
 import { ThemeType } from '@/ui/theme/theme';
 
@@ -147,11 +146,6 @@ export const ContentArea = styled(Box, {
 export const VideoComponent = styled.video`
   width: 100%;
   max-height: 500px;
-`;
-
-export const TextContent = styled(Typography)`
-  white-space: pre-wrap;
-  line-height: 1.6;
 `;
 
 export const MobileMenuButton = styled(Box)(

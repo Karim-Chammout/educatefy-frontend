@@ -8,7 +8,8 @@ import Paper from '@mui/material/Paper';
 import { useTranslation } from 'react-i18next';
 
 import { ProgramFragment } from '@/generated/graphql';
-import { Typography } from '@/ui/components';
+import { RichTextContent } from '@/ui/compositions';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 import { SectionTitle } from '../Program.styles';
 
@@ -17,12 +18,14 @@ const ProgramOverview = ({ program }: { program: ProgramFragment }) => {
 
   return (
     <>
-      <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
-        <SectionTitle component="h3" variant="h6">
-          {t('common.description')}
-        </SectionTitle>
-        <Typography dangerouslySetInnerHTML={{ __html: program.description }} />
-      </Paper>
+      {hasRichTextContent(program.description) && (
+        <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
+          <SectionTitle component="h3" variant="h6">
+            {t('common.description')}
+          </SectionTitle>
+          <RichTextContent value={program.description} />
+        </Paper>
+      )}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
         {program.objectives.length > 0 && (

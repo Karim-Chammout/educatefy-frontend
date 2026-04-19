@@ -1,3 +1,4 @@
+import { JSONContent } from '@tiptap/react';
 import { useContext, useState } from 'react';
 import { FieldValues, useForm, useWatch } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
@@ -7,8 +8,8 @@ import api from '@/api';
 import { useCreateProgramMutation } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 import { isValidSlug } from '@/utils/isValidSlug';
-import { removeHtmlTags } from '@/utils/removeHTMLTags';
 import { ServerErrorType } from '@/utils/ServerErrorType';
 
 type ObjectiveItem = {
@@ -26,7 +27,7 @@ export const useCreateProgramForm = () => {
   const navigate = useNavigate();
   const { setToasterVisibility } = useContext(ToasterContext);
 
-  const [descriptionContent, setDescriptionContent] = useState('');
+  const [descriptionContent, setDescriptionContent] = useState<JSONContent | null>(null);
   const [objectiveItem, setObjectiveItem] = useState('');
   const [objectivesList, setObjectivesList] = useState<ObjectiveItem[] | null>(null);
   const [requirementItem, setRequirementItem] = useState('');
@@ -215,7 +216,7 @@ export const useCreateProgramForm = () => {
     });
   };
 
-  const hasDescription = removeHtmlTags(descriptionContent);
+  const hasDescription = hasRichTextContent(descriptionContent);
 
   const formState = {
     denomination,

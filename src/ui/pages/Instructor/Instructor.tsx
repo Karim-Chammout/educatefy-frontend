@@ -15,7 +15,8 @@ import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';
 import { TeacherFragment, useFollowTeacherMutation } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
-import { ContentCard } from '@/ui/compositions';
+import { ContentCard, RichTextContent } from '@/ui/compositions';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 import { HeaderSection, InstructorInfo, StatCard, StatContent, StatIcon } from './Instructor.style';
 
@@ -101,12 +102,14 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
           </Typography>
         </Box>
 
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
-            {t('account.about')}
-          </Typography>
-          <Typography dangerouslySetInnerHTML={{ __html: instructor.description || '' }} />
-        </Box>
+        {hasRichTextContent(instructor.description) && (
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 1 }}>
+              {t('account.about')}
+            </Typography>
+            <RichTextContent value={instructor.description} />
+          </Box>
+        )}
       </Paper>
 
       <Box sx={{ mb: 3 }}>

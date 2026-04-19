@@ -21,7 +21,7 @@ const TextComponentForm = () => {
   return (
     <RichTextEditor
       onChange={(content) => updateComponentData({ content })}
-      initialValue={textData?.content || ''}
+      value={textData?.content}
       placeholder={t('course.descriptionPlaceholder')}
     />
   );

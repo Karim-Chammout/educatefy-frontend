@@ -1,5 +1,7 @@
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import { JSONContent } from '@tiptap/react';
+import { Dispatch, SetStateAction } from 'react';
 import { Control } from 'react-hook-form';
 import { AutocompleteElement, TextFieldElement } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +17,8 @@ type BasicInfoSectionType = {
   watchedValues: {
     slug: string;
   };
-  descriptionContent: string;
-  setDescriptionContent: React.Dispatch<React.SetStateAction<string>>;
+  descriptionContent: JSONContent | null;
+  setDescriptionContent: Dispatch<SetStateAction<JSONContent | null>>;
 };
 
 const BasicInfoSection = ({
@@ -118,16 +120,12 @@ const BasicInfoSection = ({
           required
         />
 
-        <Box sx={{ minHeight: 200 }}>
-          <RichTextEditor
-            onChange={setDescriptionContent}
-            initialValue={descriptionContent}
-            placeholder={t('program.descriptionPlaceholder')}
-          />
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {t('program.description')}
-          </Typography>
-        </Box>
+        <RichTextEditor
+          onChange={setDescriptionContent}
+          value={descriptionContent}
+          placeholder={t('program.descriptionPlaceholder')}
+          label={t('program.description')}
+        />
       </Box>
     </Paper>
   );

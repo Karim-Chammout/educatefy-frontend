@@ -10,6 +10,8 @@ import { useTranslation } from 'react-i18next';
 
 import { CourseFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
+import { RichTextContent } from '@/ui/compositions';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 import { MetaItem, SectionTitle, StyledLink } from '../Course.style';
 import CourseSections from './CourseSections';
@@ -19,12 +21,14 @@ const CourseOverview = ({ courseInfo }: { courseInfo: CourseFragment }) => {
 
   return (
     <>
-      <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
-        <SectionTitle component="h3" variant="h6">
-          {t('course.description')}
-        </SectionTitle>
-        <Typography dangerouslySetInnerHTML={{ __html: courseInfo.description }} />
-      </Paper>
+      {hasRichTextContent(courseInfo.description) && (
+        <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
+          <SectionTitle component="h3" variant="h6">
+            {t('course.description')}
+          </SectionTitle>
+          <RichTextContent value={courseInfo.description} />
+        </Paper>
+      )}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
         {courseInfo.objectives.length > 0 && (

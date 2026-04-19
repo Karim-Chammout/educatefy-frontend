@@ -5,7 +5,7 @@ import {
   VideoContent,
   YouTubeContent,
 } from '@/generated/graphql';
-import { removeHtmlTags } from '@/utils/removeHTMLTags';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 /**
  * Component Registry - Easy to extend with new component types
@@ -38,9 +38,7 @@ export const COMPONENT_REGISTRY: ComponentConfig[] = [
     validation: (data: ContentComponent, base: BaseComponentDataType) => {
       const textData = data as TextContent;
 
-      return (
-        !!base.denomination && !!textData.content?.trim() && !!removeHtmlTags(textData.content)
-      );
+      return !!base.denomination && !!hasRichTextContent(textData.content);
     },
     createPayload: (data: Partial<ContentComponent>) => ({
       textContent: { content: (data as TextContent).content },

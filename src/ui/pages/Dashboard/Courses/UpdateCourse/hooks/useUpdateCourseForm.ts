@@ -1,3 +1,4 @@
+import { JSONContent } from '@tiptap/react';
 import { useContext, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
@@ -7,14 +8,14 @@ import { EditableCourseFragment, LanguageFragment } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
 import { getMediaUrl } from '@/utils/getMediaUrl';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 import { isValidSlug } from '@/utils/isValidSlug';
 import { isValidUrl } from '@/utils/isValidUrl';
-import { removeHtmlTags } from '@/utils/removeHTMLTags';
 
 type UseUpdateCourseFormType = {
   course: EditableCourseFragment;
   languages: LanguageFragment[];
-  descriptionContent: string;
+  descriptionContent: JSONContent | null;
 };
 
 export const useUpdateCourseForm = ({
@@ -162,7 +163,7 @@ export const useUpdateCourseForm = ({
   const [denomination, subtitle, slug, level, language, subjects, externalResourceLink] =
     watchedValues;
 
-  const hasDescription = removeHtmlTags(descriptionContent);
+  const hasDescription = hasRichTextContent(descriptionContent);
 
   const isFormValid = !!(
     denomination &&

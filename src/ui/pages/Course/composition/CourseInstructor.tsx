@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import person from '@/assets/person.png';
 import { CourseFragment, useFollowTeacherMutation } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
+import { RichTextContent } from '@/ui/compositions';
+import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 import { InstructorInfoWrapper, SectionTitle } from '../Course.style';
 
@@ -54,7 +56,7 @@ const CourseInstructor = ({ courseInfo }: { courseInfo: CourseFragment }) => {
           {isFollowed ? t('instructor.unfollow') : t('instructor.follow')}
         </Button>
       )}
-      {description && <Typography dangerouslySetInnerHTML={{ __html: description }} />}
+      {hasRichTextContent(description) && <RichTextContent value={description} />}
     </Paper>
   );
 };

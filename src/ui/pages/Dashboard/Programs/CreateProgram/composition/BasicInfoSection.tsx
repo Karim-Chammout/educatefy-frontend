@@ -120,16 +120,12 @@ const BasicInfoSection = ({
           required
         />
 
-        <Box>
-          <RichTextEditor
-            onChange={setDescriptionContent}
-            value={descriptionContent}
-            placeholder={t('program.descriptionPlaceholder')}
-          />
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {t('program.description')}
-          </Typography>
-        </Box>
+        <RichTextEditor
+          onChange={setDescriptionContent}
+          value={descriptionContent}
+          placeholder={t('program.descriptionPlaceholder')}
+          label={t('program.description')}
+        />
       </Box>
     </Paper>
   );

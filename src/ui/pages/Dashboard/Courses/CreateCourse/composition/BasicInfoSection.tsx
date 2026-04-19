@@ -194,16 +194,12 @@ export const BasicInfoSection = ({
           </LocalizationProvider>
         </Box>
 
-        <Box>
-          <RichTextEditor
-            onChange={setDescriptionContent}
-            value={descriptionContent}
-            placeholder={t('course.descriptionPlaceholder')}
-          />
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {t('course.description')}
-          </Typography>
-        </Box>
+        <RichTextEditor
+          onChange={setDescriptionContent}
+          value={descriptionContent}
+          placeholder={t('course.descriptionPlaceholder')}
+          label={t('course.description')}
+        />
       </Box>
     </Paper>
   );

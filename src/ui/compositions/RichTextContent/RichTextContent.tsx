@@ -1,7 +1,11 @@
 import { generateHTML } from '@tiptap/core';
+import { Color } from '@tiptap/extension-color';
+import HighlightExtension from '@tiptap/extension-highlight';
 import ImageExtension from '@tiptap/extension-image';
 import LinkExtension from '@tiptap/extension-link';
+import { TableKit } from '@tiptap/extension-table';
 import TextAlignExtension from '@tiptap/extension-text-align';
+import { FontSize, TextStyle } from '@tiptap/extension-text-style';
 import { JSONContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useMemo } from 'react';
@@ -24,6 +28,11 @@ const EXTENSIONS = [
   LinkExtension.configure({ openOnClick: true }),
   TextAlignExtension.configure({ types: ['heading', 'paragraph'] }),
   IframeExtension,
+  TextStyle,
+  FontSize,
+  Color,
+  HighlightExtension.configure({ multicolor: true }),
+  TableKit,
 ];
 
 const RichTextContent = ({ value, className }: RichTextContentProps) => {

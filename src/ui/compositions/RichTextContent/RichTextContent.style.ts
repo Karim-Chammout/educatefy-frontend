@@ -77,6 +77,30 @@ export const RichTextContentWrapper = styled(Box)(({ theme }) => {
       margin: theme.spacing(2, 0),
     },
 
+    // Tables
+    table: {
+      borderCollapse: 'collapse',
+      tableLayout: 'fixed',
+      width: '100%',
+      margin: theme.spacing(1.5, 0),
+      overflowX: 'auto',
+      display: 'block',
+    },
+
+    'th, td': {
+      border: `1px solid ${theme.palette.divider}`,
+      padding: theme.spacing(0.75, 1.5),
+      minWidth: 80,
+      verticalAlign: 'top',
+    },
+
+    th: {
+      fontWeight: 600,
+      backgroundColor: isDark
+        ? `${theme.palette.primary.main}18`
+        : `${theme.palette.primary.main}0D`,
+    },
+
     a: {
       color: theme.palette.primary.main,
       textDecoration: 'underline',

@@ -1,10 +1,14 @@
 import Box from '@mui/material/Box';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
+import { Color } from '@tiptap/extension-color';
+import HighlightExtension from '@tiptap/extension-highlight';
 import ImageExtension from '@tiptap/extension-image';
 import LinkExtension from '@tiptap/extension-link';
 import PlaceholderExtension from '@tiptap/extension-placeholder';
+import { TableKit } from '@tiptap/extension-table';
 import TextAlignExtension from '@tiptap/extension-text-align';
+import { FontSize, TextStyle } from '@tiptap/extension-text-style';
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect } from 'react';
@@ -69,6 +73,11 @@ const RichTextEditor = ({
         types: ['heading', 'paragraph'],
       }),
       IframeExtension,
+      TextStyle,
+      FontSize,
+      Color,
+      HighlightExtension.configure({ multicolor: true }),
+      TableKit,
     ],
     content: value ?? null,
     editable: !disabled,

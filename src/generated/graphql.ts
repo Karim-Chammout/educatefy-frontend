@@ -1139,6 +1139,8 @@ export type Teacher = {
   description?: Maybe<Scalars['JSON']['output']>;
   /** The first name of the teacher */
   first_name?: Maybe<Scalars['String']['output']>;
+  /** The number of followers this teacher has */
+  followersCount: Scalars['Int']['output'];
   /** A unique id of this account */
   id: Scalars['ID']['output'];
   /** Checks if the current user can follow this teacher (blocks self-follow). */
@@ -1151,8 +1153,6 @@ export type Teacher = {
   name?: Maybe<Scalars['String']['output']>;
   /** The nickname of the teacher */
   nickname?: Maybe<Scalars['String']['output']>;
-  /** The number of followers this teacher has */
-  numberOfFollowers: Scalars['Int']['output'];
   /** List of programs created by the teacher */
   programs: Array<Program>;
 };
@@ -1756,12 +1756,14 @@ export type TeacherProgramsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TeacherProgramsQuery = { __typename: 'Query', teacherPrograms: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any }> };
 
+export type InstructorFragment = { __typename: 'Teacher', first_name?: string | null, followersCount: number, courses: Array<{ __typename: 'Course', id: string }>, programs: Array<{ __typename: 'Program', id: string }> };
+
 export type DashboardQueryVariables = Exact<{
   instructorId: Scalars['ID']['input'];
 }>;
 
 
-export type DashboardQuery = { __typename: 'Query', instructor?: { __typename: 'Teacher', numberOfFollowers: number, courses: Array<{ __typename: 'Course', id: string }>, programs: Array<{ __typename: 'Program', id: string }> } | null };
+export type DashboardQuery = { __typename: 'Query', instructor?: { __typename: 'Teacher', first_name?: string | null, followersCount: number, courses: Array<{ __typename: 'Course', id: string }>, programs: Array<{ __typename: 'Program', id: string }> } | null };
 
 export type ExploreSubjectFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string, enrolledLearnersCount: number }> };
 
@@ -2243,6 +2245,18 @@ export const TeacherProgramFragmentDoc = gql`
   is_published
   created_at
   updated_at
+}
+    `;
+export const InstructorFragmentDoc = gql`
+    fragment Instructor on Teacher {
+  first_name
+  followersCount
+  courses {
+    id
+  }
+  programs {
+    id
+  }
 }
     `;
 export const ExploreSubjectFragmentDoc = gql`
@@ -4065,16 +4079,10 @@ export type TeacherProgramsQueryResult = Apollo.QueryResult<TeacherProgramsQuery
 export const DashboardDocument = gql`
     query Dashboard($instructorId: ID!) {
   instructor(id: $instructorId) {
-    numberOfFollowers
-    courses {
-      id
-    }
-    programs {
-      id
-    }
+    ...Instructor
   }
 }
-    `;
+    ${InstructorFragmentDoc}`;
 
 /**
  * __useDashboardQuery__

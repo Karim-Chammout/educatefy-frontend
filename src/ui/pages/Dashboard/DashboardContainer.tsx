@@ -24,13 +24,7 @@ const DashboardContainer = () => {
     return <ErrorPlaceholder />;
   }
 
-  return (
-    <Dashboard
-      totalCourses={data.instructor.courses.length}
-      totalPrograms={data.instructor.programs.length}
-      totalStudents={data.instructor.numberOfFollowers}
-    />
-  );
+  return <Dashboard instructor={data.instructor} />;
 };
 
 export default DashboardContainer;

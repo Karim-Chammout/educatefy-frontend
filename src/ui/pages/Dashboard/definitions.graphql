@@ -1,11 +1,16 @@
+fragment Instructor on Teacher {
+  first_name
+  followersCount
+  courses {
+    id
+  }
+  programs {
+    id
+  }
+}
+
 query Dashboard($instructorId: ID!) {
   instructor(id: $instructorId) {
-    numberOfFollowers
-    courses {
-      id
-    }
-    programs {
-      id
-    }
+    ...Instructor
   }
 }

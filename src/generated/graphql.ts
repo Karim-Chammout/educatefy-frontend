@@ -1151,6 +1151,8 @@ export type Teacher = {
   name?: Maybe<Scalars['String']['output']>;
   /** The nickname of the teacher */
   nickname?: Maybe<Scalars['String']['output']>;
+  /** The number of followers this teacher has */
+  numberOfFollowers: Scalars['Int']['output'];
   /** List of programs created by the teacher */
   programs: Array<Program>;
 };
@@ -1461,12 +1463,12 @@ export type AccountInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AccountInfoQuery = { __typename: 'Query', me: { __typename: 'Account', nickname?: string | null, gender?: Gender | null, avatar_url?: string | null, accountRole: AccountRole } };
 
-export type AccountFragment = { __typename: 'Account', nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: any | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
+export type AccountFragment = { __typename: 'Account', id: string, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: any | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename: 'Query', me: { __typename: 'Account', nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: any | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> } };
+export type MeQuery = { __typename: 'Query', me: { __typename: 'Account', id: string, nickname?: string | null, first_name?: string | null, last_name?: string | null, gender?: Gender | null, date_of_birth?: any | null, avatar_url?: string | null, preferredLanguage: string, accountRole: AccountRole, bio?: string | null, description?: any | null, country?: { __typename: 'Country', id: string, denomination: string } | null, nationality?: { __typename: 'Country', id: string, denomination: string } | null, subjects: Array<{ __typename: 'Subject', id: string, denomination: string }> } };
 
 export type TextContentComponentFragment = { __typename: 'TextContent', id: string, type: ComponentType, denomination: string, is_published: boolean, is_required: boolean, content: any, component_id: string, progress?: { __typename: 'ContentComponentProgress', id: string, content_component_id: number, is_completed: boolean } | null };
 
@@ -1754,6 +1756,13 @@ export type TeacherProgramsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TeacherProgramsQuery = { __typename: 'Query', teacherPrograms: Array<{ __typename: 'Program', id: string, denomination: string, slug: string, level: ProgramLevel, is_published: boolean, created_at: any, updated_at: any }> };
 
+export type DashboardQueryVariables = Exact<{
+  instructorId: Scalars['ID']['input'];
+}>;
+
+
+export type DashboardQuery = { __typename: 'Query', instructor?: { __typename: 'Teacher', numberOfFollowers: number, courses: Array<{ __typename: 'Course', id: string }>, programs: Array<{ __typename: 'Program', id: string }> } | null };
+
 export type ExploreSubjectFragment = { __typename: 'Subject', id: string, denomination: string, courses: Array<{ __typename: 'Course', id: string, participationCount: number }>, programs: Array<{ __typename: 'Program', id: string, enrolledLearnersCount: number }> };
 
 export type ExploreQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1861,6 +1870,7 @@ export const CountryFragmentDoc = gql`
     `;
 export const AccountFragmentDoc = gql`
     fragment Account on Account {
+  id
   nickname
   first_name
   last_name
@@ -4052,6 +4062,52 @@ export type TeacherProgramsQueryHookResult = ReturnType<typeof useTeacherProgram
 export type TeacherProgramsLazyQueryHookResult = ReturnType<typeof useTeacherProgramsLazyQuery>;
 export type TeacherProgramsSuspenseQueryHookResult = ReturnType<typeof useTeacherProgramsSuspenseQuery>;
 export type TeacherProgramsQueryResult = Apollo.QueryResult<TeacherProgramsQuery, TeacherProgramsQueryVariables>;
+export const DashboardDocument = gql`
+    query Dashboard($instructorId: ID!) {
+  instructor(id: $instructorId) {
+    numberOfFollowers
+    courses {
+      id
+    }
+    programs {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useDashboardQuery__
+ *
+ * To run a query within a React component, call `useDashboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardQuery({
+ *   variables: {
+ *      instructorId: // value for 'instructorId'
+ *   },
+ * });
+ */
+export function useDashboardQuery(baseOptions: Apollo.QueryHookOptions<DashboardQuery, DashboardQueryVariables> & ({ variables: DashboardQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DashboardQuery, DashboardQueryVariables>(DashboardDocument, options);
+      }
+export function useDashboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DashboardQuery, DashboardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DashboardQuery, DashboardQueryVariables>(DashboardDocument, options);
+        }
+export function useDashboardSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DashboardQuery, DashboardQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<DashboardQuery, DashboardQueryVariables>(DashboardDocument, options);
+        }
+export type DashboardQueryHookResult = ReturnType<typeof useDashboardQuery>;
+export type DashboardLazyQueryHookResult = ReturnType<typeof useDashboardLazyQuery>;
+export type DashboardSuspenseQueryHookResult = ReturnType<typeof useDashboardSuspenseQuery>;
+export type DashboardQueryResult = Apollo.QueryResult<DashboardQuery, DashboardQueryVariables>;
 export const ExploreDocument = gql`
     query Explore {
   subjectsWithLinkedContent {

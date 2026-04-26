@@ -18,45 +18,34 @@ type SectionItemType = SectionFragment['items'][0];
 
 type DraggableItemType = {
   sectionItem: SectionItemType;
-  index: number;
-  moveSectionItem: (dragIndex: number, hoverIndex: number) => void;
   handleDelete: (itemId: string) => void;
   handleEdit: (item: SectionItemType) => void;
   courseId: string;
   sectionId: string;
-  onDragEnd: () => Promise<void>;
 };
 
 const DraggableItem = ({
   sectionItem,
-  index,
-  moveSectionItem,
   handleDelete,
   handleEdit,
   courseId,
   sectionId,
-  onDragEnd,
 }: DraggableItemType) => {
   const { t } = useTranslation();
-  const { handlerId, isDragging, ref } = useDND({
-    index,
+
+  const { setNodeRef, style, attributes, listeners } = useDND({
     itemId: sectionItem.itemId,
-    itemType: 'SECTION_ITEM',
-    moveItem: moveSectionItem,
-    onDragEnd,
   });
 
   return (
     <Box
-      ref={ref}
-      data-handler-id={handlerId}
+      ref={setNodeRef}
       sx={{
-        opacity: isDragging ? 0.4 : 1,
-        background: isDragging ? 'lightgrey' : 'inherit',
+        ...style,
       }}
     >
       <ListItem sx={{ flexWrap: 'wrap', gap: 1 }}>
-        <IconButton sx={{ cursor: 'move', mr: 1 }}>
+        <IconButton sx={{ cursor: 'move', mr: 1 }} {...attributes} {...listeners}>
           <DragIndicatorIcon />
         </IconButton>
         <ListItemText primary={sectionItem.denomination} color="text.secondary" />

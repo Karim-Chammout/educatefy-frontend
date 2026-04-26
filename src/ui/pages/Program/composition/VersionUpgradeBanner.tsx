@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -5,7 +6,7 @@ import Box from '@mui/material/Box';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useUpgradeToLatestProgramVersionMutation } from '@/generated/graphql';
+import { UpgradeToLatestProgramVersionDocument } from '@/generated/graphql';
 import { Button } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
 
@@ -14,7 +15,9 @@ const VersionUpgradeBanner = ({ programId }: { programId: string }) => {
   const { setToasterVisibility } = useContext(ToasterContext);
   const [isDismissed, setIsDismissed] = useState(false);
 
-  const [upgradeToLatestProgramVersion, { loading }] = useUpgradeToLatestProgramVersionMutation();
+  const [upgradeToLatestProgramVersion, { loading }] = useMutation(
+    UpgradeToLatestProgramVersionDocument,
+  );
 
   if (isDismissed) {
     return null;

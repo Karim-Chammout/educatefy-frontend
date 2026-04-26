@@ -1,8 +1,9 @@
+import { useQuery } from '@apollo/client/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
-import { useEditableCourseSectionQuery } from '@/generated/graphql';
+import { EditableCourseSectionDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
@@ -18,7 +19,7 @@ const CourseSectionItemContainer = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { loading, error, data } = useEditableCourseSectionQuery({
+  const { loading, error, data } = useQuery(EditableCourseSectionDocument, {
     variables: {
       id: courseId || '',
     },

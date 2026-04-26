@@ -1,15 +1,17 @@
-import { useDashboardQuery, useMeQuery } from '@/generated/graphql';
+import { useQuery } from '@apollo/client/react';
+
+import { DashboardDocument, MeDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 
 import Dashboard from './Dashboard';
 
 const DashboardContainer = () => {
-  const { data: userInfo, loading: userLoading } = useMeQuery({
+  const { data: userInfo, loading: userLoading } = useQuery(MeDocument, {
     fetchPolicy: 'cache-first',
   });
 
-  const { loading, error, data } = useDashboardQuery({
+  const { loading, error, data } = useQuery(DashboardDocument, {
     variables: {
       instructorId: userInfo?.me.id || '',
     },

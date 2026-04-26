@@ -6,7 +6,7 @@ import { Control } from 'react-hook-form';
 import { AutocompleteElement, TextFieldElement } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 // @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 
@@ -21,8 +21,10 @@ import { RichTextEditor } from '@/ui/compositions';
 import { isValidSlug } from '@/utils/isValidSlug';
 import { isValidUrl } from '@/utils/isValidUrl';
 
+import { UpdateCourseFormValues } from '../hooks/useUpdateCourseForm';
+
 type BasicInfoSectionType = {
-  control: Control<any>;
+  control: Control<UpdateCourseFormValues>;
   languages: LanguageFragment[];
   subjectsList: SubjectFragment[];
   watchedValues: {

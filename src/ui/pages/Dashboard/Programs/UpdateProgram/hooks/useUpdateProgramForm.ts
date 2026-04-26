@@ -4,12 +4,21 @@ import { useForm, useWatch } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
 
 import api from '@/api';
-import { EditableProgramFragment } from '@/generated/graphql';
+import { EditableProgramFragment, ProgramLevel } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
 import { getMediaUrl } from '@/utils/getMediaUrl';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 import { isValidSlug } from '@/utils/isValidSlug';
+
+export type UpdateProgramFormValues = {
+  denomination: string;
+  subtitle: string;
+  slug: string;
+  level: ProgramLevel;
+  subjects: { __typename: 'Subject'; id: string; denomination: string }[] | null;
+  isPublished: boolean;
+};
 
 type UseUpdateProgramFormType = {
   program: EditableProgramFragment;
@@ -126,7 +135,7 @@ export const useUpdateProgramForm = ({ program, descriptionContent }: UseUpdateP
     setRequirementsList(newRequirementsList);
   };
 
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control } = useForm<UpdateProgramFormValues>({
     defaultValues: {
       denomination: program.denomination,
       subtitle: program.subtitle,

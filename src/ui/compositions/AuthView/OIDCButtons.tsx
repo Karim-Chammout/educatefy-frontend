@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import GoogleIcon from '@mui/icons-material/Google';
 import { ReactNode } from 'react';
 

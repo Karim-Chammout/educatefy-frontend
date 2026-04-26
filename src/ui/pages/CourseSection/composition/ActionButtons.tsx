@@ -33,7 +33,7 @@ const ActionButtons = ({
 
   return (
     <Box sx={{ mt: 4, pt: 3, borderTop: `1px solid ${theme.palette.divider}` }}>
-      <Stack direction={{ xxs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
+      <Stack direction={{ xxs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'center' }}>
         {!isCompleted && (
           <Button
             variant="contained"

@@ -1,4 +1,15 @@
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useMutation } from '@apollo/client/react';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -6,19 +17,15 @@ import Container from '@mui/material/Container';
 import DialogActions from '@mui/material/DialogActions';
 import List from '@mui/material/List';
 import TextField from '@mui/material/TextField';
-import { useCallback, useContext, useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import withScrolling from 'react-dnd-scrolling';
-import { TouchBackend } from 'react-dnd-touch-backend';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  DeleteCourseSectionItemDocument,
   EditableCourseSectionDocument,
   EditableCourseSectionQuery,
   SectionFragment,
-  useDeleteCourseSectionItemMutation,
-  useUpdateCourseSectionItemRanksMutation,
+  UpdateCourseSectionItemRanksDocument,
 } from '@/generated/graphql';
 import { Button, Modal, Typography } from '@/ui/components';
 import { InfoState } from '@/ui/compositions';
@@ -32,11 +39,11 @@ type SectionItemType = SectionFragment['items'][0];
 
 const contentOptions = [{ id: 'lesson', label: 'Lesson' }];
 
-const ScrollingComponent = withScrolling('div');
-
 const CourseSection = ({ courseId, section }: { courseId: string; section: SectionFragment }) => {
   const { t } = useTranslation();
   const { setToasterVisibility } = useContext(ToasterContext);
+
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
 
   const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false);
   const [isEditItemModalOpen, setIsEditItemModalOpen] = useState(false);
@@ -46,35 +53,27 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
   const [sectionItemIdToDelete, setSectionItemIdToDelete] = useState<null | string>(null);
   const [isDeleteSectionItemModalOpen, setIsDeleteSectionItemModalOpen] = useState(false);
 
-  const [deleteCourseSectionItem] = useDeleteCourseSectionItemMutation();
-  const [updateCourseSectionItemRanks] = useUpdateCourseSectionItemRanksMutation();
+  const [deleteCourseSectionItem] = useMutation(DeleteCourseSectionItemDocument);
+  const [updateCourseSectionItemRanks] = useMutation(UpdateCourseSectionItemRanksDocument);
 
-  const moveSectionItem = useCallback((dragIndex: number, hoverIndex: number) => {
-    setSectionItems((prevItems) => {
-      const newSectionItems = [...prevItems];
-      const [removed] = newSectionItems.splice(dragIndex, 1);
-      newSectionItems.splice(hoverIndex, 0, removed);
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      setSectionItems((items) => {
+        const oldIndex = items.findIndex((i) => i.itemId === active.id);
+        const newIndex = items.findIndex((i) => i.itemId === over?.id);
+        const reordered = arrayMove(items, oldIndex, newIndex);
 
-      // Update ranks after reordering
-      return newSectionItems.map((sectionItem, index) => ({
-        ...sectionItem,
-        rank: index + 1,
-      }));
-    });
-  }, []);
+        updateCourseSectionItemRanks({
+          variables: {
+            sectionItemRanks: reordered.map((item, idx) => ({ id: item.itemId, rank: idx + 1 })),
+          },
+        });
 
-  const handleDragEnd = useCallback(async () => {
-    const updates = sectionItems.map((item, index) => ({
-      id: item.itemId,
-      rank: index + 1,
-    }));
-
-    await updateCourseSectionItemRanks({
-      variables: {
-        sectionItemRanks: updates,
-      },
-    });
-  }, [sectionItems, updateCourseSectionItemRanks]);
+        return reordered;
+      });
+    }
+  };
 
   const handleCloseModal = () => {
     setIsCreateItemModalOpen(false);
@@ -131,6 +130,7 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
             query: EditableCourseSectionDocument,
             variables: { id: courseId },
             data: {
+              __typename: 'Query',
               editableCourse: {
                 ...existingCourseQuery.editableCourse,
                 sections: existingCourseQuery.editableCourse.sections.map((s) => ({
@@ -144,9 +144,6 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
       },
     });
   };
-
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const backend = isTouchDevice ? TouchBackend : HTML5Backend;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
@@ -179,16 +176,17 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
       </Box>
 
       {sectionItems.length > 0 ? (
-        <DndProvider backend={backend}>
-          <ScrollingComponent>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext
+            items={sectionItems.map((i) => i.itemId)}
+            strategy={verticalListSortingStrategy}
+          >
             <Box sx={{ mt: 2 }}>
               <List>
-                {sectionItems.map((item, index) => (
+                {sectionItems.map((item) => (
                   <DraggableItem
                     key={item.itemId}
                     sectionItem={item}
-                    index={index}
-                    moveSectionItem={moveSectionItem}
                     handleDelete={(itemId) => {
                       setSectionItemIdToDelete(itemId);
                       setIsDeleteSectionItemModalOpen(true);
@@ -196,13 +194,12 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
                     handleEdit={handleEditItem}
                     courseId={courseId}
                     sectionId={section.id}
-                    onDragEnd={handleDragEnd}
                   />
                 ))}
               </List>
             </Box>
-          </ScrollingComponent>
-        </DndProvider>
+          </SortableContext>
+        </DndContext>
       ) : (
         <InfoState
           btnLabel={t('courseSection.createItem')}

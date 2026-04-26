@@ -1,9 +1,10 @@
+import { useQuery } from '@apollo/client/react';
 import CloseIcon from '@mui/icons-material/Close';
 import ContentPasteOffIcon from '@mui/icons-material/ContentPasteOff';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 
-import { CourseStatus, useCourseQuery } from '@/generated/graphql';
+import { CourseDocument, CourseStatus } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 import { MUST_ENROLL_TO_COURSE_FIRST } from '@/utils/constants';
@@ -15,7 +16,7 @@ const CourseSectionContainer = () => {
   const { slug, sectionId } = useParams();
   const navigate = useNavigate();
 
-  const { loading, error, data } = useCourseQuery({
+  const { loading, error, data } = useQuery(CourseDocument, {
     variables: {
       slug: slug || '',
     },

@@ -1,4 +1,4 @@
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
 import Avatar from '@mui/material/Avatar';
 import CardMedia from '@mui/material/CardMedia';
 import { useTranslation } from 'react-i18next';

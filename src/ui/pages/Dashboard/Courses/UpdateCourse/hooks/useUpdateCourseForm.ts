@@ -4,13 +4,26 @@ import { useForm, useWatch } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
 
 import api from '@/api';
-import { EditableCourseFragment, LanguageFragment } from '@/generated/graphql';
+import { CourseLevel, EditableCourseFragment, LanguageFragment } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
 import { getMediaUrl } from '@/utils/getMediaUrl';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 import { isValidSlug } from '@/utils/isValidSlug';
 import { isValidUrl } from '@/utils/isValidUrl';
+
+export type UpdateCourseFormValues = {
+  denomination: string;
+  subtitle: string;
+  slug: string;
+  level: CourseLevel;
+  language: string | null;
+  subjects: { __typename: 'Subject'; id: string; denomination: string }[] | null;
+  externalResourceLink: string | null;
+  isPublished: boolean;
+  startDate: any;
+  endDate: any;
+};
 
 type UseUpdateCourseFormType = {
   course: EditableCourseFragment;
@@ -132,7 +145,7 @@ export const useUpdateCourseForm = ({
     setRequirementsList(newRequirementsList);
   };
 
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control } = useForm<UpdateCourseFormValues>({
     defaultValues: {
       denomination: course.denomination,
       subtitle: course.subtitle,

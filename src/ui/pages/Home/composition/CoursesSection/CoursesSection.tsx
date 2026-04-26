@@ -1,4 +1,4 @@
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 
 import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';

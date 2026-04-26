@@ -1,3 +1,4 @@
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import Box from '@mui/material/Box';
 import DialogActions from '@mui/material/DialogActions';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -13,9 +14,9 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import {
+  CreateLessonDocument,
+  EditableCourseSectionDocument,
   SectionFragment,
-  useCreateLessonMutation,
-  useEditableCourseSectionLazyQuery,
 } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
@@ -34,9 +35,13 @@ const LessonCreationForm = ({
   const { t } = useTranslation();
   const { setToasterVisibility } = useContext(ToasterContext);
 
-  const [createLesson, { loading }] = useCreateLessonMutation();
-  const [updatedCourseSection, { loading: isLoadingNewCourseSection }] =
-    useEditableCourseSectionLazyQuery();
+  const [createLesson, { loading }] = useMutation(CreateLessonDocument);
+  const [updatedCourseSection, { loading: isLoadingNewCourseSection }] = useLazyQuery(
+    EditableCourseSectionDocument,
+    {
+      fetchPolicy: 'network-only',
+    },
+  );
 
   const { handleSubmit, control } = useForm();
   const [denomination, duration] = useWatch({
@@ -75,7 +80,6 @@ const LessonCreationForm = ({
 
           const refetchResult = await updatedCourseSection({
             variables: { id: courseId },
-            fetchPolicy: 'network-only',
           });
 
           const updatedSection = refetchResult.data?.editableCourse?.sections.find(

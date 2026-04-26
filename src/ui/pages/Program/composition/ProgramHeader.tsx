@@ -1,5 +1,5 @@
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';

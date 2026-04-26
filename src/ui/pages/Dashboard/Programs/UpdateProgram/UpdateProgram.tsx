@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -11,8 +12,8 @@ import {
   EditableProgramFragment,
   ProgramCourseFragment,
   SubjectFragment,
-  useDeleteProgramMutation,
-  useUpdateProgramMutation,
+  DeleteProgramDocument,
+  UpdateProgramDocument,
 } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
@@ -44,8 +45,8 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
   const [descriptionContent, setDescriptionContent] = useState(program.description);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
 
-  const [updateProgram, { loading: updateProgramLoading }] = useUpdateProgramMutation();
-  const [deleteProgram] = useDeleteProgramMutation();
+  const [updateProgram, { loading: updateProgramLoading }] = useMutation(UpdateProgramDocument);
+  const [deleteProgram] = useMutation(DeleteProgramDocument);
 
   const {
     control,

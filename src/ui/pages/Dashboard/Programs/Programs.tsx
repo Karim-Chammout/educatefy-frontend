@@ -1,4 +1,4 @@
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import Paper from '@mui/material/Paper';

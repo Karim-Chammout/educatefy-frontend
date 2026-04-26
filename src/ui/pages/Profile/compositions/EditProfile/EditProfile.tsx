@@ -1,4 +1,5 @@
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { useMutation } from '@apollo/client/react';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format } from 'date-fns';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
@@ -15,7 +16,7 @@ import {
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 import { useTranslation } from 'react-i18next';
 
-import { AccountRole, UserProfileQuery, useUpdateProfileMutation } from '@/generated/graphql';
+import { AccountRole, UpdateProfileDocument, UserProfileQuery } from '@/generated/graphql';
 import { Button } from '@/ui/components';
 import { RichTextEditor } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
@@ -71,7 +72,7 @@ const EditProfile = ({
       control,
     });
 
-  const [updateProfile] = useUpdateProfileMutation();
+  const [updateProfile] = useMutation(UpdateProfileDocument);
 
   const onSubmit = async (values: FieldValues) => {
     const trimmedFirstName = values.firstName.trim();

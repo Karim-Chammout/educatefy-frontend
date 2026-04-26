@@ -1,8 +1,9 @@
+import { useQuery } from '@apollo/client/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
-import { useEditableCourseSectionsQuery } from '@/generated/graphql';
+import { EditableCourseSectionsDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
@@ -13,7 +14,7 @@ const CourseSectionsContainer = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
-  const { loading, error, data } = useEditableCourseSectionsQuery({
+  const { loading, error, data } = useQuery(EditableCourseSectionsDocument, {
     variables: {
       id: id || '',
     },

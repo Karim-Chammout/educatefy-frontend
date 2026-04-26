@@ -21,36 +21,25 @@ import { Button, Typography } from '@/ui/components';
 
 type DraggableCourseItemType = {
   course: ProgramCourseFragment;
-  index: number;
   otherCourses: ProgramCourseFragment[];
   prerequisiteCourseId: string | null;
   onPrerequisiteChange: (courseId: string, prerequisiteCourseId: string | null) => void;
   onRemove: (courseId: string) => void;
-  moveItem: (dragIndex: number, hoverIndex: number) => void;
-  onDragEnd: () => Promise<void>;
 };
 
-const COURSE_ITEM_TYPE = 'COURSE_ITEM';
 const NO_PREREQUISITE_VALUE = '__none__';
 
 const DraggableCourseItem = ({
   course,
-  index,
   otherCourses,
   prerequisiteCourseId,
   onPrerequisiteChange,
   onRemove,
-  moveItem,
-  onDragEnd,
 }: DraggableCourseItemType) => {
   const { t } = useTranslation();
 
-  const { ref, isDragging, handlerId } = useDND({
-    index,
+  const { setNodeRef, isDragging, attributes, listeners } = useDND({
     itemId: course.id,
-    itemType: COURSE_ITEM_TYPE,
-    moveItem,
-    onDragEnd,
   });
 
   const handlePrerequisiteChange = (event: SelectChangeEvent<string>) => {
@@ -60,8 +49,7 @@ const DraggableCourseItem = ({
 
   return (
     <Box
-      ref={ref}
-      data-handler-id={handlerId}
+      ref={setNodeRef}
       sx={{
         mb: 1,
         bgcolor: isDragging ? 'action.hover' : 'background.paper',
@@ -76,7 +64,7 @@ const DraggableCourseItem = ({
       }}
     >
       <ListItem sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-        <IconButton sx={{ cursor: 'move', mr: 1 }}>
+        <IconButton sx={{ cursor: 'move', mr: 1 }} {...attributes} {...listeners}>
           <DragIndicatorIcon />
         </IconButton>
 
@@ -101,7 +89,6 @@ const DraggableCourseItem = ({
                 />
               </Box>
             }
-            slotProps={{ primary: { fontWeight: 500 } }}
           />
         </Box>
 

@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -9,11 +10,11 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import {
+  DeleteCourseDocument,
   EditableCourseFragment,
   LanguageFragment,
   SubjectFragment,
-  useDeleteCourseMutation,
-  useUpdateCourseMutation,
+  UpdateCourseDocument,
 } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
@@ -45,8 +46,8 @@ const UpdateCourse = ({ course, languages, subjectsList }: UpdateCourseType) => 
   const [descriptionContent, setDescriptionContent] = useState(course.description);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
 
-  const [updateCourse, { loading: updateCourseLoading }] = useUpdateCourseMutation();
-  const [deleteCourse] = useDeleteCourseMutation();
+  const [updateCourse, { loading: updateCourseLoading }] = useMutation(UpdateCourseDocument);
+  const [deleteCourse] = useMutation(DeleteCourseDocument);
 
   const {
     control,

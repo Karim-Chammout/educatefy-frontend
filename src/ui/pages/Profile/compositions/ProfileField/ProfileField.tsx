@@ -1,10 +1,10 @@
-import Grid2 from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
 import { Typography } from '@/ui/components';
 
 const ProfileField = ({ label, value }: { label: string; value?: string | null }) => (
-  <Grid2 size={{ xxs: 12, sm: 6 }}>
+  <Grid size={{ xxs: 12, sm: 6 }}>
     <Box>
       <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }} gutterBottom>
         {label}
@@ -15,7 +15,7 @@ const ProfileField = ({ label, value }: { label: string; value?: string | null }
         </Typography>
       )}
     </Box>
-  </Grid2>
+  </Grid>
 );
 
 export default ProfileField;

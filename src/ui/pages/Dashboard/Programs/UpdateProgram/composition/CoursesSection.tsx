@@ -1,3 +1,14 @@
+import { useMutation } from '@apollo/client/react';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -21,22 +32,18 @@ import Paper from '@mui/material/Paper';
 import Popover from '@mui/material/Popover';
 import TextField from '@mui/material/TextField';
 import { format } from 'date-fns';
-import { useCallback, useContext, useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import withScrolling from 'react-dnd-scrolling';
-import { TouchBackend } from 'react-dnd-touch-backend';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import fallbackImage from '@/assets/educatefy_background.png';
 import {
+  CreateProgramVersionDocument,
   EditableProgramDocument,
   ProgramCourseFragment,
   ProgramVersionCourseEntryFragment,
   ProgramVersionStatus,
-  useCreateProgramVersionMutation,
-  usePublishProgramVersionMutation,
-  useUpdateProgramVersionCoursesMutation,
+  PublishProgramVersionDocument,
+  UpdateProgramVersionCoursesDocument,
 } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
@@ -55,8 +62,6 @@ type CoursesSectionType = {
     | ProgramVersionStatus.Archived;
   versionNumber: number;
 };
-
-const ScrollingComponent = withScrolling('div');
 
 // Extracts just the course objects from entries, preserving rank order
 const toCourseList = (entries: ProgramVersionCourseEntryFragment[]): ProgramCourseFragment[] =>
@@ -104,6 +109,8 @@ const CoursesSection = ({
   const { t } = useTranslation();
   const { setToasterVisibility } = useContext(ToasterContext);
 
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
+
   const isLocked = versionStatus !== ProgramVersionStatus.Draft;
 
   const [committedCourses, setCommittedCourses] = useState<ProgramCourseFragment[]>(() =>
@@ -144,10 +151,14 @@ const CoursesSection = ({
     return { text: t('program.statusPublishedActive'), severity: 'success' as const };
   })();
 
-  const [updateProgramVersionCourses, { loading: saveLoading }] =
-    useUpdateProgramVersionCoursesMutation();
-  const [publishProgramVersion, { loading: publishLoading }] = usePublishProgramVersionMutation();
-  const [createProgramVersion, { loading: createVersionLoading }] = useCreateProgramVersionMutation(
+  const [updateProgramVersionCourses, { loading: saveLoading }] = useMutation(
+    UpdateProgramVersionCoursesDocument,
+  );
+  const [publishProgramVersion, { loading: publishLoading }] = useMutation(
+    PublishProgramVersionDocument,
+  );
+  const [createProgramVersion, { loading: createVersionLoading }] = useMutation(
+    CreateProgramVersionDocument,
     {
       refetchQueries: [{ query: EditableProgramDocument, variables: { id: programId } }],
     },
@@ -198,17 +209,18 @@ const CoursesSection = ({
     setDraftPrereqMap((prev) => ({ ...prev, [courseId]: prereqId }));
   };
 
-  const moveDraftItem = useCallback((dragIndex: number, hoverIndex: number) => {
-    setDraftCourses((prev) => {
-      const updated = [...prev];
-      const [dragged] = updated.splice(dragIndex, 1);
-      updated.splice(hoverIndex, 0, dragged);
+  const moveDraftItem = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      setDraftCourses((prev) => {
+        const oldIndex = prev.findIndex((i) => i.id === active.id);
+        const newIndex = prev.findIndex((i) => i.id === over?.id);
+        const reordered = arrayMove(prev, oldIndex, newIndex);
 
-      return updated;
-    });
-  }, []);
-
-  const handleDraftDragEnd = async () => {};
+        return reordered;
+      });
+    }
+  };
 
   const handleSave = async () => {
     if (hasPrerequisiteCycle(draftCourses, draftPrereqMap)) {
@@ -305,9 +317,6 @@ const CoursesSection = ({
   const unselectedDraftCourses = availableCourses.filter(
     (course) => !draftCourses.find((dc) => dc.id === course.id),
   );
-
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const backend = isTouchDevice ? TouchBackend : HTML5Backend;
 
   return (
     <>
@@ -450,7 +459,6 @@ const CoursesSection = ({
                           )}
                         </Box>
                       }
-                      slotProps={{ primary: { fontWeight: 500 } }}
                     />
                   </Box>
                 </ListItem>
@@ -561,25 +569,29 @@ const CoursesSection = ({
                 />
               </Box>
 
-              <DndProvider backend={backend}>
-                <ScrollingComponent>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={moveDraftItem}
+              >
+                <SortableContext
+                  items={draftCourses.map((i) => i.id)}
+                  strategy={verticalListSortingStrategy}
+                >
                   <List sx={{ p: 0 }}>
-                    {draftCourses.map((course, index) => (
+                    {draftCourses.map((course) => (
                       <DraggableCourseItem
                         key={course.id}
                         course={course}
-                        index={index}
                         otherCourses={draftCourses.filter((c) => c.id !== course.id)}
                         prerequisiteCourseId={draftPrereqMap[course.id] ?? null}
                         onPrerequisiteChange={handleDraftPrerequisiteChange}
                         onRemove={handleDraftRemoveCourse}
-                        moveItem={moveDraftItem}
-                        onDragEnd={handleDraftDragEnd}
                       />
                     ))}
                   </List>
-                </ScrollingComponent>
-              </DndProvider>
+                </SortableContext>
+              </DndContext>
             </Box>
           ) : (
             <Box

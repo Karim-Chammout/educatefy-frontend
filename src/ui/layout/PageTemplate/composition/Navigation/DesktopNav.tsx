@@ -15,7 +15,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import { TFunction } from 'i18next';
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -31,7 +31,7 @@ import { LogoWrapper, StyledNavLink } from './Navigation.style';
 
 type NavItemType = {
   label: string;
-  icon: JSX.Element;
+  icon: ReactNode;
   path: string;
   roleAccess: AccountRole;
 };

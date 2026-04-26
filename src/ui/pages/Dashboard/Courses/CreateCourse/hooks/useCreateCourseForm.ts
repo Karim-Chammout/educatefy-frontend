@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import { JSONContent } from '@tiptap/react';
 import { format } from 'date-fns';
 import { useContext, useState } from 'react';
@@ -6,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import api from '@/api';
-import { useCreateCourseMutation } from '@/generated/graphql';
+import { CreateCourseDocument } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
@@ -38,7 +39,7 @@ export const useCreateCourseForm = () => {
   const [uploadedImageDetails, setUploadedImageDetails] = useState<FileResponseType | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
 
-  const [createCourse, { loading: createCourseLoading }] = useCreateCourseMutation();
+  const [createCourse, { loading: createCourseLoading }] = useMutation(CreateCourseDocument);
   const { handleSubmit, control, setValue: setFormValue } = useForm();
 
   const watchedFields = useWatch({

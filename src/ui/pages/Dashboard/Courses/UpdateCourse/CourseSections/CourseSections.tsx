@@ -1,4 +1,5 @@
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useMutation } from '@apollo/client/react';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Container from '@mui/material/Container';
@@ -7,21 +8,28 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import List from '@mui/material/List';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
-import { useCallback, useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import withScrolling from 'react-dnd-scrolling';
-import { TouchBackend } from 'react-dnd-touch-backend';
+import { useState } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+
 import { useTranslation } from 'react-i18next';
 
 import {
+  CreateCourseSectionDocument,
+  DeleteCourseSectionDocument,
   EditableCourseSectionFragment,
   EditableCourseSectionsDocument,
   EditableCourseSectionsQuery,
-  useCreateCourseSectionMutation,
-  useDeleteCourseSectionMutation,
-  useUpdateCourseSectionMutation,
-  useUpdateCourseSectionRanksMutation,
+  UpdateCourseSectionDocument,
+  UpdateCourseSectionRanksDocument,
 } from '@/generated/graphql';
 import { Button, Modal, Typography } from '@/ui/components';
 
@@ -31,10 +39,10 @@ import { InfoState } from '@/ui/compositions';
 
 type CourseSectionType = EditableCourseSectionFragment['sections'][0];
 
-const ScrollingComponent = withScrolling('div');
-
 const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) => {
   const { t } = useTranslation();
+
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
 
   const [sectionDenomination, setSectionDenomination] = useState('');
   const [isPublished, setIsPublished] = useState(true);
@@ -47,10 +55,14 @@ const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) =
   const [sectionIdToDelete, setSectionIdToDelete] = useState<null | string>(null);
   const [isDeleteCourseSectionModalOpen, setIsDeleteCourseSectionModalOpen] = useState(false);
 
-  const [createCourseSection, { loading: loadingCreateSection }] = useCreateCourseSectionMutation();
-  const [updateCourseSection, { loading: loadingUpdateSection }] = useUpdateCourseSectionMutation();
-  const [deleteCourseSection] = useDeleteCourseSectionMutation();
-  const [updateCourseSectionRanks] = useUpdateCourseSectionRanksMutation();
+  const [createCourseSection, { loading: loadingCreateSection }] = useMutation(
+    CreateCourseSectionDocument,
+  );
+  const [updateCourseSection, { loading: loadingUpdateSection }] = useMutation(
+    UpdateCourseSectionDocument,
+  );
+  const [deleteCourseSection] = useMutation(DeleteCourseSectionDocument);
+  const [updateCourseSectionRanks] = useMutation(UpdateCourseSectionRanksDocument);
 
   const resetForm = () => {
     setSectionDenomination('');
@@ -62,20 +74,6 @@ const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) =
     setIsDeleteCourseSectionModalOpen(false);
     setSectionIdToDelete(null);
   };
-
-  const moveSection = useCallback((dragIndex: number, hoverIndex: number) => {
-    setSections((prevSections) => {
-      const newSections = [...prevSections];
-      const [removed] = newSections.splice(dragIndex, 1);
-      newSections.splice(hoverIndex, 0, removed);
-
-      // Update ranks after reordering
-      return newSections.map((section, index) => ({
-        ...section,
-        rank: index + 1,
-      }));
-    });
-  }, []);
 
   const handleCourseSectionSave = async () => {
     if (!sectionDenomination.trim()) return;
@@ -108,7 +106,7 @@ const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) =
         },
         update(cache, res) {
           const data = res.data?.createCourseSection;
-          if (data) {
+          if (data && data.courseSection) {
             const existingCourseQuery = cache.readQuery<EditableCourseSectionsQuery>({
               query: EditableCourseSectionsDocument,
               variables: { id: course.id },
@@ -120,6 +118,7 @@ const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) =
               query: EditableCourseSectionsDocument,
               variables: { id: course.id },
               data: {
+                __typename: 'Query',
                 editableCourse: {
                   ...existingCourseQuery.editableCourse,
                   sections: [...existingCourseQuery.editableCourse.sections, data.courseSection],
@@ -159,6 +158,7 @@ const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) =
             query: EditableCourseSectionsDocument,
             variables: { id: course.id },
             data: {
+              __typename: 'Query',
               editableCourse: {
                 ...existingCourseQuery.editableCourse,
                 sections: existingCourseQuery.editableCourse.sections.filter(
@@ -178,18 +178,24 @@ const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) =
     );
   };
 
-  const handleDragEnd = useCallback(async () => {
-    const updates = sections.map((section, index) => ({
-      id: section.id,
-      rank: index + 1,
-    }));
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      setSections((secs) => {
+        const oldIndex = secs.findIndex((i) => i.id === active.id);
+        const newIndex = secs.findIndex((i) => i.id === over?.id);
+        const reordered = arrayMove(secs, oldIndex, newIndex);
 
-    await updateCourseSectionRanks({
-      variables: {
-        sectionRanks: updates,
-      },
-    });
-  }, [sections, updateCourseSectionRanks]);
+        updateCourseSectionRanks({
+          variables: {
+            sectionRanks: reordered.map((section, idx) => ({ id: section.id, rank: idx + 1 })),
+          },
+        });
+
+        return reordered;
+      });
+    }
+  };
 
   const handleEdit = (section: CourseSectionType) => {
     setEditingSection({ id: section.id, isEditing: true });
@@ -197,9 +203,6 @@ const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) =
     setIsPublished(section.is_published);
     setIsCourseSectionModalOpen(true);
   };
-
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const backend = isTouchDevice ? TouchBackend : HTML5Backend;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
@@ -233,29 +236,26 @@ const CourseSections = ({ course }: { course: EditableCourseSectionFragment }) =
       </Box>
 
       {sections.length > 0 ? (
-        <DndProvider backend={backend}>
-          <ScrollingComponent>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
             <Box sx={{ mt: 2 }}>
               <List>
-                {sections.map((section, index) => (
+                {sections.map((section) => (
                   <DraggableSectionItem
                     key={section.id}
                     section={section}
-                    index={index}
-                    moveSection={moveSection}
                     handleDelete={(id) => {
                       setSectionIdToDelete(id);
                       setIsDeleteCourseSectionModalOpen(true);
                     }}
                     handleEdit={handleEdit}
                     courseId={course.id}
-                    onDragEnd={handleDragEnd}
                   />
                 ))}
               </List>
             </Box>
-          </ScrollingComponent>
-        </DndProvider>
+          </SortableContext>
+        </DndContext>
       ) : (
         <InfoState
           btnLabel={t('common.create')}

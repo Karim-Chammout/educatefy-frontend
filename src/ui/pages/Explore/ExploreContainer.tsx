@@ -1,8 +1,9 @@
+import { useQuery } from '@apollo/client/react';
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
-import { useExploreQuery } from '@/generated/graphql';
+import { ExploreDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
@@ -14,7 +15,7 @@ const ExploreContainer = () => {
   const location = useLocation();
   const { setToasterVisibility } = useContext(ToasterContext);
   const { t } = useTranslation();
-  const { loading, error, data } = useExploreQuery();
+  const { loading, error, data } = useQuery(ExploreDocument);
 
   useEffect(() => {
     // Display a toaster when a user tries to access a page without permissions

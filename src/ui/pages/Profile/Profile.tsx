@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,7 +10,7 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import DialogActions from '@mui/material/DialogActions';
 import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
@@ -23,8 +24,8 @@ import api from '@/api';
 import person from '@/assets/person.png';
 import {
   AccountRole,
-  useChangeProfilePictureMutation,
-  useRemoveProfilePictureMutation,
+  ChangeProfilePictureDocument,
+  RemoveProfilePictureDocument,
   UserFragment,
   UserProfileQuery,
 } from '@/generated/graphql';
@@ -51,8 +52,8 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
   const [isConfirmRemoveModalOpen, setIsConfirmRemoveModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [changeProfilePic] = useChangeProfilePictureMutation();
-  const [removeProfilePic] = useRemoveProfilePictureMutation();
+  const [changeProfilePic] = useMutation(ChangeProfilePictureDocument);
+  const [removeProfilePic] = useMutation(RemoveProfilePictureDocument);
 
   const onFilesSelected = async (files: File[]) => {
     try {

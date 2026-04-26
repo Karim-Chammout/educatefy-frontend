@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import DoneIcon from '@mui/icons-material/Done';
 import Alert from '@mui/material/Alert';
 import DialogActions from '@mui/material/DialogActions';
@@ -7,10 +8,10 @@ import { Link, useLocation } from 'react-router';
 
 import {
   CourseStatus,
+  EnrollInProgramDocument,
   ProgramFragment,
   ProgramStatus,
-  useEnrollInProgramMutation,
-  useUnenrollFromProgramMutation,
+  UnenrollFromProgramDocument,
 } from '@/generated/graphql';
 import { Button, Modal } from '@/ui/components';
 import { AuthContext, ToasterContext } from '@/ui/context';
@@ -32,8 +33,10 @@ const ProgramCTA = ({ program }: { program: ProgramFragment }) => {
   const isAvailable = program.status === ProgramStatus.NotStarted;
   const isCompleted = program.status === ProgramStatus.Completed;
 
-  const [enrollInProgram, { loading: enrollLoading }] = useEnrollInProgramMutation();
-  const [unenrollFromProgram, { loading: unenrollLoading }] = useUnenrollFromProgramMutation();
+  const [enrollInProgram, { loading: enrollLoading }] = useMutation(EnrollInProgramDocument);
+  const [unenrollFromProgram, { loading: unenrollLoading }] = useMutation(
+    UnenrollFromProgramDocument,
+  );
 
   const handleUnenrollment = async () => {
     await unenrollFromProgram({

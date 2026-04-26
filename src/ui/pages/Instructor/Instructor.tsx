@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
@@ -6,14 +7,14 @@ import StarIcon from '@mui/icons-material/Star';
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
 import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';
-import { TeacherFragment, useFollowTeacherMutation } from '@/generated/graphql';
+import { FollowTeacherDocument, TeacherFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { ContentCard, RichTextContent } from '@/ui/compositions';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
@@ -23,7 +24,7 @@ import { HeaderSection, InstructorInfo, StatCard, StatContent, StatIcon } from '
 const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const [followTeacher, { loading: updatingFollow }] = useFollowTeacherMutation();
+  const [followTeacher, { loading: updatingFollow }] = useMutation(FollowTeacherDocument);
 
   const handleFollowTeacher = async () => {
     await followTeacher({

@@ -1,6 +1,6 @@
 import { SxProps, Theme, TypeText } from '@mui/material';
 import MuiTypography from '@mui/material/Typography';
-import { Variant } from '@mui/material/styles/createTypography';
+import { TypographyVariant } from '@mui/material/styles/createTypography';
 import { ElementType, ReactNode } from 'react';
 
 const Typography = ({
@@ -14,7 +14,7 @@ const Typography = ({
   className,
 }: {
   children?: ReactNode;
-  variant?: Variant;
+  variant?: TypographyVariant;
   component?: ElementType;
   gutterBottom?: boolean;
   sx?: SxProps<Theme>;

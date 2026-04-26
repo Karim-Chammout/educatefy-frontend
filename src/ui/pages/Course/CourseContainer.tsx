@@ -1,8 +1,9 @@
+import { useQuery } from '@apollo/client/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
-import { useCourseQuery } from '@/generated/graphql';
+import { CourseDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
@@ -13,7 +14,7 @@ const CourseContainer = () => {
   const navigate = useNavigate();
   const { slug } = useParams();
 
-  const { loading, error, data } = useCourseQuery({
+  const { loading, error, data } = useQuery(CourseDocument, {
     variables: {
       slug: slug || '',
     },

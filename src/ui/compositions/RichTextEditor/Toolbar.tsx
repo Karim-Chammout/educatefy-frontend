@@ -323,7 +323,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
               '&:hover': { backgroundColor: activeHeading ? 'primary.dark' : 'action.hover' },
             }}
           >
-            <Typography variant="caption" fontWeight={700} lineHeight={1}>
+            <Typography variant="caption" sx={{ fontWeight: 700, lineHeight: 1 }}>
               {headingLabel}
             </Typography>
           </IconButton>
@@ -365,7 +365,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
                   },
                 }}
               >
-                <Typography variant="caption" fontWeight={700} lineHeight={1}>
+                <Typography variant="caption" sx={{ fontWeight: 700, lineHeight: 1 }}>
                   H{level}
                 </Typography>
               </IconButton>
@@ -421,7 +421,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
           disabled={disabled}
           displayEmpty
           renderValue={(val) => (
-            <Typography variant="caption" fontWeight={500}>
+            <Typography variant="caption" sx={{ fontWeight: 500 }}>
               {val || t('toolbar.fontSize.label')}
             </Typography>
           )}
@@ -481,7 +481,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
         slotProps={{ paper: { sx: { p: 1.5 } } }}
       >
         <Stack spacing={1}>
-          <Typography variant="caption" fontWeight={600}>
+          <Typography variant="caption" sx={{ fontWeight: 600 }}>
             {t('toolbar.textColor')}
           </Typography>
           <SwatchGrid
@@ -496,7 +496,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
             clearLabel={t('toolbar.textColor.remove')}
           />
           {/* Native color picker for custom colors */}
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Typography variant="caption" color="text.secondary">
               {t('toolbar.textColor.custom')}
             </Typography>
@@ -551,7 +551,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
         slotProps={{ paper: { sx: { p: 1.5 } } }}
       >
         <Stack spacing={1}>
-          <Typography variant="caption" fontWeight={600}>
+          <Typography variant="caption" sx={{ fontWeight: 600 }}>
             {t('toolbar.highlight')}
           </Typography>
           <SwatchGrid
@@ -565,7 +565,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
             }}
             clearLabel={t('toolbar.highlight.remove')}
           />
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Typography variant="caption" color="text.secondary">
               {t('toolbar.highlight.custom')}
             </Typography>
@@ -698,7 +698,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
               sx={{ flex: 1 }}
             />
           </Stack>
-          <Stack direction="row" spacing={1} justifyContent="flex-end">
+          <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
             <Button size="small" onClick={() => setTableAnchor(null)}>
               {t('common.cancel')}
             </Button>
@@ -851,7 +851,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
             }}
             fullWidth
           />
-          <Stack direction="row" spacing={1} justifyContent="flex-end">
+          <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
             <Button size="small" onClick={() => setLinkAnchor(null)}>
               {t('common.cancel')}
             </Button>
@@ -884,7 +884,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
             }}
             fullWidth
           />
-          <Stack direction="row" spacing={1} justifyContent="flex-end">
+          <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
             <Button size="small" onClick={() => setImageUrlAnchor(null)}>
               {t('common.cancel')}
             </Button>
@@ -920,7 +920,7 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
             }}
             fullWidth
           />
-          <Stack direction="row" spacing={1} justifyContent="flex-end">
+          <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
             <Button size="small" onClick={() => setIframeAnchor(null)}>
               {t('common.cancel')}
             </Button>

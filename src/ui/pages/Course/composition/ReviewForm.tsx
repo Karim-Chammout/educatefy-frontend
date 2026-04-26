@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
@@ -7,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 
 import {
   CourseReviewFragment,
-  useDeleteCourseRatingMutation,
-  useRateCourseMutation,
+  DeleteCourseRatingDocument,
+  RateCourseDocument,
 } from '@/generated/graphql';
 import { ToasterContext } from '@/ui/context';
 
@@ -26,8 +27,8 @@ const ReviewForm = ({
   const [rating, setRating] = useState(existingReview?.rating || 0);
   const [reviewText, setReviewText] = useState(existingReview?.review || '');
 
-  const [rateCourse, { loading }] = useRateCourseMutation();
-  const [deleteCourseRating, { loading: isDeleting }] = useDeleteCourseRatingMutation();
+  const [rateCourse, { loading }] = useMutation(RateCourseDocument);
+  const [deleteCourseRating, { loading: isDeleting }] = useMutation(DeleteCourseRatingDocument);
 
   const handleSubmit = async () => {
     if (!rating && !reviewText) {

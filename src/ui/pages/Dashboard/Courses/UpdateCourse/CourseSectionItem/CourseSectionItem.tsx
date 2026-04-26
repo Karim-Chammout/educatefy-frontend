@@ -1,4 +1,4 @@
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -6,10 +6,15 @@ import Container from '@mui/material/Container';
 import DialogActions from '@mui/material/DialogActions';
 import List from '@mui/material/List';
 import TextField from '@mui/material/TextField';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import withScrolling from 'react-dnd-scrolling';
-import { TouchBackend } from 'react-dnd-touch-backend';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useTranslation } from 'react-i18next';
 
 import { SectionFragment } from '@/generated/graphql';
@@ -21,8 +26,6 @@ import { DraggableComponentItem, useComponentContext } from './composition';
 import { ComponentFormModal } from './composition/ComponentFormModal';
 
 type ItemType = SectionFragment['items'][0];
-
-const ScrollingComponent = withScrolling('div');
 
 const CourseSectionItemContent = ({
   sectionItem,
@@ -36,6 +39,9 @@ const CourseSectionItemContent = ({
   sectionId?: string;
 }) => {
   const { t } = useTranslation();
+
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
+
   const {
     componentItems,
     isCreateModalOpen,
@@ -48,7 +54,6 @@ const CourseSectionItemContent = ({
     openDeleteModal,
     closeDeleteModal,
     setSelectedComponentType,
-    moveComponent,
     handleDragEnd,
     openEditModal,
     deleteComponent,
@@ -56,8 +61,6 @@ const CourseSectionItemContent = ({
   } = useComponentContext();
 
   const availableComponents = getAvailableComponents();
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const backend = isTouchDevice ? TouchBackend : HTML5Backend;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
@@ -97,27 +100,31 @@ const CourseSectionItemContent = ({
 
       <Box sx={{ mt: 2 }}>
         {componentItems.length > 0 ? (
-          <DndProvider backend={backend}>
-            <ScrollingComponent>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={componentItems.map((i) => i.component_id)}
+              strategy={verticalListSortingStrategy}
+            >
               <Box sx={{ mt: 2 }}>
                 <List>
-                  {componentItems.map((item, index) => (
+                  {componentItems.map((item) => (
                     <DraggableComponentItem
                       key={item.component_id}
                       componentItem={item}
-                      index={index}
-                      moveComponentItem={moveComponent}
                       handleEdit={(itemId) => openEditModal(itemId)}
                       handleDelete={(itemId, itemType) => {
                         openDeleteModal(itemId, itemType);
                       }}
-                      onDragEnd={handleDragEnd}
                     />
                   ))}
                 </List>
               </Box>
-            </ScrollingComponent>
-          </DndProvider>
+            </SortableContext>
+          </DndContext>
         ) : (
           <InfoState
             btnLabel={t('sectionItem.createComponent')}

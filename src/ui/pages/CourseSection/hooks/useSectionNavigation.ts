@@ -1,10 +1,8 @@
+import { useMutation } from '@apollo/client/react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
-import {
-  CourseSectionFragment,
-  useUpdateContentComponentProgressMutation,
-} from '@/generated/graphql';
+import { CourseSectionFragment, UpdateContentComponentProgressDocument } from '@/generated/graphql';
 import { ContentComponentsType } from '@/types/types';
 
 export const useSectionNavigation = (section: CourseSectionFragment) => {
@@ -21,8 +19,9 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
     selectedItem.components.find((comp) => comp.component_id === componentId) ||
     selectedItem.components[0];
 
-  const [updateContentComponentProgress, { loading: isUpdatingProgress }] =
-    useUpdateContentComponentProgressMutation();
+  const [updateContentComponentProgress, { loading: isUpdatingProgress }] = useMutation(
+    UpdateContentComponentProgressDocument,
+  );
 
   const isComponentAccessible = (targetItemId: string, targetComponentId: string) => {
     const requiredComponents: Partial<ContentComponentsType>[] = [];

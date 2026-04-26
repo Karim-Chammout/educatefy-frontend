@@ -1,8 +1,9 @@
+import { useQuery } from '@apollo/client/react';
 import CloseIcon from '@mui/icons-material/Close';
-import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router';
 
-import { useEditableProgramQuery } from '@/generated/graphql';
+import { EditableProgramDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
@@ -12,7 +13,7 @@ const UpdateProgramContainer = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { loading, error, data } = useEditableProgramQuery({
+  const { loading, error, data } = useQuery(EditableProgramDocument, {
     variables: {
       id: id || '',
     },

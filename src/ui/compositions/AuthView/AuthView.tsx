@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { ReactNode } from 'react';
 
 import sideImage from '@/assets/educatefy_background.png';

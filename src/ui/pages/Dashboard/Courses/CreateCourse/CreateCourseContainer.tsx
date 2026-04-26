@@ -1,11 +1,13 @@
-import { useCreateCoursePageQuery } from '@/generated/graphql';
+import { useQuery } from '@apollo/client/react';
+
+import { CreateCoursePageDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 
 import CreateCourse from './CreateCourse';
 
 const CreateCourseContainer = () => {
-  const { loading, error, data } = useCreateCoursePageQuery();
+  const { loading, error, data } = useQuery(CreateCoursePageDocument);
 
   if (loading) {
     return <Loader />;

@@ -11,8 +11,10 @@ import { Typography } from '@/ui/components';
 import { RichTextEditor } from '@/ui/compositions';
 import { isValidSlug } from '@/utils/isValidSlug';
 
+import { UpdateProgramFormValues } from '../hooks/useUpdateProgramForm';
+
 type BasicInfoSectionType = {
-  control: Control<any>;
+  control: Control<UpdateProgramFormValues>;
   subjectsList: SubjectFragment[];
   watchedValues: {
     slug: string;

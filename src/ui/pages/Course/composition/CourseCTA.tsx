@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router';
@@ -6,7 +7,7 @@ import {
   CourseFragment,
   CourseStatus,
   HomeDocument,
-  useUpdateCourseStatusMutation,
+  UpdateCourseStatusDocument,
 } from '@/generated/graphql';
 import { Button } from '@/ui/components';
 import { AuthContext, ToasterContext } from '@/ui/context';
@@ -27,7 +28,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
   const isEnrolled = course.status === CourseStatus.Enrolled;
   const isCourseCompleted = course.status === CourseStatus.Completed;
 
-  const [updateStatus, { loading }] = useUpdateCourseStatusMutation();
+  const [updateStatus, { loading }] = useMutation(UpdateCourseStatusDocument);
 
   const handleStatusUpdate = async (status: CourseStatus) => {
     if (!isLoggedIn()) {

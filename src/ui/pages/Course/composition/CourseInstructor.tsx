@@ -1,9 +1,10 @@
+import { useMutation } from '@apollo/client/react';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import { useTranslation } from 'react-i18next';
 
 import person from '@/assets/person.png';
-import { CourseFragment, useFollowTeacherMutation } from '@/generated/graphql';
+import { CourseFragment, FollowTeacherDocument } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { RichTextContent } from '@/ui/compositions';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
@@ -15,7 +16,7 @@ const CourseInstructor = ({ courseInfo }: { courseInfo: CourseFragment }) => {
   const { id, first_name, last_name, description, avatar_url, isFollowed, isAllowedToFollow } =
     courseInfo.instructor;
 
-  const [followTeacher, { loading: updatingFollow }] = useFollowTeacherMutation();
+  const [followTeacher, { loading: updatingFollow }] = useMutation(FollowTeacherDocument);
 
   const handleFollowTeacher = async () => {
     await followTeacher({

@@ -1,8 +1,9 @@
+import { useQuery } from '@apollo/client/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
-import { useProgramQuery } from '@/generated/graphql';
+import { ProgramDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
@@ -13,7 +14,7 @@ const ProgramContainer = () => {
   const navigate = useNavigate();
   const { programSlug } = useParams();
 
-  const { loading, error, data } = useProgramQuery({
+  const { loading, error, data } = useQuery(ProgramDocument, {
     variables: {
       slug: programSlug || '',
     },

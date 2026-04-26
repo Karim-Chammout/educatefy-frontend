@@ -22,40 +22,28 @@ type ComponentType =
 
 type DraggableComponentItemType = {
   componentItem: ComponentType;
-  index: number;
-  moveComponentItem: (dragIndex: number, hoverIndex: number) => void;
   handleDelete: (id: string, type: ComponentEnumType) => void;
   handleEdit: (id: string) => void;
-  onDragEnd: () => Promise<void>;
 };
 
 const DraggableComponentItem = ({
   componentItem,
-  index,
-  moveComponentItem,
   handleDelete,
   handleEdit,
-  onDragEnd,
 }: DraggableComponentItemType) => {
-  const { handlerId, isDragging, ref } = useDND({
-    index,
+  const { setNodeRef, style, attributes, listeners } = useDND({
     itemId: componentItem.component_id,
-    itemType: 'COMPONENT_ITEM',
-    moveItem: moveComponentItem,
-    onDragEnd,
   });
 
   return (
     <Box
-      ref={ref}
-      data-handler-id={handlerId}
+      ref={setNodeRef}
       sx={{
-        opacity: isDragging ? 0.4 : 1,
-        background: isDragging ? 'lightgrey' : 'inherit',
+        ...style,
       }}
     >
       <ListItem sx={{ flexWrap: 'wrap', gap: 1 }}>
-        <IconButton sx={{ cursor: 'move', mr: 1 }}>
+        <IconButton sx={{ cursor: 'move', mr: 1 }} {...attributes} {...listeners}>
           <DragIndicatorIcon />
         </IconButton>
         <ListItemText primary={componentItem.denomination} color="text.secondary" />

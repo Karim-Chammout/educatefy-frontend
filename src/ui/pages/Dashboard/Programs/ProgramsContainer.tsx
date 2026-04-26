@@ -1,8 +1,9 @@
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useQuery } from '@apollo/client/react';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { useTeacherProgramsQuery } from '@/generated/graphql';
+import { TeacherProgramsDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
@@ -12,7 +13,7 @@ const ProgramsContainer = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const { loading, error, data } = useTeacherProgramsQuery();
+  const { loading, error, data } = useQuery(TeacherProgramsDocument);
 
   if (loading) {
     return <Loader />;

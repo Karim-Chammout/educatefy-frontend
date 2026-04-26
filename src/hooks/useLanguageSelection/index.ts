@@ -1,7 +1,8 @@
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useMeLazyQuery, useUpdateProfileMutation } from '@/generated/graphql';
+import { MeDocument, UpdateProfileDocument } from '@/generated/graphql';
 import { isLoggedIn } from '@/ui/layout/apolloClient';
 
 import { LANGUAGES } from '../../i18n';
@@ -11,8 +12,8 @@ const rtlLanguages = ['ar'];
 
 const useLanguageSelection = () => {
   const { i18n } = useTranslation();
-  const [updateSelectedLanguage] = useUpdateProfileMutation();
-  const [, { refetch }] = useMeLazyQuery();
+  const [updateSelectedLanguage] = useMutation(UpdateProfileDocument);
+  const [, { refetch }] = useLazyQuery(MeDocument);
 
   const languageDirection: LangDirectionType = rtlLanguages.includes(i18n.language) ? 'rtl' : 'ltr';
 

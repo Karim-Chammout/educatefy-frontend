@@ -1,8 +1,8 @@
-import { useReactiveVar } from '@apollo/client';
+import { useQuery, useReactiveVar } from '@apollo/client/react';
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
-import { AccountRole, useMeQuery } from '@/generated/graphql';
+import { AccountRole, MeDocument } from '@/generated/graphql';
 import { useLanguageSelection } from '@/hooks';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, SetupProfile } from '@/ui/compositions';
@@ -46,7 +46,7 @@ const PublicPagesView = () => {
 
 const PrivatePagesView = () => {
   const { changeLanguage } = useLanguageSelection();
-  const { loading, error, data } = useMeQuery();
+  const { loading, error, data } = useQuery(MeDocument);
 
   // Update the language based on the preferredLanguage of the user
   useEffect(() => {

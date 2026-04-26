@@ -1,6 +1,7 @@
+import { useMutation, useQuery } from '@apollo/client/react';
 import Container from '@mui/material/Container';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { format } from 'date-fns';
 import { useContext, useState } from 'react';
 import {
@@ -19,8 +20,8 @@ import { useTranslation } from 'react-i18next';
 import {
   AccountFragment,
   AccountRole,
-  useSetupProfileQuery,
-  useUpdateAccountInfoMutation,
+  SetupProfileDocument,
+  UpdateAccountInfoDocument,
 } from '@/generated/graphql';
 import { useLanguageSelection } from '@/hooks';
 import { Button, Loader, Typography } from '@/ui/components';
@@ -37,8 +38,9 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
   const { currentLanguage } = useLanguageSelection();
   const [descriptionContent, setDescriptionContent] = useState(userInfo.description || '');
   const { setToasterVisibility } = useContext(ToasterContext);
-  const { loading, error, data } = useSetupProfileQuery();
-  const [updateAccountInfo, { loading: updateAccountInfoLoading }] = useUpdateAccountInfoMutation();
+  const { loading, error, data } = useQuery(SetupProfileDocument);
+  const [updateAccountInfo, { loading: updateAccountInfoLoading }] =
+    useMutation(UpdateAccountInfoDocument);
 
   const { handleSubmit, control } = useForm({
     defaultValues: {

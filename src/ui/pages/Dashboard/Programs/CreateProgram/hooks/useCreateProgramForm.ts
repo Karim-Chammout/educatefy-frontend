@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client/react';
 import { JSONContent } from '@tiptap/react';
 import { useContext, useState } from 'react';
 import { FieldValues, useForm, useWatch } from 'react-hook-form-mui';
@@ -5,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import api from '@/api';
-import { useCreateProgramMutation } from '@/generated/graphql';
+import { CreateProgramDocument } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
@@ -36,7 +37,7 @@ export const useCreateProgramForm = () => {
   const [uploadedImageDetails, setUploadedImageDetails] = useState<FileResponseType | null>(null);
   const [isImageLoading, setIsImageLoading] = useState(false);
 
-  const [createProgram, { loading: createProgramLoading }] = useCreateProgramMutation();
+  const [createProgram, { loading: createProgramLoading }] = useMutation(CreateProgramDocument);
   const { handleSubmit, control, setValue: setFormValue } = useForm();
 
   const watchedFields = useWatch({

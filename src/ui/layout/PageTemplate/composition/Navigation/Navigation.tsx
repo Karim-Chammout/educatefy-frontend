@@ -1,6 +1,7 @@
+import { useQuery } from '@apollo/client/react';
 import { useMediaQuery, useTheme } from '@mui/material';
 
-import { useAccountInfoQuery } from '@/generated/graphql';
+import { AccountInfoDocument } from '@/generated/graphql';
 
 import DesktopNavigation from './DesktopNav';
 import Header from './Header';
@@ -9,7 +10,7 @@ import MobileNavigation from './MobileNav';
 const Navigation = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { data, loading, error } = useAccountInfoQuery();
+  const { data, loading, error } = useQuery(AccountInfoDocument);
 
   if (loading || error || !data) {
     return null;

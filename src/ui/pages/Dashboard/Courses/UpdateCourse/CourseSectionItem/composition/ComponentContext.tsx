@@ -1,3 +1,4 @@
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -6,14 +7,13 @@ import {
   ComponentParentType,
   ComponentType,
   ContentComponent,
+  CreateContentComponentDocument,
+  DeleteContentComponentDocument,
   EditableCourseSectionDocument,
   EditableCourseSectionQuery,
   SectionFragment,
-  useCreateContentComponentMutation,
-  useDeleteContentComponentMutation,
-  useEditableCourseSectionLazyQuery,
-  useUpdateContentComponentMutation,
-  useUpdateContentComponentRanksMutation,
+  UpdateContentComponentDocument,
+  UpdateContentComponentRanksDocument,
   VideoContent,
 } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
@@ -56,7 +56,6 @@ type ComponentContextState = {
   updateComponent: () => Promise<void>;
   isUpdatingComponent: boolean;
   deleteComponent: () => Promise<void>;
-  moveComponent: (dragIndex: number, hoverIndex: number) => void;
   handleDragEnd: () => Promise<void>;
 
   getAvailableComponents: () => ComponentConfig[];
@@ -122,13 +121,17 @@ const ComponentProvider = ({
   });
   const [componentData, setComponentData] = useState<Partial<ContentComponent> | null>(null);
 
-  const [deleteContentComponent] = useDeleteContentComponentMutation();
-  const [updateContentComponentRanks] = useUpdateContentComponentRanksMutation();
-  const [updateContentComponent, { loading: isUpdatingComponent }] =
-    useUpdateContentComponentMutation();
-  const [createContentComponent, { loading: isCreateingComponent }] =
-    useCreateContentComponentMutation();
-  const [editableCourseSection] = useEditableCourseSectionLazyQuery();
+  const [deleteContentComponent] = useMutation(DeleteContentComponentDocument);
+  const [updateContentComponentRanks] = useMutation(UpdateContentComponentRanksDocument);
+  const [updateContentComponent, { loading: isUpdatingComponent }] = useMutation(
+    UpdateContentComponentDocument,
+  );
+  const [createContentComponent, { loading: isCreateingComponent }] = useMutation(
+    CreateContentComponentDocument,
+  );
+  const [editableCourseSection] = useLazyQuery(EditableCourseSectionDocument, {
+    fetchPolicy: 'network-only',
+  });
 
   const resetComponentData = useCallback(() => {
     setBaseComponentData({
@@ -334,7 +337,6 @@ const ComponentProvider = ({
           if (res.updateContentComponent?.success) {
             const refetchResult = await editableCourseSection({
               variables: { id: courseId || '' },
-              fetchPolicy: 'network-only',
             });
 
             const courseSection = refetchResult.data?.editableCourse?.sections.find(
@@ -419,11 +421,12 @@ const ComponentProvider = ({
             variables: { id: courseId },
           });
 
-          if (existingCourseQuery?.editableCourse) {
+          if (existingCourseQuery?.editableCourse && courseId) {
             cache.writeQuery({
               query: EditableCourseSectionDocument,
               variables: { id: courseId },
               data: {
+                __typename: 'Query',
                 editableCourse: {
                   ...existingCourseQuery.editableCourse,
                   sections: existingCourseQuery.editableCourse.sections.map((s) => ({
@@ -450,19 +453,6 @@ const ComponentProvider = ({
     t,
     courseId,
   ]);
-
-  const moveComponent = useCallback((dragIndex: number, hoverIndex: number) => {
-    setComponentItems((prevItems) => {
-      const newComponentItems = [...prevItems];
-      const [removed] = newComponentItems.splice(dragIndex, 1);
-      newComponentItems.splice(hoverIndex, 0, removed);
-
-      return newComponentItems.map((componentItem, index) => ({
-        ...componentItem,
-        rank: index + 1,
-      }));
-    });
-  }, []);
 
   const handleDragEnd = useCallback(async () => {
     const updates = componentItems.map((item, index) => ({
@@ -508,7 +498,6 @@ const ComponentProvider = ({
       updateComponent,
       isUpdatingComponent,
       deleteComponent,
-      moveComponent,
       handleDragEnd,
 
       getAvailableComponents,
@@ -534,7 +523,6 @@ const ComponentProvider = ({
       isCreateModalOpen,
       isDeleteModalOpen,
       isEditModalOpen,
-      moveComponent,
       openCreateModal,
       openDeleteModal,
       openEditModal,

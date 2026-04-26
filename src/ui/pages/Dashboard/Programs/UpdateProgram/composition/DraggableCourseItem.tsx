@@ -38,7 +38,7 @@ const DraggableCourseItem = ({
 }: DraggableCourseItemType) => {
   const { t } = useTranslation();
 
-  const { setNodeRef, isDragging, attributes, listeners } = useDND({
+  const { setNodeRef, isDragging, attributes, listeners, style } = useDND({
     itemId: course.id,
   });
 
@@ -52,11 +52,10 @@ const DraggableCourseItem = ({
       ref={setNodeRef}
       sx={{
         mb: 1,
-        bgcolor: isDragging ? 'action.hover' : 'background.paper',
         border: 1,
-        borderColor: isDragging ? 'primary.main' : 'divider',
         borderRadius: 1,
-        opacity: isDragging ? 0.5 : 1,
+        borderColor: isDragging ? 'primary.main' : 'divider',
+        ...style,
         '&:hover': {
           bgcolor: 'action.hover',
           borderColor: 'primary.light',

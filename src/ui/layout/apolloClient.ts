@@ -1,16 +1,9 @@
-import {
-  ApolloClient,
-  ApolloLink,
-  HttpLink,
-  InMemoryCache,
-  makeVar,
-  Operation,
-  split,
-} from '@apollo/client';
-import { onError } from '@apollo/client/link/error';
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, makeVar } from '@apollo/client';
+import { ErrorLink } from '@apollo/client/link/error';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { getMainDefinition } from '@apollo/client/utilities';
+import { OperationTypeNode } from 'graphql';
 import { createClient } from 'graphql-ws';
+import { map } from 'rxjs';
 
 import { terminatSession } from '@/utils/logout';
 
@@ -41,22 +34,21 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 });
 
 const replaceTokenLink = new ApolloLink((operation, forward) =>
-  forward(operation).map((data) => {
-    const newToken = operation.getContext().response.headers.get('X-Renew-Token');
+  forward(operation).pipe(
+    map((data) => {
+      const newToken = operation.getContext().response?.headers?.get('X-Renew-Token');
 
-    if (newToken) {
-      localStorage.setItem('JWT', newToken);
-    }
+      if (newToken) {
+        localStorage.setItem('JWT', newToken);
+      }
 
-    return data;
-  }),
+      return data;
+    }),
+  ),
 );
 
-const hasSubscriptionOperation = (operation: Operation) => {
-  const definition = getMainDefinition(operation.query);
-
-  return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
-};
+const hasSubscriptionOperation = (operation: ApolloLink.Operation) =>
+  operation.operationType === OperationTypeNode.SUBSCRIPTION;
 
 const wsLink = new GraphQLWsLink(
   createClient({
@@ -73,14 +65,19 @@ const wsLink = new GraphQLWsLink(
 
 export const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: split(
+  link: ApolloLink.split(
     hasSubscriptionOperation,
     wsLink,
     ApolloLink.from([
-      onError(({ networkError, response }) => {
-        if (networkError && 'statusCode' in networkError && networkError.statusCode === 401) {
-          if (response) {
-            response.errors = undefined;
+      new ErrorLink(({ error, result }) => {
+        if (
+          error &&
+          'errors' in error &&
+          Array.isArray(error.errors) &&
+          error.errors[0].extensions.code === 'NOT_AUTHORIZED'
+        ) {
+          if (result) {
+            result.errors = undefined;
           }
 
           terminatSession().catch(() => {

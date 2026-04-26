@@ -70,7 +70,6 @@ module.exports = {
         printWidth: 100,
         semi: true,
       },
-      { '   ': false },
     ],
     'no-underscore-dangle': [
       'error',

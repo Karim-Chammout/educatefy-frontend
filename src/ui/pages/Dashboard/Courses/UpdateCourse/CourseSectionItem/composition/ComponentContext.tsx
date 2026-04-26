@@ -1,4 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { DragEndEvent } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -56,7 +58,7 @@ type ComponentContextState = {
   updateComponent: () => Promise<void>;
   isUpdatingComponent: boolean;
   deleteComponent: () => Promise<void>;
-  handleDragEnd: () => Promise<void>;
+  handleDragEnd: (event: DragEndEvent) => Promise<void>;
 
   getAvailableComponents: () => ComponentConfig[];
   getComponentConfig: (componentType: string) => ComponentConfig | undefined;
@@ -454,16 +456,31 @@ const ComponentProvider = ({
     courseId,
   ]);
 
-  const handleDragEnd = useCallback(async () => {
-    const updates = componentItems.map((item, index) => ({
-      id: item.component_id,
-      rank: index + 1,
-    }));
+  const handleDragEnd = useCallback(
+    async (event: DragEndEvent) => {
+      const { active, over } = event;
 
-    await updateContentComponentRanks({
-      variables: { componentRanks: updates },
-    });
-  }, [componentItems, updateContentComponentRanks]);
+      if (active.id !== over?.id) {
+        setComponentItems((item) => {
+          const oldIndex = item.findIndex((i) => i.component_id === active.id);
+          const newIndex = item.findIndex((i) => i.component_id === over?.id);
+          const reordered = arrayMove(item, oldIndex, newIndex);
+
+          updateContentComponentRanks({
+            variables: {
+              componentRanks: reordered.map((component, idx) => ({
+                id: component.component_id,
+                rank: idx + 1,
+              })),
+            },
+          });
+
+          return reordered;
+        });
+      }
+    },
+    [updateContentComponentRanks],
+  );
 
   const contextValue: ComponentContextState = useMemo(
     () => ({

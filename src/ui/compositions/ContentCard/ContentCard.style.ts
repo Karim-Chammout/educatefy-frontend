@@ -116,7 +116,9 @@ const teacherContainerStyles = css`
 `;
 
 export const CardActionArea = styled(MuiCardActionArea)<{ to: string }>();
-export const StyledCard = styled(Card)<{ contentType: ContentType }>(cardStyles);
+export const StyledCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'contentType',
+})<{ contentType: ContentType }>(cardStyles);
 export const StyledMediaWrapper = styled(Box)(mediaWrapperStyles);
 export const DifficultyChip = styled(Chip)<{
   difficulty: CourseLevel | ProgramLevel;

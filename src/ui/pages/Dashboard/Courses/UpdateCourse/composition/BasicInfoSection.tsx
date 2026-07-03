@@ -7,7 +7,6 @@ import { AutocompleteElement, TextFieldElement } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 
 import {

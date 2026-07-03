@@ -1,0 +1,73 @@
+fragment CourseDetailAnalyticsData on CourseDetailAnalytics {
+  meta {
+    denomination
+    isPublished
+  }
+  enrollmentBreakdown {
+    status
+    count
+  }
+  dropOffCount
+  completionTransitionCount
+  avgDaysToCompletion
+  ratingDistribution {
+    stars
+    count
+  }
+  recentReviews {
+    reviewId
+    rating
+    review
+    createdAt
+    reviewerFirstName
+    reviewerNickname
+    reviewerAvatarUrl
+  }
+  sectionCompletionStats {
+    sectionId
+    denomination
+    rank
+    completedCount
+    totalEnrolled
+    completionRate
+  }
+  audienceDemographics {
+    countryBreakdown {
+      label
+      count
+    }
+    nationalityBreakdown {
+      label
+      count
+    }
+    languageBreakdown {
+      label
+      count
+    }
+    ageBreakdown {
+      label
+      count
+    }
+    ageDataCoverage
+  }
+  enrolledStudents(limit: $limit, offset: $offset) {
+    total
+    students {
+      accountId
+      firstName
+      nickname
+      avatarUrl
+      country
+      nationality
+      age
+      enrolledAt
+      status
+    }
+  }
+}
+
+query CourseDetailAnalytics($courseId: ID!, $limit: Int!, $offset: Int!) {
+  courseDetailAnalytics(courseId: $courseId) {
+    ...CourseDetailAnalyticsData
+  }
+}

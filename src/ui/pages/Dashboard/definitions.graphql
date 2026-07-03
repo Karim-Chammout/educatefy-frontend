@@ -3,6 +3,7 @@ fragment Instructor on Teacher {
   followersCount
   courses {
     id
+    participationCount
   }
   programs {
     id

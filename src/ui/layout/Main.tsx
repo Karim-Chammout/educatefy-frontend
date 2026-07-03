@@ -13,7 +13,9 @@ import PageTemplate from './PageTemplate';
 import PublicPageTemplate from './PublicPageTemplate';
 import { DashboardRoutes } from './routes/DashboardRoutes';
 import {
+  Analytics,
   Course,
+  CourseDetailAnalytics,
   Courses,
   CourseSection,
   CourseSectionItem,
@@ -241,6 +243,18 @@ const PrivatePagesView = () => {
                 <UpdateProgram />
               </RouteWrapper>
             }
+          />
+          <Route
+            path="/dashboard/analytics"
+            element={
+              <RouteWrapper>
+                <Analytics />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/dashboard/analytics/courses/:courseId"
+            element={<CourseDetailAnalytics />}
           />
         </Route>
 

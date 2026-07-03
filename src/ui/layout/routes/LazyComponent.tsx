@@ -1,5 +1,9 @@
 import { lazy } from 'react';
 
+export const Analytics = lazy(() => import('@/ui/pages/Dashboard/Analytics'));
+export const CourseDetailAnalytics = lazy(
+  () => import('@/ui/pages/Dashboard/Analytics/CourseDetailAnalytics'),
+);
 export const Course = lazy(() => import('@/ui/pages/Course'));
 export const Courses = lazy(() => import('@/ui/pages/Dashboard/Courses'));
 export const CourseSection = lazy(

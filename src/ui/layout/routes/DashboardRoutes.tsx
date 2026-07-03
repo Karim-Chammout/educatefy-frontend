@@ -1,7 +1,7 @@
+import BarChartIcon from '@mui/icons-material/BarChart';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
-import GroupsIcon from '@mui/icons-material/Groups';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -9,6 +9,7 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Tooltip from '@mui/material/Tooltip';
 import { useTheme } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -33,9 +34,9 @@ const navigationItems = [
     path: '/dashboard/programs',
   },
   {
-    primary: 'dashboard.students',
-    icon: <GroupsIcon />,
-    path: '/dashboard/students',
+    primary: 'dashboard.analytics',
+    icon: <BarChartIcon />,
+    path: '/dashboard/analytics',
   },
 ];
 
@@ -68,6 +69,10 @@ export const DashboardRoutes = ({ hasPermission }: { hasPermission: boolean }) =
             borderColor: 'divider',
             bgcolor: 'background.paper',
             mb: 2,
+            '& .MuiTab-root': {
+              minWidth: 80,
+              px: 1.5,
+            },
           }}
         >
           {navigationItems.map((item) => (
@@ -94,18 +99,39 @@ export const DashboardRoutes = ({ hasPermission }: { hasPermission: boolean }) =
             {sidebarCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </SidebarHeader>
-        <List component="nav">
+        <List component="nav" disablePadding>
           {navigationItems.map((item) => (
             <div key={item.path}>
-              <ListItemButton
-                selected={
-                  location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
-                }
-                onClick={() => navigate(item.path)}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                {!sidebarCollapsed && <ListItemText primary={t(item.primary)} />}
-              </ListItemButton>
+              <Tooltip title={sidebarCollapsed ? t(item.primary) : ''} placement="right" arrow>
+                <ListItemButton
+                  selected={
+                    location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+                  }
+                  onClick={() => navigate(item.path)}
+                  sx={{
+                    justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
+                    px: sidebarCollapsed ? 0 : 2,
+                    minHeight: 48,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: sidebarCollapsed ? 'unset' : 40,
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  {!sidebarCollapsed && (
+                    <ListItemText
+                      primary={t(item.primary)}
+                      slotProps={{
+                        primary: { sx: { textTransform: 'capitalize' } },
+                      }}
+                    />
+                  )}
+                </ListItemButton>
+              </Tooltip>
               <Divider />
             </div>
           ))}

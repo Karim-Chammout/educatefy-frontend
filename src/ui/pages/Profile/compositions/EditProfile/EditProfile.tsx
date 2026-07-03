@@ -12,7 +12,6 @@ import {
   useForm,
   useWatch,
 } from 'react-hook-form-mui';
-// @ts-expect-error Cannot find module 'react-hook-form-mui/date-pickers' or its corresponding type declarations.
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 import { useTranslation } from 'react-i18next';
 

@@ -1,0 +1,34 @@
+fragment TeacherAnalyticsData on TeacherAnalytics {
+  totalEnrollments
+  totalCompletions
+  overallCompletionRate
+  overallAverageRating
+  totalReviewsCount
+  publishedCoursesCount
+  draftCoursesCount
+  publishedProgramsCount
+  draftProgramsCount
+  totalUniqueStudents
+  totalProgramEnrollments
+  newFollowersLastMonth
+  courseStats {
+    courseId
+    denomination
+    isPublished
+    enrolledCount
+    completedCount
+    completionRate
+    averageRating
+    ratingsCount
+  }
+  enrollmentTrend {
+    date
+    count
+  }
+}
+
+query Analytics {
+  teacherAnalytics {
+    ...TeacherAnalyticsData
+  }
+}

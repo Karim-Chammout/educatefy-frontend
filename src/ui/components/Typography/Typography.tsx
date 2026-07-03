@@ -1,6 +1,6 @@
 import { SxProps, Theme, TypeText } from '@mui/material';
 import MuiTypography from '@mui/material/Typography';
-import { TypographyVariant } from '@mui/material/styles/createTypography';
+import { TypographyVariant } from '@mui/material/styles';
 import { ElementType, ReactNode } from 'react';
 
 const Typography = ({
@@ -11,6 +11,7 @@ const Typography = ({
   sx,
   color,
   dangerouslySetInnerHTML,
+  title,
   className,
 }: {
   children?: ReactNode;
@@ -30,6 +31,7 @@ const Typography = ({
   dangerouslySetInnerHTML?: {
     __html: string;
   };
+  title?: string;
   className?: string;
 }) => {
   return (
@@ -40,6 +42,7 @@ const Typography = ({
       color={color}
       sx={{ ...sx }}
       dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+      title={title}
       className={className}
     >
       {children}

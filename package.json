@@ -21,6 +21,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^9.0.0",
     "@mui/material": "^9.0.0",
+    "@mui/x-charts": "^9.0.2",
     "@mui/x-date-pickers": "^9.0.2",
     "@tiptap/extension-color": "^3.22.3",
     "@tiptap/extension-highlight": "^3.22.3",

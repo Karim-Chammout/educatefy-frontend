@@ -34,7 +34,7 @@ import { Button, Modal, Typography } from '@/ui/components';
 import { FileDropzone, LanguageSelector, RichTextContent } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 
-import { EditProfile, InfoSection, ProfileField } from './compositions';
+import { EditProfile, InfoSection, ProfileField, SessionsSection } from './compositions';
 
 type ProfileType = {
   userInfo: UserFragment;
@@ -292,6 +292,11 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
             </InfoSection>
           </Grid>
         )}
+
+        {/* Active Sessions */}
+        <Grid size={{ xxs: 12 }}>
+          <SessionsSection />
+        </Grid>
       </Grid>
 
       {/* Modals */}

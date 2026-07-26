@@ -1,9 +1,9 @@
 import { useLazyQuery, useMutation } from '@apollo/client/react';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MeDocument, UpdateProfileDocument } from '@/generated/graphql';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
+import { AuthContext } from '@/ui/context';
 
 import { LANGUAGES } from '../../i18n';
 
@@ -12,6 +12,7 @@ const rtlLanguages = ['ar'];
 
 const useLanguageSelection = () => {
   const { i18n } = useTranslation();
+  const { user } = useContext(AuthContext);
   const [updateSelectedLanguage] = useMutation(UpdateProfileDocument);
   const [, { refetch }] = useLazyQuery(MeDocument);
 
@@ -56,7 +57,7 @@ const useLanguageSelection = () => {
   const handleChangeLanguage = async (lang: string) => {
     changeLanguage(lang);
 
-    if (isLoggedIn()) {
+    if (user) {
       await updateSelectedLanguage({
         variables: {
           profileDetails: {

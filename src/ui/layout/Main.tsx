@@ -1,14 +1,14 @@
-import { useQuery, useReactiveVar } from '@apollo/client/react';
-import { useEffect } from 'react';
+import { useQuery } from '@apollo/client/react';
+import { useContext, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
 import { AccountRole, MeDocument } from '@/generated/graphql';
 import { useLanguageSelection } from '@/hooks';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, SetupProfile } from '@/ui/compositions';
+import { AuthContext } from '@/ui/context';
 import { hasMissingAccountData } from '@/utils/hasMissingAccountData';
 
-import { isLoggedIn } from './apolloClient';
 import PageTemplate from './PageTemplate';
 import PublicPageTemplate from './PublicPageTemplate';
 import { DashboardRoutes } from './routes/DashboardRoutes';
@@ -269,9 +269,13 @@ const PrivatePagesView = () => {
 };
 
 const Main = () => {
-  const isUserLoggedIn = useReactiveVar(isLoggedIn);
+  const { user, loading } = useContext(AuthContext);
 
-  if (!isUserLoggedIn) {
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (!user) {
     return <PublicPagesView />;
   }
 

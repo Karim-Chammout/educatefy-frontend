@@ -11,7 +11,6 @@ import {
 } from '@/generated/graphql';
 import { Button } from '@/ui/components';
 import { AuthContext, ToasterContext } from '@/ui/context';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
 const CourseCTA = ({ course }: { course: CourseFragment }) => {
@@ -21,6 +20,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
 
   const {
     authModal: { setAuthModalVisibility },
+    user,
   } = useContext(AuthContext);
   const { setToasterVisibility } = useContext(ToasterContext);
 
@@ -31,7 +31,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
   const [updateStatus, { loading }] = useMutation(UpdateCourseStatusDocument);
 
   const handleStatusUpdate = async (status: CourseStatus) => {
-    if (!isLoggedIn()) {
+    if (!user) {
       savePostLoginRedirectPath(location.pathname);
       setAuthModalVisibility('login');
 

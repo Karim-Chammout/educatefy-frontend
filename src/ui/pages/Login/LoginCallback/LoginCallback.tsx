@@ -3,14 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import { Loader } from '@/ui/components';
-import { ToasterContext } from '@/ui/context';
-import { BASE_URL, isLoggedIn } from '@/ui/layout/apolloClient';
+import { AuthContext, ToasterContext } from '@/ui/context';
+import { BASE_URL } from '@/ui/layout/apolloClient';
 import { SIGN_UP_FIRST } from '@/utils/constants';
 
 const LoginCallback = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const userAuth = useContext(AuthContext);
   const { setToasterVisibility } = useContext(ToasterContext);
 
   const getQueryParams = (search: string) => {
@@ -28,10 +29,13 @@ const LoginCallback = () => {
   const oidcID = state && JSON.parse(state).oidcID;
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const sendAuthRequest = async () => {
       try {
         const response = await fetch(`${BASE_URL}/api/openid/callback/${oidcID}`, {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -42,6 +46,7 @@ const LoginCallback = () => {
             authuser,
             prompt,
           }),
+          signal: controller.signal,
         });
 
         const data = await response.json();
@@ -50,9 +55,8 @@ const LoginCallback = () => {
           throw new Error(data.message);
         }
 
-        localStorage.setItem('JWT', data.accessToken);
         localStorage.setItem('refreshToken', data.refreshToken);
-        isLoggedIn(true);
+        await userAuth.refresh();
 
         const redirectPath = sessionStorage.getItem('postLoginRedirect') || '/explore';
 
@@ -60,6 +64,8 @@ const LoginCallback = () => {
 
         sessionStorage.removeItem('postLoginRedirect');
       } catch (error) {
+        if ((error as Error).name === 'AbortError') return;
+
         if ((error as Error).message === SIGN_UP_FIRST) {
           setToasterVisibility({
             newDuration: null,
@@ -81,6 +87,8 @@ const LoginCallback = () => {
     };
 
     sendAuthRequest();
+
+    return () => controller.abort();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

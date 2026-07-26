@@ -1,29 +1,27 @@
-import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, makeVar } from '@apollo/client';
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client';
 import { ErrorLink } from '@apollo/client/link/error';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { OperationTypeNode } from 'graphql';
 import { createClient } from 'graphql-ws';
-import { map } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
+import { refreshSession } from '@/utils/refreshSession';
 import { terminatSession } from '@/utils/logout';
+import { applyRenewRefreshToken, getRefreshTokenHeader } from '@/utils/authHeaders';
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-export const isLoggedIn = makeVar(!!localStorage.getItem('JWT'));
-
 const httpLink = new HttpLink({
   uri: `${BASE_URL}/graphql/`,
+  credentials: 'include',
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {
-  const JWT = localStorage.getItem('JWT');
-  const refreshToken = localStorage.getItem('refreshToken');
-  const headers: { [key: string]: string | null } = {};
+  const headers: Record<string, string> = {};
+  const refreshToken = getRefreshTokenHeader();
 
-  if (JWT) {
-    headers.authorization = `Bearer ${JWT}`;
+  if (refreshToken) {
     headers.refreshtoken = refreshToken;
-    isLoggedIn(true);
   }
 
   operation.setContext({
@@ -35,14 +33,14 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const replaceTokenLink = new ApolloLink((operation, forward) =>
   forward(operation).pipe(
-    map((data) => {
-      const newToken = operation.getContext().response?.headers?.get('X-Renew-Token');
+    tap({
+      next: () => {
+        const headers = operation.getContext().response?.headers;
 
-      if (newToken) {
-        localStorage.setItem('JWT', newToken);
-      }
-
-      return data;
+        if (headers) {
+          applyRenewRefreshToken(headers);
+        }
+      },
     }),
   ),
 );
@@ -53,13 +51,7 @@ const hasSubscriptionOperation = (operation: ApolloLink.Operation) =>
 const wsLink = new GraphQLWsLink(
   createClient({
     url: `${BASE_URL}/graphql/`,
-    connectionParams: () => {
-      const JWT = localStorage.getItem('JWT');
-
-      return {
-        authorization: JWT ? `Bearer ${JWT}` : '',
-      };
-    },
+    keepAlive: 10_000,
   }),
 );
 
@@ -69,19 +61,28 @@ export const client = new ApolloClient({
     hasSubscriptionOperation,
     wsLink,
     ApolloLink.from([
-      new ErrorLink(({ error, result }) => {
+      new ErrorLink(({ error, operation, forward }) => {
         if (
           error &&
           'errors' in error &&
           Array.isArray(error.errors) &&
           error.errors[0].extensions.code === 'NOT_AUTHORIZED'
         ) {
-          if (result) {
-            result.errors = undefined;
-          }
+          return new Observable((observer) => {
+            refreshSession()
+              .then((newToken) => {
+                if (!newToken) {
+                  terminatSession();
+                  observer.complete();
 
-          terminatSession().catch(() => {
-            /* ignore this error */
+                  return;
+                }
+
+                forward(operation).subscribe(observer);
+              })
+              .catch(() => {
+                observer.complete();
+              });
           });
         }
       }),

@@ -15,7 +15,6 @@ import {
 } from '@/generated/graphql';
 import { Button, Modal } from '@/ui/components';
 import { AuthContext, ToasterContext } from '@/ui/context';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
 const ProgramCTA = ({ program }: { program: ProgramFragment }) => {
@@ -25,6 +24,7 @@ const ProgramCTA = ({ program }: { program: ProgramFragment }) => {
   const { setToasterVisibility } = useContext(ToasterContext);
   const {
     authModal: { setAuthModalVisibility },
+    user,
   } = useContext(AuthContext);
 
   const [isUnenrollModalOpen, setIsUnenrollModalOpen] = useState(false);
@@ -56,7 +56,7 @@ const ProgramCTA = ({ program }: { program: ProgramFragment }) => {
   };
 
   const handleEnrollment = async () => {
-    if (!isLoggedIn()) {
+    if (!user) {
       savePostLoginRedirectPath(location.pathname);
       setAuthModalVisibility('login');
 

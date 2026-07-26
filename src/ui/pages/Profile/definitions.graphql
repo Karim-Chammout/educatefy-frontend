@@ -76,3 +76,32 @@ mutation RemoveProfilePicture {
     }
   }
 }
+
+query GetSessionDevices {
+  sessionDevices {
+    id
+    browser
+    os
+    device
+    isCurrentDevice
+    last_active
+  }
+}
+
+mutation RevokeDeviceSessions($deviceBrowser: String!) {
+  revokeDeviceSessions(deviceBrowser: $deviceBrowser) {
+    success
+    errors {
+      message
+    }
+  }
+}
+
+mutation RevokeAllSessions {
+  revokeAllSessions {
+    success
+    errors {
+      message
+    }
+  }
+}

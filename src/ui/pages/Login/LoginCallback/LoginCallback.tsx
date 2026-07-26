@@ -29,6 +29,8 @@ const LoginCallback = () => {
   const oidcID = state && JSON.parse(state).oidcID;
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const sendAuthRequest = async () => {
       try {
         const response = await fetch(`${BASE_URL}/api/openid/callback/${oidcID}`, {
@@ -44,6 +46,7 @@ const LoginCallback = () => {
             authuser,
             prompt,
           }),
+          signal: controller.signal,
         });
 
         const data = await response.json();
@@ -61,6 +64,8 @@ const LoginCallback = () => {
 
         sessionStorage.removeItem('postLoginRedirect');
       } catch (error) {
+        if ((error as Error).name === 'AbortError') return;
+
         if ((error as Error).message === SIGN_UP_FIRST) {
           setToasterVisibility({
             newDuration: null,
@@ -82,6 +87,8 @@ const LoginCallback = () => {
     };
 
     sendAuthRequest();
+
+    return () => controller.abort();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

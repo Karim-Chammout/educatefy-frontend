@@ -2,11 +2,14 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { BASE_URL } from '@/ui/layout/apolloClient';
 import { terminatSession } from '@/utils/logout';
+import { refreshSession } from '@/utils/refreshSession';
+import { applyRenewRefreshToken, getRefreshTokenHeader } from '@/utils/authHeaders';
 
 // Define custom error type
 interface CustomError extends Error {
   response?: AxiosResponse;
   status?: number;
+  config?: AxiosRequestConfig;
 }
 
 type ApiMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
@@ -17,16 +20,25 @@ const createAxiosInstance = () => {
     headers: {
       'Content-Type': 'application/json',
     },
+    withCredentials: true,
   });
 
-  const handleError = async (error: CustomError): Promise<CustomError> => {
+  const handleError = async (error: CustomError): Promise<AxiosResponse | CustomError> => {
     if (error.response) {
       error.status = error.response.status;
       switch (error.status) {
-        case 401:
-          console.log('Unauthorized, redirecting to login...');
+        case 401: {
+          const success = await refreshSession();
+          if (success && error.config) {
+            // Retry the original request (JWT cookie is auto-sent)
+            const retryInstance = axios.create({ baseURL: BASE_URL, withCredentials: true });
+
+            return retryInstance.request(error.config);
+          }
+
           await terminatSession();
           break;
+        }
         case 404:
           console.log('Resource not found');
           break;
@@ -43,11 +55,9 @@ const createAxiosInstance = () => {
   const setupInterceptors = () => {
     instance.interceptors.request.use(
       (config) => {
-        const token = localStorage.getItem('JWT');
-        const refreshToken = localStorage.getItem('refreshToken');
+        const refreshToken = getRefreshTokenHeader();
 
-        if (token) {
-          config.headers['Authorization'] = `Bearer ${token}`;
+        if (refreshToken) {
           config.headers.refreshtoken = refreshToken;
         }
 
@@ -57,7 +67,11 @@ const createAxiosInstance = () => {
     );
 
     instance.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        applyRenewRefreshToken(response.headers);
+
+        return response;
+      },
       (error) => handleError(error),
     );
   };

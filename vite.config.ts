@@ -16,4 +16,17 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9090',
+        changeOrigin: true,
+      },
+      '/graphql': {
+        target: 'http://localhost:9090',
+        changeOrigin: true,
+        ws: true,
+      },
+    },
+  },
 });

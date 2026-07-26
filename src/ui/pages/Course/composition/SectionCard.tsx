@@ -9,7 +9,6 @@ import { useNavigate, useParams } from 'react-router';
 import { CourseSectionFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { AuthContext } from '@/ui/context';
-import { isLoggedIn } from '@/ui/layout/apolloClient';
 import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
 import { useSectionProgress } from '../hooks/useSectionProgress';
@@ -29,10 +28,11 @@ export const SectionCard = ({ section }: SectionCardType) => {
 
   const {
     authModal: { setAuthModalVisibility },
+    user,
   } = useContext(AuthContext);
 
   const handleSectionClick = () => {
-    if (!isLoggedIn()) {
+    if (!user) {
       savePostLoginRedirectPath(`/course/${slug}/section/${section.id}`);
       setAuthModalVisibility('login');
 

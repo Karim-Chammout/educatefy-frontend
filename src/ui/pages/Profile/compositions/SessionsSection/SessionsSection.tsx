@@ -158,7 +158,7 @@ const SessionsSection = () => {
                     </Box>
                   }
                   secondary={
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" component="span">
                       {t('profile.lastActive')}{' '}
                       {formatDistanceToNow(new Date(device.last_active), { addSuffix: true })}
                     </Typography>

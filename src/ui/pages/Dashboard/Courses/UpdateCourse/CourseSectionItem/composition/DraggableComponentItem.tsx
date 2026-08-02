@@ -9,16 +9,16 @@ import ListItemText from '@mui/material/ListItemText';
 
 import {
   ComponentType as ComponentEnumType,
-  EditableTextContentComponentFragment,
-  EditableVideoContentComponentFragment,
-  EditableYouTubeContentComponentFragment,
+  TextContentComponentFragment,
+  VideoContentComponentFragment,
+  YouTubeContentComponentFragment,
 } from '@/generated/graphql';
 import { useDND } from '@/hooks';
 
 type ComponentType =
-  | EditableTextContentComponentFragment
-  | EditableVideoContentComponentFragment
-  | EditableYouTubeContentComponentFragment;
+  | TextContentComponentFragment
+  | VideoContentComponentFragment
+  | YouTubeContentComponentFragment;
 
 type DraggableComponentItemType = {
   componentItem: ComponentType;

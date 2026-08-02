@@ -6,98 +6,8 @@ import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/ui/components';
-import { FileDropzone, RichTextEditor } from '@/ui/compositions';
-import { getMediaUrl } from '@/utils/getMediaUrl';
 
-import { TextContent, YouTubeContent } from '@/generated/graphql';
-
-import { useComponentContext, VideoContentType } from './ComponentContext';
-
-const TextComponentForm = () => {
-  const { t } = useTranslation();
-  const { componentData, updateComponentData } = useComponentContext();
-  const textData = componentData as TextContent;
-
-  return (
-    <RichTextEditor
-      onChange={(content) => updateComponentData({ content })}
-      value={textData?.content}
-      placeholder={t('course.descriptionPlaceholder')}
-    />
-  );
-};
-
-const VideoComponentForm = () => {
-  const { t } = useTranslation();
-  const { componentData, uploadVideo } = useComponentContext();
-  const videoData = componentData as VideoContentType;
-
-  const handleVideoSelection = async (files: File[]) => {
-    await uploadVideo(files);
-  };
-
-  return (
-    <>
-      <FileDropzone
-        onFilesSelected={handleVideoSelection}
-        accept={{ 'video/*': ['.mp4'] }}
-        isUploading={videoData?.isUploading || false}
-      />
-      {videoData?.url && (
-        <div style={{ marginTop: '16px' }}>
-          <span>{t('contentComponent.preview')}:</span>
-          <div>
-            <video
-              width="100%"
-              height="250"
-              key={getMediaUrl(videoData.url)}
-              controls
-              style={{ border: '2px solid #BDBDBD' }}
-            >
-              <source
-                src={getMediaUrl(videoData.url)}
-                type={`video/${videoData.url.split('.').pop()}`}
-              />
-              Your browser does not support videos.
-            </video>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
-const YouTubeComponentForm = () => {
-  const { t } = useTranslation();
-  const { componentData, updateComponentData } = useComponentContext();
-  const youtubeData = componentData as YouTubeContent;
-
-  return (
-    <>
-      <TextField
-        label={t('contentComponent.youtubeVideoId')}
-        helperText={t('contentComponent.youtubeVideoHelperText')}
-        value={youtubeData?.youtube_video_id || ''}
-        onChange={(e) => updateComponentData({ youtube_video_id: e.target.value })}
-        required
-        fullWidth
-      />
-      {youtubeData?.youtube_video_id && (
-        <iframe
-          width="100%"
-          height="315"
-          src={`https://www.youtube.com/embed/${youtubeData.youtube_video_id}`}
-          title="YouTube video player"
-          allowFullScreen
-          style={{
-            border: 0,
-            marginTop: '16px',
-          }}
-        />
-      )}
-    </>
-  );
-};
+import { useComponentContext } from './ComponentContext';
 
 export const ComponentFormModal = ({ mode }: { mode: 'create' | 'edit' }) => {
   const { t } = useTranslation();
@@ -105,6 +15,7 @@ export const ComponentFormModal = ({ mode }: { mode: 'create' | 'edit' }) => {
     selectedComponentType,
     baseComponentData,
     componentData,
+    updateComponentData,
     updateBaseComponentData,
     createComponent,
     isCreateingComponent,
@@ -115,6 +26,8 @@ export const ComponentFormModal = ({ mode }: { mode: 'create' | 'edit' }) => {
   } = useComponentContext();
 
   if (!selectedComponentType) return null;
+
+  const { FormFields } = selectedComponentType;
 
   const handleClose = () => {
     if (mode === 'create') {
@@ -132,20 +45,7 @@ export const ComponentFormModal = ({ mode }: { mode: 'create' | 'edit' }) => {
     }
   };
 
-  const renderComponentForm = () => {
-    switch (selectedComponentType.id) {
-      case 'TextContent':
-        return <TextComponentForm />;
-      case 'VideoContent':
-        return <VideoComponentForm />;
-      case 'YouTubeContent':
-        return <YouTubeComponentForm />;
-      default:
-        return null;
-    }
-  };
-
-  const isValid = selectedComponentType.validation(componentData || ({} as any), baseComponentData);
+  const isValid = selectedComponentType.validation(componentData, baseComponentData);
 
   return (
     <div>
@@ -193,7 +93,9 @@ export const ComponentFormModal = ({ mode }: { mode: 'create' | 'edit' }) => {
         </div>
 
         {/* Component-specific form */}
-        <div style={{ marginTop: '24px' }}>{renderComponentForm()}</div>
+        <div style={{ marginTop: '24px' }}>
+          <FormFields value={componentData} onChange={updateComponentData} />
+        </div>
       </div>
 
       <DialogActions sx={{ padding: '8px 0 !important' }}>

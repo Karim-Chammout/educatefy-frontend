@@ -34,13 +34,13 @@ mutation CreateContentComponent(
     }
     component {
       ... on TextContent {
-        ...EditableTextContentComponent
+        ...TextContentComponent
       }
       ... on VideoContent {
-        ...EditableVideoContentComponent
+        ...VideoContentComponent
       }
       ... on YouTubeContent {
-        ...EditableYouTubeContentComponent
+        ...YouTubeContentComponent
       }
     }
   }
@@ -64,13 +64,13 @@ mutation UpdateContentComponent(
     }
     component {
       ... on TextContent {
-        ...EditableTextContentComponent
+        ...TextContentComponent
       }
       ... on VideoContent {
-        ...EditableVideoContentComponent
+        ...VideoContentComponent
       }
       ... on YouTubeContent {
-        ...EditableYouTubeContentComponent
+        ...YouTubeContentComponent
       }
     }
   }

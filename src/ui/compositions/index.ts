@@ -1,4 +1,5 @@
 export { default as AuthView } from './AuthView';
+export * from './ContentComponents';
 export { default as ContentCard } from './ContentCard';
 export { default as ErrorPlaceholder } from './ErrorPlaceholder';
 export { default as FileDropzone } from './FileDropzone';

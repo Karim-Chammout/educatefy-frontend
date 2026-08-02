@@ -143,11 +143,6 @@ export const ContentArea = styled(Box, {
     `}
 `;
 
-export const VideoComponent = styled.video`
-  width: 100%;
-  max-height: 500px;
-`;
-
 export const MobileMenuButton = styled(Box)(
   ({ theme }: { theme: ThemeType }) => css`
     display: flex;

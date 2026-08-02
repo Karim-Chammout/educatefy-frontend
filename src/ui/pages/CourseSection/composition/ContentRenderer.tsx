@@ -1,44 +1,15 @@
-import { ContentComponentsType } from '@/types/types';
-import { RichTextContent } from '@/ui/compositions';
-import { getMediaUrl } from '@/utils/getMediaUrl';
-import { hasRichTextContent } from '@/utils/hasRichTextContent';
+import { memo } from 'react';
 
-import { VideoComponent } from '../Section.style';
+import { ContentComponent } from '@/generated/graphql';
+import { ContentComponentsType } from '@/types/types';
+import { getContentComponentConfig } from '@/ui/compositions';
 
 const ContentRenderer = ({ component }: { component: Partial<ContentComponentsType> }) => {
-  if (component.__typename === 'TextContent' && hasRichTextContent(component.content)) {
-    return <RichTextContent value={component.content} />;
-  }
+  const View = getContentComponentConfig(component.__typename || '')?.View;
 
-  if (component.__typename === 'VideoContent' && component.url) {
-    return (
-      <VideoComponent controls>
-        <source src={getMediaUrl(component.url)} type={`video/${component.url.split('.').pop()}`} />
-        Your browser does not support the video tag.
-      </VideoComponent>
-    );
-  }
+  if (!View) return null;
 
-  if (component.__typename === 'YouTubeContent') {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        <iframe
-          width="100%"
-          height="500"
-          src={`https://www.youtube-nocookie.com/embed/${component.youtube_video_id}`}
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          style={{ border: 0 }}
-          allowFullScreen
-        />
-        {hasRichTextContent(component.description) && (
-          <RichTextContent value={component.description} />
-        )}
-      </div>
-    );
-  }
-
-  return null;
+  return <View component={component as ContentComponent} />;
 };
 
-export default ContentRenderer;
+export default memo(ContentRenderer);

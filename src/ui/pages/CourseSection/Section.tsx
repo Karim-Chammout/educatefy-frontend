@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { CourseSectionFragment } from '@/generated/graphql';
 
 import { ContentArea, SectionContainer } from './Section.style';
@@ -31,10 +33,13 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
     navigateToCourse,
   } = useSectionNavigation(section);
 
-  const isItemCompleted = (itemID: string) =>
-    section.items
-      .find((item) => item.id === itemID)
-      ?.components.every((component) => component.progress?.is_completed) || false;
+  const isItemCompleted = useCallback(
+    (itemID: string) =>
+      section.items
+        .find((item) => item.id === itemID)
+        ?.components.every((component) => component.progress?.is_completed) || false,
+    [section.items],
+  );
 
   const isSelectedComponentCompleted = selectedComponent.progress?.is_completed || false;
   const isCurrentComponentAccessible = isComponentAccessible(

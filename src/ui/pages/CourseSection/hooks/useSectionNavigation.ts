@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client/react';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 import { CourseSectionFragment, UpdateContentComponentProgressDocument } from '@/generated/graphql';
@@ -14,41 +14,50 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
     [itemId ?? section.items[0].id]: true,
   });
 
-  const selectedItem = section.items.find((item) => item.id === itemId) || section.items[0];
-  const selectedComponent =
-    selectedItem.components.find((comp) => comp.component_id === componentId) ||
-    selectedItem.components[0];
+  const selectedItem = useMemo(
+    () => section.items.find((item) => item.id === itemId) || section.items[0],
+    [section.items, itemId],
+  );
+  const selectedComponent = useMemo(
+    () =>
+      selectedItem.components.find((comp) => comp.component_id === componentId) ||
+      selectedItem.components[0],
+    [selectedItem, componentId],
+  );
 
   const [updateContentComponentProgress, { loading: isUpdatingProgress }] = useMutation(
     UpdateContentComponentProgressDocument,
   );
 
-  const isComponentAccessible = (targetItemId: string, targetComponentId: string) => {
-    const requiredComponents: Partial<ContentComponentsType>[] = [];
-    let foundTarget = false;
+  const isComponentAccessible = useCallback(
+    (targetItemId: string, targetComponentId: string) => {
+      const requiredComponents: Partial<ContentComponentsType>[] = [];
+      let foundTarget = false;
 
-    section.items.forEach((item) => {
-      if (foundTarget) return;
-
-      item.components.forEach((component) => {
+      section.items.forEach((item) => {
         if (foundTarget) return;
 
-        if (item.id === targetItemId && component.component_id === targetComponentId) {
-          foundTarget = true;
+        item.components.forEach((component) => {
+          if (foundTarget) return;
 
-          return;
-        }
+          if (item.id === targetItemId && component.component_id === targetComponentId) {
+            foundTarget = true;
 
-        if (component.is_required) {
-          requiredComponents.push(component);
-        }
+            return;
+          }
+
+          if (component.is_required) {
+            requiredComponents.push(component);
+          }
+        });
       });
-    });
 
-    return requiredComponents.every((comp) => comp.progress?.is_completed);
-  };
+      return requiredComponents.every((comp) => comp.progress?.is_completed);
+    },
+    [section],
+  );
 
-  const getNextComponent = () => {
+  const getNextComponent = useCallback(() => {
     const currentItemIndex = section.items.findIndex((item) => item.id === selectedItem.id);
     const currentComponentIndex = selectedItem.components.findIndex(
       (comp) => comp.component_id === selectedComponent.component_id,
@@ -71,9 +80,9 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
     }
 
     return null;
-  };
+  }, [section.items, selectedItem, selectedComponent]);
 
-  const getBlockingComponent = () => {
+  const getBlockingComponent = useCallback(() => {
     let blockingComponent = null;
     let reachedTarget = false;
 
@@ -103,29 +112,32 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
     });
 
     return blockingComponent;
-  };
+  }, [section.items, selectedItem, selectedComponent]);
 
-  const handleItemClick = (id: string) => {
+  const handleItemClick = useCallback((id: string) => {
     setOpenItems((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
-  };
+  }, []);
 
-  const toggleMobileMenu = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  const toggleMobileMenu = useCallback(() => {
+    setMobileOpen((prev) => !prev);
+  }, []);
 
-  const handleComponentClick = (itemID: string, componentID: string) => {
-    if (!isComponentAccessible(itemID, componentID)) {
-      return;
-    }
+  const handleComponentClick = useCallback(
+    (itemID: string, componentID: string) => {
+      if (!isComponentAccessible(itemID, componentID)) {
+        return;
+      }
 
-    navigate(`/course/${slug}/section/${section.id}/item/${itemID}/component/${componentID}`);
-    setMobileOpen(false);
-  };
+      navigate(`/course/${slug}/section/${section.id}/item/${itemID}/component/${componentID}`);
+      setMobileOpen(false);
+    },
+    [isComponentAccessible, navigate, slug, section.id],
+  );
 
-  const handleCompleteAndNext = async () => {
+  const handleCompleteAndNext = useCallback(async () => {
     await updateContentComponentProgress({
       variables: {
         progressInput: {
@@ -161,24 +173,34 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
         }
       },
     });
-  };
+  }, [
+    updateContentComponentProgress,
+    selectedComponent,
+    getNextComponent,
+    navigate,
+    slug,
+    section.id,
+  ]);
 
-  const handleNavigateNext = () => {
+  const handleNavigateNext = useCallback(() => {
     const nextComponent = getNextComponent();
     if (nextComponent) {
       navigate(
         `/course/${slug}/section/${section.id}/item/${nextComponent.itemId}/component/${nextComponent.componentId}`,
       );
     }
-  };
+  }, [getNextComponent, navigate, slug, section.id]);
 
-  const navigateToComponent = (itemID: string, componentID: string) => {
-    navigate(`/course/${slug}/section/${section.id}/item/${itemID}/component/${componentID}`);
-  };
+  const navigateToComponent = useCallback(
+    (itemID: string, componentID: string) => {
+      navigate(`/course/${slug}/section/${section.id}/item/${itemID}/component/${componentID}`);
+    },
+    [navigate, slug, section.id],
+  );
 
-  const navigateToCourse = () => {
+  const navigateToCourse = useCallback(() => {
     navigate(`/course/${slug}`);
-  };
+  }, [navigate, slug]);
 
   return {
     selectedItem,

@@ -1,34 +1,3 @@
-fragment EditableTextContentComponent on TextContent {
-  id
-  type
-  denomination
-  is_published
-  is_required
-  content
-  component_id
-}
-
-fragment EditableVideoContentComponent on VideoContent {
-  id
-  type
-  denomination
-  is_published
-  is_required
-  url
-  component_id
-}
-
-fragment EditableYouTubeContentComponent on YouTubeContent {
-  id
-  type
-  denomination
-  is_published
-  is_required
-  component_id
-  youtube_video_id
-  description
-}
-
 fragment EditableLesson on Lesson {
   id
   itemId
@@ -37,13 +6,13 @@ fragment EditableLesson on Lesson {
   is_published
   components {
     ... on TextContent {
-      ...EditableTextContentComponent
+      ...TextContentComponent
     }
     ... on VideoContent {
-      ...EditableVideoContentComponent
+      ...VideoContentComponent
     }
     ... on YouTubeContent {
-      ...EditableYouTubeContentComponent
+      ...YouTubeContentComponent
     }
   }
 }

@@ -4,7 +4,6 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import api from '@/api';
 import {
   ComponentParentType,
   ComponentType,
@@ -16,15 +15,16 @@ import {
   SectionFragment,
   UpdateContentComponentDocument,
   UpdateContentComponentRanksDocument,
-  VideoContent,
 } from '@/generated/graphql';
-import { FileResponseType } from '@/types/types';
+import {
+  BaseComponentDataType,
+  CONTENT_COMPONENT_REGISTRY,
+  ContentComponentConfig,
+  getContentComponentConfig,
+} from '@/ui/compositions/ContentComponents';
 import { ToasterContext } from '@/ui/context';
-import { BaseComponentDataType, COMPONENT_REGISTRY, ComponentConfig } from './componentRegistry';
 
 type ContentComponentType = SectionFragment['items'][0]['components'];
-
-export type VideoContentType = VideoContent & { isUploading: boolean };
 
 type ComponentContextState = {
   componentItems: ContentComponentType;
@@ -34,7 +34,7 @@ type ComponentContextState = {
   isEditModalOpen: boolean;
   isDeleteModalOpen: boolean;
 
-  selectedComponentType: ComponentConfig | null;
+  selectedComponentType: ContentComponentConfig | null;
   editingComponent: { id: string | null; isEditing: boolean };
   componentToDelete: { id: string; type: ComponentType } | null;
 
@@ -48,7 +48,7 @@ type ComponentContextState = {
   openDeleteModal: (componentId: string, componentType: ComponentType) => void;
   closeDeleteModal: () => void;
 
-  setSelectedComponentType: (config: ComponentConfig | null) => void;
+  setSelectedComponentType: (config: ContentComponentConfig | null) => void;
   updateBaseComponentData: (data: Partial<BaseComponentDataType>) => void;
   updateComponentData: (data: Partial<ContentComponent>) => void;
   resetComponentData: () => void;
@@ -60,10 +60,7 @@ type ComponentContextState = {
   deleteComponent: () => Promise<void>;
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
 
-  getAvailableComponents: () => ComponentConfig[];
-  getComponentConfig: (componentType: string) => ComponentConfig | undefined;
-
-  uploadVideo: (files: File[]) => Promise<string | null>;
+  getAvailableComponents: () => ContentComponentConfig[];
 };
 
 const ComponentContext = createContext<ComponentContextState | undefined>(undefined);
@@ -103,7 +100,9 @@ const ComponentProvider = ({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [selectedComponentType, setSelectedComponentType] = useState<ComponentConfig | null>(null);
+  const [selectedComponentType, setSelectedComponentType] = useState<ContentComponentConfig | null>(
+    null,
+  );
   const [editingComponent, setEditingComponent] = useState<{
     id: string | null;
     isEditing: boolean;
@@ -146,15 +145,11 @@ const ComponentProvider = ({
   }, []);
 
   const getAvailableComponents = useCallback(() => {
-    return COMPONENT_REGISTRY.map((config) => ({
+    return CONTENT_COMPONENT_REGISTRY.map((config) => ({
       ...config,
       label: t(`sectionItem.${config.label}Option`),
     }));
   }, [t]);
-
-  const getComponentConfig = useCallback((componentType: string) => {
-    return COMPONENT_REGISTRY.find((config) => config.id === componentType);
-  }, []);
 
   const openCreateModal = useCallback(() => {
     resetComponentData();
@@ -171,33 +166,23 @@ const ComponentProvider = ({
       const component = componentItems.find((item) => item.component_id === componentId);
       if (!component) return;
 
+      const config = getContentComponentConfig(component.__typename);
+      if (!config) return;
+
+      setSelectedComponentType(config);
+
       setBaseComponentData({
         denomination: component.denomination,
         isPublished: component.is_published,
         isRequired: component.is_required,
       });
 
-      switch (component.__typename) {
-        case 'TextContent':
-          setComponentData({ content: component.content });
-          setSelectedComponentType(getComponentConfig('TextContent') || null);
-          break;
-        case 'VideoContent':
-          setComponentData({ url: component.url });
-          setSelectedComponentType(getComponentConfig('VideoContent') || null);
-          break;
-        case 'YouTubeContent':
-          setComponentData({ youtube_video_id: component.youtube_video_id });
-          setSelectedComponentType(getComponentConfig('YouTubeContent') || null);
-          break;
-        default:
-          throw new Error('Unsupported component type');
-      }
+      setComponentData(config.buildEditData(component as ContentComponent));
 
       setEditingComponent({ id: componentId, isEditing: true });
       setIsEditModalOpen(true);
     },
-    [componentItems, getComponentConfig],
+    [componentItems],
   );
 
   const closeEditModal = useCallback(() => {
@@ -223,43 +208,6 @@ const ComponentProvider = ({
   const updateComponentData = useCallback((data: Partial<ContentComponent>) => {
     setComponentData((prev) => ({ ...prev, ...data }));
   }, []);
-
-  const uploadVideo = useCallback(
-    async (files: File[]): Promise<string | null> => {
-      if (files.length === 0) return null;
-
-      try {
-        updateComponentData({ isUploading: true } as VideoContentType);
-
-        const formData = new FormData();
-        formData.append('file', files[0]);
-        formData.append('destinationFolder', 'course-components');
-
-        const uploadedVideo = await api.post<FileResponseType>('/api/file/upload', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-
-        if (uploadedVideo.success) {
-          updateComponentData({
-            url: uploadedVideo.filePath,
-            isUploading: false,
-          } as Partial<VideoContent>);
-
-          return uploadedVideo.filePath;
-        }
-      } catch (_error) {
-        setToasterVisibility({
-          newDuration: 5000,
-          newText: t('error.message'),
-          newType: 'error',
-        });
-        updateComponentData({ isUploading: false } as VideoContentType);
-      }
-
-      return null;
-    },
-    [updateComponentData, setToasterVisibility, t],
-  );
 
   const createComponent = useCallback(async () => {
     if (!selectedComponentType || !componentData) return;
@@ -518,9 +466,6 @@ const ComponentProvider = ({
       handleDragEnd,
 
       getAvailableComponents,
-      getComponentConfig,
-
-      uploadVideo,
     }),
     [
       baseComponentData,
@@ -535,7 +480,6 @@ const ComponentProvider = ({
       deleteComponent,
       editingComponent,
       getAvailableComponents,
-      getComponentConfig,
       handleDragEnd,
       isCreateModalOpen,
       isDeleteModalOpen,
@@ -549,7 +493,6 @@ const ComponentProvider = ({
       updateComponent,
       isUpdatingComponent,
       updateComponentData,
-      uploadVideo,
     ],
   );
 

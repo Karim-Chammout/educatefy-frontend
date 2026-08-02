@@ -43,3 +43,72 @@ fragment YouTubeContentComponent on YouTubeContent {
     is_completed
   }
 }
+
+fragment AudioContentComponent on AudioContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  url
+  original_name
+  mime_type
+  component_id
+  progress {
+    id
+    content_component_id
+    is_completed
+  }
+}
+
+fragment DocumentContentComponent on DocumentContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  url
+  original_name
+  mime_type
+  component_id
+  progress {
+    id
+    content_component_id
+    is_completed
+  }
+}
+
+fragment EmbedContentComponent on EmbedContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  provider
+  url
+  component_id
+  progress {
+    id
+    content_component_id
+    is_completed
+  }
+}
+
+fragment ImageContentComponent on ImageContent {
+  id
+  type
+  denomination
+  is_published
+  is_required
+  url
+  original_name
+  mime_type
+  alt_text
+  caption
+  component_id
+  progress {
+    id
+    content_component_id
+    is_completed
+  }
+}

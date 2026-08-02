@@ -1,4 +1,12 @@
-import { TextContent, VideoContent, YouTubeContent } from '@/generated/graphql';
+import {
+  AudioContent,
+  DocumentContent,
+  EmbedContent,
+  ImageContent,
+  TextContent,
+  VideoContent,
+  YouTubeContent,
+} from '@/generated/graphql';
 
 export type FileResponseType =
   | {
@@ -14,4 +22,11 @@ export type FileResponseType =
       message: string;
     };
 
-export type ContentComponentsType = TextContent | VideoContent | YouTubeContent;
+export type ContentComponentsType =
+  | TextContent
+  | VideoContent
+  | YouTubeContent
+  | AudioContent
+  | DocumentContent
+  | EmbedContent
+  | ImageContent;

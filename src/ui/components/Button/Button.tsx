@@ -13,6 +13,9 @@ type ButtonType = {
   LinkComponent?: ElementType;
   href?: string;
   to?: string;
+  download?: boolean | string;
+  target?: string;
+  rel?: string;
   startIcon?: ReactNode;
   sx?: SxProps<Theme>;
 };
@@ -30,6 +33,9 @@ const Button = ({
   LinkComponent,
   href,
   to,
+  download,
+  target,
+  rel,
   sx,
 }: ButtonType) => {
   return (
@@ -43,6 +49,9 @@ const Button = ({
       LinkComponent={LinkComponent}
       href={href}
       to={to}
+      download={download}
+      target={target}
+      rel={rel}
       disabled={disabled}
       startIcon={startIcon}
       onClick={onClick}

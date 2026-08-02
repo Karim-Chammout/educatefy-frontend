@@ -14,6 +14,18 @@ fragment EditableLesson on Lesson {
     ... on YouTubeContent {
       ...YouTubeContentComponent
     }
+    ... on AudioContent {
+      ...AudioContentComponent
+    }
+    ... on DocumentContent {
+      ...DocumentContentComponent
+    }
+    ... on EmbedContent {
+      ...EmbedContentComponent
+    }
+    ... on ImageContent {
+      ...ImageContentComponent
+    }
   }
 }
 

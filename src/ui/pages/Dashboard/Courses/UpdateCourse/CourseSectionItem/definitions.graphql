@@ -21,12 +21,20 @@ mutation CreateContentComponent(
   $textContent: TextContentInput
   $videoContent: VideoContentInput
   $youtubeContent: YouTubeContentInput
+  $audioContent: AudioContentInput
+  $documentContent: DocumentContentInput
+  $embedContent: EmbedContentInput
+  $imageContent: ImageContentInput
 ) {
   createContentComponent(
     baseComponentInfo: $baseComponentInfo
     textContent: $textContent
     videoContent: $videoContent
     youtubeContent: $youtubeContent
+    audioContent: $audioContent
+    documentContent: $documentContent
+    embedContent: $embedContent
+    imageContent: $imageContent
   ) {
     success
     errors {
@@ -41,6 +49,18 @@ mutation CreateContentComponent(
       }
       ... on YouTubeContent {
         ...YouTubeContentComponent
+      }
+      ... on AudioContent {
+        ...AudioContentComponent
+      }
+      ... on DocumentContent {
+        ...DocumentContentComponent
+      }
+      ... on EmbedContent {
+        ...EmbedContentComponent
+      }
+      ... on ImageContent {
+        ...ImageContentComponent
       }
     }
   }
@@ -51,12 +71,20 @@ mutation UpdateContentComponent(
   $textContent: TextContentInput
   $videoContent: VideoContentInput
   $youtubeContent: YouTubeContentInput
+  $audioContent: AudioContentInput
+  $documentContent: DocumentContentInput
+  $embedContent: EmbedContentInput
+  $imageContent: ImageContentInput
 ) {
   updateContentComponent(
     baseComponentInfo: $baseComponentInfo
     textContent: $textContent
     videoContent: $videoContent
     youtubeContent: $youtubeContent
+    audioContent: $audioContent
+    documentContent: $documentContent
+    embedContent: $embedContent
+    imageContent: $imageContent
   ) {
     success
     errors {
@@ -71,6 +99,18 @@ mutation UpdateContentComponent(
       }
       ... on YouTubeContent {
         ...YouTubeContentComponent
+      }
+      ... on AudioContent {
+        ...AudioContentComponent
+      }
+      ... on DocumentContent {
+        ...DocumentContentComponent
+      }
+      ... on EmbedContent {
+        ...EmbedContentComponent
+      }
+      ... on ImageContent {
+        ...ImageContentComponent
       }
     }
   }

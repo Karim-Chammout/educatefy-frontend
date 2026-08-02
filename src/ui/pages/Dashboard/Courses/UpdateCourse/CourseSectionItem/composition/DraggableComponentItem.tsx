@@ -8,7 +8,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 
 import {
+  AudioContentComponentFragment,
   ComponentType as ComponentEnumType,
+  DocumentContentComponentFragment,
+  EmbedContentComponentFragment,
+  ImageContentComponentFragment,
   TextContentComponentFragment,
   VideoContentComponentFragment,
   YouTubeContentComponentFragment,
@@ -18,7 +22,11 @@ import { useDND } from '@/hooks';
 type ComponentType =
   | TextContentComponentFragment
   | VideoContentComponentFragment
-  | YouTubeContentComponentFragment;
+  | YouTubeContentComponentFragment
+  | AudioContentComponentFragment
+  | DocumentContentComponentFragment
+  | EmbedContentComponentFragment
+  | ImageContentComponentFragment;
 
 type DraggableComponentItemType = {
   componentItem: ComponentType;

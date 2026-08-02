@@ -20,6 +20,18 @@ fragment CourseSection on CourseSection {
         ... on YouTubeContent {
           ...YouTubeContentComponent
         }
+        ... on AudioContent {
+          ...AudioContentComponent
+        }
+        ... on DocumentContent {
+          ...DocumentContentComponent
+        }
+        ... on EmbedContent {
+          ...EmbedContentComponent
+        }
+        ... on ImageContent {
+          ...ImageContentComponent
+        }
       }
     }
   }

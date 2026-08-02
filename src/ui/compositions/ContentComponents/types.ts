@@ -1,7 +1,11 @@
 import type { ComponentType as ReactComponentType } from 'react';
 import type {
+  AudioContentInput,
   ComponentType as ComponentTypeEnum,
   ContentComponent,
+  DocumentContentInput,
+  EmbedContentInput,
+  ImageContentInput,
   TextContentInput,
   VideoContentInput,
   YouTubeContentInput,
@@ -17,6 +21,10 @@ export type ContentComponentPayload = {
   textContent?: TextContentInput;
   videoContent?: VideoContentInput;
   youtubeContent?: YouTubeContentInput;
+  audioContent?: AudioContentInput;
+  documentContent?: DocumentContentInput;
+  embedContent?: EmbedContentInput;
+  imageContent?: ImageContentInput;
 };
 
 export type FormFieldsProps = {

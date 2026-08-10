@@ -22,6 +22,7 @@ import { Button } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
 
 type SectionItemType = SectionFragment['items'][0];
+type LessonItemType = Extract<SectionItemType, { __typename: 'Lesson' }>;
 
 const LessonEditForm = ({
   item,
@@ -30,7 +31,7 @@ const LessonEditForm = ({
   setSectionItems,
   handleCloseModalCallback,
 }: {
-  item: SectionItemType;
+  item: LessonItemType;
   courseId: string;
   sectionId: string;
   setSectionItems: Dispatch<SetStateAction<SectionFragment['items']>>;

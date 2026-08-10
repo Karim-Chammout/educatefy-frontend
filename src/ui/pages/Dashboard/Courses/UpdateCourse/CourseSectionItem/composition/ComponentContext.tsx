@@ -24,7 +24,10 @@ import {
 } from '@/ui/compositions/ContentComponents';
 import { ToasterContext } from '@/ui/context';
 
-type ContentComponentType = SectionFragment['items'][0]['components'];
+type ContentComponentType = Extract<
+  SectionFragment['items'][0],
+  { __typename: 'Lesson' }
+>['components'];
 
 type ComponentContextState = {
   componentItems: ContentComponentType;
@@ -294,7 +297,10 @@ const ComponentProvider = ({
             );
 
             if (courseSection) {
-              const courseSectionItem = courseSection.items.find((item) => item.itemId === itemId);
+              const courseSectionItem = courseSection.items.find(
+                (item): item is Extract<typeof item, { __typename: 'Lesson' }> =>
+                  item.itemId === itemId && item.__typename === 'Lesson',
+              );
               if (courseSectionItem) {
                 setComponentItems(courseSectionItem.components);
               }
@@ -381,12 +387,16 @@ const ComponentProvider = ({
                   ...existingCourseQuery.editableCourse,
                   sections: existingCourseQuery.editableCourse.sections.map((s) => ({
                     ...s,
-                    items: s.items.map((item) => ({
-                      ...item,
-                      components: item.components.filter(
-                        (component) => component.component_id !== componentToDelete.id,
-                      ),
-                    })),
+                    items: s.items.map((item) =>
+                      item.__typename === 'Lesson'
+                        ? {
+                            ...item,
+                            components: item.components.filter(
+                              (component) => component.component_id !== componentToDelete.id,
+                            ),
+                          }
+                        : item,
+                    ),
                   })),
                 },
               },

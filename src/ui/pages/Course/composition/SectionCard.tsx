@@ -43,7 +43,10 @@ export const SectionCard = ({ section }: SectionCardType) => {
   };
 
   const calculateSectionDuration = () => {
-    const totalMinutes = section.items.reduce((total, item) => total + item.duration, 0);
+    const totalMinutes = section.items.reduce(
+      (total, item) => total + (item.__typename === 'Lesson' ? item.duration : 0),
+      0,
+    );
 
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;

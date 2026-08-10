@@ -23,9 +23,13 @@ const ReviewsList = ({ courseInfo }: { courseInfo: CourseFragment }) => {
 
   const hasMadeProgress = useMemo(() => {
     return courseInfo.sections.some((section) =>
-      section.items.some((item) =>
-        item.components.some((component) => component.progress?.is_completed),
-      ),
+      section.items.some((item) => {
+        if (item.__typename === 'Quiz') {
+          return item.passed === true;
+        }
+
+        return item.components.some((component) => component.progress?.is_completed);
+      }),
     );
   }, [courseInfo.sections]);
 

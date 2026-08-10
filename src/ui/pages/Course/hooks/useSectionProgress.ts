@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { CourseSectionFragment } from '@/generated/graphql';
+import { isItemCompleted } from '@/ui/pages/CourseSection/utils/sectionItems';
 
 type SectionProgressType = {
   completedComponents: number;
@@ -15,6 +16,15 @@ export const useSectionProgress = (section: CourseSectionFragment): SectionProgr
     let totalComponents = 0;
 
     section.items.forEach((item) => {
+      if (item.__typename === 'Quiz') {
+        totalComponents++;
+        if (isItemCompleted(item)) {
+          completedComponents++;
+        }
+
+        return;
+      }
+
       item.components.forEach((component) => {
         totalComponents++;
         if (component.progress?.is_completed) {

@@ -16,7 +16,11 @@ const CourseSections = ({ sections }: { sections: CourseSectionFragment[] }) => 
 
   const totalDurationInMinutes = sections.reduce(
     (total, section) =>
-      total + section.items.reduce((secTotal, item) => secTotal + item.duration, 0),
+      total +
+      section.items.reduce(
+        (secTotal, item) => secTotal + (item.__typename === 'Lesson' ? item.duration : 0),
+        0,
+      ),
     0,
   );
 

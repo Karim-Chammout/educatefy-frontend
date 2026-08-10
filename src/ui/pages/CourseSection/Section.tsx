@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
 
 import { CourseSectionFragment } from '@/generated/graphql';
+import { ContentComponentsType } from '@/types/types';
 
+import { isItemCompleted as isItemCompletedItem } from './utils/sectionItems';
 import { ContentArea, SectionContainer } from './Section.style';
 import {
   ActionButtons,
@@ -12,6 +14,7 @@ import {
   SectionLoader,
   SectionNavigation,
 } from './composition';
+import QuizView from './composition/QuizView';
 import { useSectionNavigation } from './hooks/useSectionNavigation';
 
 const Section = ({ section }: { section: CourseSectionFragment }) => {
@@ -34,10 +37,11 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
   } = useSectionNavigation(section);
 
   const isItemCompleted = useCallback(
-    (itemID: string) =>
-      section.items
-        .find((item) => item.id === itemID)
-        ?.components.every((component) => component.progress?.is_completed) || false,
+    (itemID: string) => {
+      const item = section.items.find((sectionItem) => sectionItem.id === itemID);
+
+      return item ? isItemCompletedItem(item) : false;
+    },
     [section.items],
   );
 
@@ -78,10 +82,16 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
               blockingComponent={blockingComponent}
               onNavigateToRequired={navigateToComponent}
             />
+          ) : selectedItem.__typename === 'Quiz' ? (
+            <QuizView
+              quiz={selectedItem}
+              onNavigateNext={handleNavigateNext}
+              onBackToCourse={navigateToCourse}
+            />
           ) : (
             <>
-              <ComponentHeader component={selectedComponent} />
-              <ContentRenderer component={selectedComponent} />
+              <ComponentHeader component={selectedComponent as Partial<ContentComponentsType>} />
+              <ContentRenderer component={selectedComponent as Partial<ContentComponentsType>} />
               <ActionButtons
                 isCompleted={isSelectedComponentCompleted}
                 isItemCompleted={isItemCompleted(selectedItem.id)}

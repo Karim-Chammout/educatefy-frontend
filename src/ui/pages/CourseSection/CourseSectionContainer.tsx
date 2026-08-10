@@ -66,7 +66,7 @@ const CourseSectionContainer = () => {
   if (
     !section.items ||
     section.items.length === 0 ||
-    section.items.every((item) => item.components.length === 0)
+    section.items.every((item) => item.__typename === 'Lesson' && item.components.length === 0)
   ) {
     return (
       <InfoState

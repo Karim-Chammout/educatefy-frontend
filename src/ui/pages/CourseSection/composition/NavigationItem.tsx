@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { CourseSectionFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 
+import { getItemComponents, isQuizItem } from '../utils/sectionItems';
 import { ComponentButton, ItemButton } from '../Section.style';
 
 type NavigationItemType = {
@@ -37,70 +38,80 @@ const NavigationItem = ({
 }: NavigationItemType) => {
   const { t } = useTranslation();
 
+  const isQuiz = isQuizItem(item);
+  const components = getItemComponents(item);
+
   return (
     <Box>
       <ItemButton
         isActive={isActive}
-        onClick={() => onItemClick(item.id)}
+        onClick={() => (isQuiz ? onComponentClick(item.id, item.id) : onItemClick(item.id))}
         isCompleted={isCompleted}
       >
         <Box sx={{ flexGrow: 1 }}>
           <Typography sx={{ fontWeight: 'bold' }} gutterBottom>
             {item.denomination}
           </Typography>
-          <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <AccessTimeIcon sx={{ fontSize: '16px' }} />
-            <span>
-              {item.duration} {t('common.minutes')}
-            </span>
-          </Typography>
+          {!isQuiz && (
+            <Typography
+              variant="caption"
+              sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+            >
+              <AccessTimeIcon sx={{ fontSize: '16px' }} />
+              <span>
+                {item.duration} {t('common.minutes')}
+              </span>
+            </Typography>
+          )}
         </Box>
-        {isOpen ? <ExpandLess /> : <ExpandMore />}
+        {!isQuiz && (isOpen ? <ExpandLess /> : <ExpandMore />)}
       </ItemButton>
 
-      <Collapse in={isOpen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {item.components.map((component) => {
-            const isAccessible = isComponentAccessible(item.id, component.component_id);
-            const isComponentActive = component.component_id === selectedComponentId;
+      {!isQuiz && (
+        <Collapse in={isOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {components.map((component) => {
+              const isAccessible = isComponentAccessible(item.id, component.component_id);
+              const isComponentActive = component.component_id === selectedComponentId;
 
-            return (
-              <Tooltip
-                key={component.component_id}
-                title={
-                  !isAccessible
-                    ? t('contentComponent.completeRequiredContents')
-                    : component.is_required
-                      ? t('contentComponent.requiredContent')
-                      : ''
-                }
-                arrow
-              >
-                <span>
-                  <ComponentButton
-                    isActive={isComponentActive}
-                    onClick={() => onComponentClick(item.id, component.component_id)}
-                    isCompleted={component.progress?.is_completed ?? false}
-                    isRequired={component.is_required}
-                    isAccessible={isAccessible}
-                    disabled={!isAccessible}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1 }}>
-                      <Typography variant="body2" sx={{ flexGrow: 1 }}>
-                        {component.denomination}
-                      </Typography>
-                      {component.is_required && (
-                        <StarIcon sx={{ fontSize: '16px', color: '#ff9800' }} />
-                      )}
-                      {!isAccessible && <LockIcon sx={{ fontSize: '16px' }} />}
-                    </Box>
-                  </ComponentButton>
-                </span>
-              </Tooltip>
-            );
-          })}
-        </List>
-      </Collapse>
+              return (
+                <Tooltip
+                  key={component.component_id}
+                  title={
+                    !isAccessible
+                      ? t('contentComponent.completeRequiredContents')
+                      : component.is_required
+                        ? t('contentComponent.requiredContent')
+                        : ''
+                  }
+                  arrow
+                >
+                  <span>
+                    <ComponentButton
+                      isActive={isComponentActive}
+                      onClick={() => onComponentClick(item.id, component.component_id)}
+                      isCompleted={component.progress?.is_completed ?? false}
+                      isRequired={component.is_required}
+                      isAccessible={isAccessible}
+                      disabled={!isAccessible}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1 }}>
+                        <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                          {component.denomination}
+                        </Typography>
+                        {component.is_required && (
+                          <StarIcon sx={{ fontSize: '16px', color: '#ff9800' }} />
+                        )}
+                        {!isAccessible && <LockIcon sx={{ fontSize: '16px' }} />}
+                      </Box>
+                    </ComponentButton>
+                  </span>
+                </Tooltip>
+              );
+            })}
+          </List>
+        </Collapse>
+      )}
     </Box>
   );
 };

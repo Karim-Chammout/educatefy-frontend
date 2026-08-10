@@ -5,6 +5,8 @@ import { useNavigate, useParams } from 'react-router';
 import { CourseSectionFragment, UpdateContentComponentProgressDocument } from '@/generated/graphql';
 import { ContentComponentsType } from '@/types/types';
 
+import { getItemComponents, isQuizItem } from '../utils/sectionItems';
+
 export const useSectionNavigation = (section: CourseSectionFragment) => {
   const { slug, itemId, componentId } = useParams();
   const navigate = useNavigate();
@@ -18,12 +20,15 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
     () => section.items.find((item) => item.id === itemId) || section.items[0],
     [section.items, itemId],
   );
-  const selectedComponent = useMemo(
-    () =>
-      selectedItem.components.find((comp) => comp.component_id === componentId) ||
-      selectedItem.components[0],
-    [selectedItem, componentId],
-  );
+  const selectedComponent = useMemo(() => {
+    const components = getItemComponents(selectedItem);
+
+    if (isQuizItem(selectedItem)) {
+      return components[0];
+    }
+
+    return components.find((comp) => comp.component_id === componentId) || components[0];
+  }, [selectedItem, componentId]);
 
   const [updateContentComponentProgress, { loading: isUpdatingProgress }] = useMutation(
     UpdateContentComponentProgressDocument,
@@ -37,7 +42,7 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
       section.items.forEach((item) => {
         if (foundTarget) return;
 
-        item.components.forEach((component) => {
+        getItemComponents(item).forEach((component) => {
           if (foundTarget) return;
 
           if (item.id === targetItemId && component.component_id === targetComponentId) {
@@ -47,7 +52,7 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
           }
 
           if (component.is_required) {
-            requiredComponents.push(component);
+            requiredComponents.push(component as Partial<ContentComponentsType>);
           }
         });
       });
@@ -59,22 +64,22 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
 
   const getNextComponent = useCallback(() => {
     const currentItemIndex = section.items.findIndex((item) => item.id === selectedItem.id);
-    const currentComponentIndex = selectedItem.components.findIndex(
+    const currentComponentIndex = getItemComponents(selectedItem).findIndex(
       (comp) => comp.component_id === selectedComponent.component_id,
     );
 
-    if (currentComponentIndex < selectedItem.components.length - 1) {
+    if (currentComponentIndex < getItemComponents(selectedItem).length - 1) {
       return {
         itemId: selectedItem.id,
-        componentId: selectedItem.components[currentComponentIndex + 1].component_id,
+        componentId: getItemComponents(selectedItem)[currentComponentIndex + 1].component_id,
       };
     }
 
     for (let i = currentItemIndex + 1; i < section.items.length; i++) {
-      if (section.items[i].components.length > 0) {
+      if (getItemComponents(section.items[i]).length > 0) {
         return {
           itemId: section.items[i].id,
-          componentId: section.items[i].components[0].component_id,
+          componentId: getItemComponents(section.items[i])[0].component_id,
         };
       }
     }
@@ -87,7 +92,7 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
     let reachedTarget = false;
 
     section.items.some((item) => {
-      return item.components.some((component) => {
+      return getItemComponents(item).some((component) => {
         if (
           item.id === selectedItem.id &&
           component.component_id === selectedComponent.component_id
@@ -148,8 +153,8 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
       update: (cache) => {
         cache.modify({
           id: cache.identify({
-            __typename: selectedComponent.__typename,
-            id: selectedComponent.id,
+            __typename: selectedItem.__typename === 'Quiz' ? 'Quiz' : 'Lesson',
+            id: selectedItem.id,
           }),
           fields: {
             progress(existingProgress) {
@@ -176,6 +181,7 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
   }, [
     updateContentComponentProgress,
     selectedComponent,
+    selectedItem,
     getNextComponent,
     navigate,
     slug,

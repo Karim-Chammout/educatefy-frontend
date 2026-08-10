@@ -34,6 +34,29 @@ fragment CourseSection on CourseSection {
         }
       }
     }
+    ... on Quiz {
+      id
+      itemId
+      denomination
+      is_published
+      passing_score
+      max_attempts
+      navigation_mode
+      questions_per_page
+      show_correct_answers
+      feedback_passed
+      feedback_failed
+      passed
+      attempts {
+        id
+        attempt_number
+        status
+        score
+        passed
+        timed_out
+        submitted_at
+      }
+    }
   }
 }
 

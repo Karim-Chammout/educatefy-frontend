@@ -1,0 +1,66 @@
+fragment AttemptQuestion on QuizAttemptQuestion {
+  id
+  questionId
+  prompt
+  question_type
+  rank
+  points
+  hint
+  media_url
+  media_type
+  feedback_correct
+  feedback_incorrect
+  answers
+}
+
+fragment QuizAttemptResult on QuizAttempt {
+  id
+  quizId
+  attempt_number
+  status
+  score
+  earned_points
+  total_points
+  passed
+  timed_out
+  started_at
+  submitted_at
+  questionCount
+}
+
+mutation StartQuiz($quizId: String!, $withQuestions: Boolean!) {
+  startQuiz(quizId: $quizId) {
+    success
+    errors {
+      message
+    }
+    timeLimitMinutes
+    quizAttempt {
+      ...QuizAttemptResult
+      questions @include(if: $withQuestions) {
+        ...AttemptQuestion
+      }
+    }
+  }
+}
+
+mutation SubmitQuiz($submission: QuizSubmissionInput!) {
+  submitQuiz(submission: $submission) {
+    success
+    errors {
+      message
+    }
+    quizAttempt {
+      ...QuizAttemptResult
+      questions {
+        ...AttemptQuestion
+      }
+    }
+  }
+}
+
+query QuizAttemptQuestion($attemptId: ID!, $index: Int!) {
+  quizAttemptQuestion(attemptId: $attemptId, index: $index) {
+    ...AttemptQuestion
+  }
+}

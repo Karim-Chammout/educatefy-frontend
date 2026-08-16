@@ -68,6 +68,23 @@ export const SectionCard = ({ section }: SectionCardType) => {
     return parts.join(' ');
   };
 
+  const lectureCount = section.items.reduce(
+    (total, item) => total + (item.__typename === 'Lesson' ? 1 : 0),
+    0,
+  );
+  const quizCount = section.items.reduce(
+    (total, item) => total + (item.__typename === 'Quiz' ? 1 : 0),
+    0,
+  );
+
+  const itemInfo = [
+    ...(lectureCount > 0 || quizCount === 0
+      ? [t('courseSection.lectureCount', { count: lectureCount })]
+      : []),
+    ...(quizCount > 0 ? [t('courseSection.quizCount', { count: quizCount })] : []),
+    ...(lectureCount > 0 ? [calculateSectionDuration()] : []),
+  ].join(' • ');
+
   return (
     <Paper
       key={section.id}
@@ -111,10 +128,7 @@ export const SectionCard = ({ section }: SectionCardType) => {
             {section.denomination}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t('courseSection.itemInfo', {
-              count: section.items.length,
-              duration: calculateSectionDuration(),
-            })}
+            {itemInfo}
           </Typography>
         </Box>
 

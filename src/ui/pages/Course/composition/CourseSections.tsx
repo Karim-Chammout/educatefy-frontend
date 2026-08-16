@@ -10,7 +10,19 @@ const CourseSections = ({ sections }: { sections: CourseSectionFragment[] }) => 
   const { t } = useTranslation();
 
   const totalNumberOfLectures = sections.reduce(
-    (total, section) => total + section.items.length,
+    (total, section) =>
+      total +
+      section.items.reduce(
+        (secTotal, item) => secTotal + (item.__typename === 'Lesson' ? 1 : 0),
+        0,
+      ),
+    0,
+  );
+
+  const totalNumberOfQuizzes = sections.reduce(
+    (total, section) =>
+      total +
+      section.items.reduce((secTotal, item) => secTotal + (item.__typename === 'Quiz' ? 1 : 0), 0),
     0,
   );
 
@@ -51,11 +63,18 @@ const CourseSections = ({ sections }: { sections: CourseSectionFragment[] }) => 
         {t('course.sections')}
       </SectionTitle>
       <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-        {t('courseSection.stats', {
-          sectionsCount: sections.length,
-          lecturesCount: totalNumberOfLectures,
-          duration: totalSectionDuration(),
-        })}
+        {[
+          t('courseSection.statsSections', { count: sections.length }),
+          ...(totalNumberOfLectures > 0 || totalNumberOfQuizzes === 0
+            ? [t('courseSection.lectureCount', { count: totalNumberOfLectures })]
+            : []),
+          ...(totalNumberOfQuizzes > 0
+            ? [t('courseSection.quizCount', { count: totalNumberOfQuizzes })]
+            : []),
+          ...(totalNumberOfLectures > 0
+            ? [t('courseSection.statsDuration', { duration: totalSectionDuration() })]
+            : []),
+        ].join(' • ')}
       </Typography>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
         {sections.map((section) => (

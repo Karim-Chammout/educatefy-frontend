@@ -167,10 +167,22 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
         },
       },
       update: (cache) => {
+        if (selectedItem.__typename !== 'Lesson') {
+          return;
+        }
+
+        const component = selectedItem.components.find(
+          (comp) => comp.component_id === selectedComponent.component_id,
+        );
+
+        if (!component) {
+          return;
+        }
+
         cache.modify({
           id: cache.identify({
-            __typename: selectedItem.__typename === 'Quiz' ? 'Quiz' : 'Lesson',
-            id: selectedItem.id,
+            __typename: component.__typename,
+            id: component.id,
           }),
           fields: {
             progress(existingProgress) {

@@ -39,7 +39,7 @@ const ProgramHeader = ({ program }: { program: ProgramFragment }) => {
             <MetaItem>
               <PersonOutlineIcon />
               <Typography variant="body1">
-                {program.enrolledLearnersCount} {t('course.students')}
+                {program.enrolledLearnersCount} {t('program.students')}
               </Typography>
             </MetaItem>
 
@@ -51,7 +51,7 @@ const ProgramHeader = ({ program }: { program: ProgramFragment }) => {
             <MetaItem>
               <NewReleasesIcon />
               <Typography variant="body1">
-                {t('course.lastUpdated')} {format(new Date(program.updated_at), 'M/yyyy')}
+                {t('program.lastUpdated')} {format(new Date(program.updated_at), 'M/yyyy')}
               </Typography>
             </MetaItem>
           </ProgramMeta>

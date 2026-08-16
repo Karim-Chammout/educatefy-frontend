@@ -179,7 +179,7 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          {t('course.updateTitle')}
+          {t('program.updateTitle')}
         </Typography>
         <Button variant="outlined" onClick={() => navigate('/dashboard/programs')}>
           {t('common.cancel')}

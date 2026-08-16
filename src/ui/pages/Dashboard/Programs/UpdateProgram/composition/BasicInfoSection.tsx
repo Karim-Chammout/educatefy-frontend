@@ -91,7 +91,7 @@ const BasicInfoSection = ({
 
         <AutocompleteElement
           name="level"
-          label={t('course.level')}
+          label={t('program.level')}
           control={control}
           required
           options={Object.values(ProgramLevel).map((programLevel) => ({

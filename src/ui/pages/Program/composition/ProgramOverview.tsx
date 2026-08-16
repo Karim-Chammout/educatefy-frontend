@@ -31,7 +31,7 @@ const ProgramOverview = ({ program }: { program: ProgramFragment }) => {
         {program.objectives.length > 0 && (
           <Paper variant="outlined" sx={{ p: 3, flex: '1 1 auto' }}>
             <SectionTitle component="h3" variant="h6">
-              {t('programs.programObjectives')}
+              {t('program.programObjectives')}
             </SectionTitle>
             <List>
               {program.objectives.map((item) => (
@@ -52,7 +52,7 @@ const ProgramOverview = ({ program }: { program: ProgramFragment }) => {
         {program.requirements.length > 0 && (
           <Paper variant="outlined" sx={{ p: 3, flex: '1 1 auto' }}>
             <SectionTitle component="h3" variant="h6">
-              {t('programs.programRequirements')}
+              {t('program.programRequirements')}
             </SectionTitle>
             <List>
               {program.requirements.map((item) => (

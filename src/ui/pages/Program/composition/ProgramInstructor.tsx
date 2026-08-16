@@ -39,7 +39,7 @@ const ProgramInstructor = ({ program }: { program: ProgramFragment }) => {
   return (
     <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
       <SectionTitle component="h3" variant="h6" gutterBottom>
-        {t('course.instructor')}
+        {t('program.instructor')}
       </SectionTitle>
       <InstructorInfoWrapper to={`/teacher/${id}`}>
         <Avatar src={avatar_url || person} sx={{ height: '96px', width: '96px' }} />

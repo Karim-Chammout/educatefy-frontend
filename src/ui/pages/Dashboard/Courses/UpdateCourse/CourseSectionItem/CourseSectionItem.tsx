@@ -138,7 +138,7 @@ const CourseSectionItemContent = ({
 
       {/* Component Type Selection Modal */}
       <Modal
-        title={t('courseSection.createItem')}
+        title={t('sectionItem.createComponent')}
         open={isCreateModalOpen}
         onClose={closeCreateModal}
       >

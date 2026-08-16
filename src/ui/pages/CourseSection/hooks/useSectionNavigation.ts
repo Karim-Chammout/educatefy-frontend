@@ -17,10 +17,14 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
   });
 
   const selectedItem = useMemo(
-    () => section.items.find((item) => item.id === itemId) || section.items[0],
+    () => section.items.find((item) => item.id === itemId) ?? null,
     [section.items, itemId],
   );
   const selectedComponent = useMemo(() => {
+    if (!selectedItem) {
+      return null;
+    }
+
     const components = getItemComponents(selectedItem);
 
     if (isQuizItem(selectedItem)) {
@@ -63,6 +67,10 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
   );
 
   const getNextComponent = useCallback(() => {
+    if (!selectedItem || !selectedComponent) {
+      return null;
+    }
+
     const currentItemIndex = section.items.findIndex((item) => item.id === selectedItem.id);
     const currentComponentIndex = getItemComponents(selectedItem).findIndex(
       (comp) => comp.component_id === selectedComponent.component_id,
@@ -88,6 +96,10 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
   }, [section.items, selectedItem, selectedComponent]);
 
   const getBlockingComponent = useCallback(() => {
+    if (!selectedItem || !selectedComponent) {
+      return null;
+    }
+
     let blockingComponent = null;
     let reachedTarget = false;
 
@@ -143,6 +155,10 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
   );
 
   const handleCompleteAndNext = useCallback(async () => {
+    if (!selectedItem || !selectedComponent) {
+      return;
+    }
+
     await updateContentComponentProgress({
       variables: {
         progressInput: {

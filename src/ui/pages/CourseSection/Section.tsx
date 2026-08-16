@@ -1,7 +1,12 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router';
+
+import CloseIcon from '@mui/icons-material/Close';
 
 import { CourseSectionFragment } from '@/generated/graphql';
 import { ContentComponentsType } from '@/types/types';
+import { InfoState } from '@/ui/compositions';
 
 import { isItemCompleted as isItemCompletedItem } from './utils/sectionItems';
 import { ContentArea, SectionContainer } from './Section.style';
@@ -18,6 +23,9 @@ import QuizView from './composition/QuizView';
 import { useSectionNavigation } from './hooks/useSectionNavigation';
 
 const Section = ({ section }: { section: CourseSectionFragment }) => {
+  const { t } = useTranslation();
+  const { slug } = useParams();
+  const navigate = useNavigate();
   const {
     selectedItem,
     selectedComponent,
@@ -44,6 +52,18 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
     },
     [section.items],
   );
+
+  if (!selectedItem || !selectedComponent) {
+    return (
+      <InfoState
+        btnLabel={t('courseSection.backToCourse')}
+        btnOnClick={() => navigate(`/course/${slug}`)}
+        subtitle={t('sectionItem.noSectionItemSubtitle')}
+        title={t('sectionItem.itemNotFound')}
+        icon={<CloseIcon />}
+      />
+    );
+  }
 
   const isSelectedComponentCompleted = selectedComponent.progress?.is_completed || false;
   const isCurrentComponentAccessible = isComponentAccessible(

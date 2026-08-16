@@ -10,10 +10,11 @@ import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 import { MUST_ENROLL_TO_COURSE_FIRST } from '@/utils/constants';
 
 import Section from './Section';
+import { getItemComponents } from './utils/sectionItems';
 
 const CourseSectionContainer = () => {
   const { t } = useTranslation();
-  const { slug, sectionId } = useParams();
+  const { slug, sectionId, itemId } = useParams();
   const navigate = useNavigate();
 
   const { loading, error, data } = useQuery(CourseDocument, {
@@ -75,6 +76,33 @@ const CourseSectionContainer = () => {
         subtitle={t('courseSection.noItemsSubtitle')}
         title={t('courseSection.noItems')}
         icon={<ContentPasteOffIcon />}
+      />
+    );
+  }
+
+  if (!itemId) {
+    const firstContentItem = section.items.find((item) => getItemComponents(item).length > 0);
+
+    if (firstContentItem) {
+      return (
+        <Navigate
+          to={`/course/${slug}/section/${section.id}/item/${firstContentItem.id}`}
+          replace
+        />
+      );
+    }
+  }
+
+  const hasValidItem = section.items.some((item) => item.id === itemId);
+
+  if (!hasValidItem) {
+    return (
+      <InfoState
+        btnLabel={t('courseSection.backToCourse')}
+        btnOnClick={() => navigate(`/course/${slug}`)}
+        subtitle={t('sectionItem.noSectionItemSubtitle')}
+        title={t('sectionItem.itemNotFound')}
+        icon={<CloseIcon />}
       />
     );
   }

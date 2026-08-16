@@ -161,7 +161,7 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
                   {totalStudents}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t('instructor.sutdents', {
+                  {t('instructor.students', {
                     count: totalStudents,
                   })}
                 </Typography>

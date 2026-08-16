@@ -197,7 +197,7 @@ const EditProfile = ({
             <>
               <AutocompleteElement
                 name="subjects"
-                label={t('setupProfile.specialty')}
+                label={t('profile.specialty')}
                 control={control}
                 autocompleteProps={{
                   // TODO: Check if the library has been updated or double check a proper fix for this

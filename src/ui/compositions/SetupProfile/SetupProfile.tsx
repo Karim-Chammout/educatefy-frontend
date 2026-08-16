@@ -90,7 +90,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
     ) {
       setToasterVisibility({
         newDuration: 5000,
-        newText: t('setupProfile.fillRequiredFields'),
+        newText: t('profile.fillRequiredFields'),
         newType: 'error',
       });
 
@@ -119,7 +119,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
         } else {
           setToasterVisibility({
             newDuration: 5000,
-            newText: t('setupProfile.updateFailed'),
+            newText: t('profile.updateFailed'),
             newType: 'error',
           });
         }
@@ -127,7 +127,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       onError: () => {
         setToasterVisibility({
           newDuration: 5000,
-          newText: t('setupProfile.updateFailed'),
+          newText: t('profile.updateFailed'),
           newType: 'error',
         });
       },
@@ -155,25 +155,25 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           <LanguageSelector />
           <TextFieldElement
             name="firstName"
-            label={t('setupProfile.firstName')}
+            label={t('profile.firstName')}
             control={control}
             required
           />
           <TextFieldElement
             name="lastName"
-            label={t('setupProfile.lastName')}
+            label={t('profile.lastName')}
             control={control}
             required
           />
           <TextFieldElement
             name="nickname"
-            label={t('setupProfile.nickname')}
+            label={t('profile.nickname')}
             control={control}
             required
           />
           <AutocompleteElement
             name="nationality"
-            label={t('setupProfile.nationality')}
+            label={t('profile.nationality')}
             control={control}
             required
             options={data.countries.map((c) => ({
@@ -183,7 +183,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           />
           <AutocompleteElement
             name="country"
-            label={t('setupProfile.country')}
+            label={t('profile.country')}
             control={control}
             required
             options={data.countries.map((c) => ({
@@ -193,7 +193,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           />
           <AutocompleteElement
             name="gender"
-            label={t('setupProfile.gender')}
+            label={t('profile.gender')}
             control={control}
             required
             options={genderOptions}
@@ -201,7 +201,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePickerElement
               name="dateOfBirth"
-              label={t('setupProfile.dateOfBirth')}
+              label={t('profile.dateOfBirth')}
               control={control}
               disableFuture
               required
@@ -211,7 +211,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
             <>
               <AutocompleteElement
                 name="subjects"
-                label={t('setupProfile.specialty')}
+                label={t('profile.specialty')}
                 control={control}
                 autocompleteProps={{
                   // TODO: Check if the library has been updated or double check a proper fix for this
@@ -229,7 +229,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
               />
               <TextareaAutosizeElement
                 name="bio"
-                label={t('setupProfile.bio')}
+                label={t('profile.bio')}
                 control={control}
                 helperText={t('setupProfile.bioHelperText')}
                 rows={3}
@@ -239,7 +239,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
               <RichTextEditor
                 onChange={setDescriptionContent}
                 value={descriptionContent}
-                placeholder={t('setupProfile.descriptionPlaceholder')}
+                placeholder={t('profile.descriptionPlaceholder')}
               />
             </>
           )}

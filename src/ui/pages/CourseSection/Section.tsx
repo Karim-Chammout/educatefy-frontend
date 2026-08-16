@@ -1,7 +1,14 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router';
+
+import CloseIcon from '@mui/icons-material/Close';
 
 import { CourseSectionFragment } from '@/generated/graphql';
+import { ContentComponentsType } from '@/types/types';
+import { InfoState } from '@/ui/compositions';
 
+import { isItemCompleted as isItemCompletedItem } from './utils/sectionItems';
 import { ContentArea, SectionContainer } from './Section.style';
 import {
   ActionButtons,
@@ -12,9 +19,13 @@ import {
   SectionLoader,
   SectionNavigation,
 } from './composition';
+import QuizView from './composition/QuizView';
 import { useSectionNavigation } from './hooks/useSectionNavigation';
 
 const Section = ({ section }: { section: CourseSectionFragment }) => {
+  const { t } = useTranslation();
+  const { slug } = useParams();
+  const navigate = useNavigate();
   const {
     selectedItem,
     selectedComponent,
@@ -34,12 +45,25 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
   } = useSectionNavigation(section);
 
   const isItemCompleted = useCallback(
-    (itemID: string) =>
-      section.items
-        .find((item) => item.id === itemID)
-        ?.components.every((component) => component.progress?.is_completed) || false,
+    (itemID: string) => {
+      const item = section.items.find((sectionItem) => sectionItem.id === itemID);
+
+      return item ? isItemCompletedItem(item) : false;
+    },
     [section.items],
   );
+
+  if (!selectedItem || !selectedComponent) {
+    return (
+      <InfoState
+        btnLabel={t('courseSection.backToCourse')}
+        btnOnClick={() => navigate(`/course/${slug}`)}
+        subtitle={t('sectionItem.noSectionItemSubtitle')}
+        title={t('sectionItem.itemNotFound')}
+        icon={<CloseIcon />}
+      />
+    );
+  }
 
   const isSelectedComponentCompleted = selectedComponent.progress?.is_completed || false;
   const isCurrentComponentAccessible = isComponentAccessible(
@@ -78,10 +102,16 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
               blockingComponent={blockingComponent}
               onNavigateToRequired={navigateToComponent}
             />
+          ) : selectedItem.__typename === 'Quiz' ? (
+            <QuizView
+              quiz={selectedItem}
+              onNavigateNext={handleNavigateNext}
+              onBackToCourse={navigateToCourse}
+            />
           ) : (
             <>
-              <ComponentHeader component={selectedComponent} />
-              <ContentRenderer component={selectedComponent} />
+              <ComponentHeader component={selectedComponent as Partial<ContentComponentsType>} />
+              <ContentRenderer component={selectedComponent as Partial<ContentComponentsType>} />
               <ActionButtons
                 isCompleted={isSelectedComponentCompleted}
                 isItemCompleted={isItemCompleted(selectedItem.id)}

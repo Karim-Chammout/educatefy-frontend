@@ -43,7 +43,10 @@ export const SectionCard = ({ section }: SectionCardType) => {
   };
 
   const calculateSectionDuration = () => {
-    const totalMinutes = section.items.reduce((total, item) => total + item.duration, 0);
+    const totalMinutes = section.items.reduce(
+      (total, item) => total + (item.__typename === 'Lesson' ? item.duration : 0),
+      0,
+    );
 
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
@@ -64,6 +67,23 @@ export const SectionCard = ({ section }: SectionCardType) => {
 
     return parts.join(' ');
   };
+
+  const lectureCount = section.items.reduce(
+    (total, item) => total + (item.__typename === 'Lesson' ? 1 : 0),
+    0,
+  );
+  const quizCount = section.items.reduce(
+    (total, item) => total + (item.__typename === 'Quiz' ? 1 : 0),
+    0,
+  );
+
+  const itemInfo = [
+    ...(lectureCount > 0 || quizCount === 0
+      ? [t('courseSection.lectureCount', { count: lectureCount })]
+      : []),
+    ...(quizCount > 0 ? [t('courseSection.quizCount', { count: quizCount })] : []),
+    ...(lectureCount > 0 ? [calculateSectionDuration()] : []),
+  ].join(' • ');
 
   return (
     <Paper
@@ -108,10 +128,7 @@ export const SectionCard = ({ section }: SectionCardType) => {
             {section.denomination}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t('courseSection.itemInfo', {
-              count: section.items.length,
-              duration: calculateSectionDuration(),
-            })}
+            {itemInfo}
           </Typography>
         </Box>
 

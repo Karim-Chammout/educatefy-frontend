@@ -56,16 +56,18 @@ const DraggableItem = ({
           <IconButton color="primary" size="small" onClick={() => handleEdit(sectionItem)}>
             <EditIcon />
           </IconButton>
-          <Button
-            variant="outlined"
-            color="inherit"
-            startIcon={<OpenInNewIcon />}
-            size="small"
-            LinkComponent={Link}
-            to={`/dashboard/courses/update/${courseId}/sections/${sectionId}/item/${sectionItem.itemId}`}
-          >
-            {t('common.open')}
-          </Button>
+          {sectionItem.__typename === 'Lesson' && (
+            <Button
+              variant="outlined"
+              color="inherit"
+              startIcon={<OpenInNewIcon />}
+              size="small"
+              LinkComponent={Link}
+              to={`/dashboard/courses/update/${courseId}/sections/${sectionId}/item/${sectionItem.itemId}`}
+            >
+              {t('common.open')}
+            </Button>
+          )}
         </div>
       </ListItem>
       <Divider />

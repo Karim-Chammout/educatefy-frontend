@@ -29,12 +29,53 @@ fragment EditableLesson on Lesson {
   }
 }
 
+fragment EditableQuiz on Quiz {
+  id
+  itemId
+  denomination
+  is_published
+  passing_score
+  max_attempts
+  shuffle_questions
+  shuffle_answers
+  navigation_mode
+  questions_per_page
+  show_correct_answers
+  time_limit_minutes
+  feedback_passed
+  feedback_failed
+  questions {
+    id
+    prompt
+    question_type
+    points
+    rank
+    media_url
+    media_type
+    hint
+    difficulty
+    learning_objective
+    feedback_correct
+    feedback_incorrect
+    answers {
+      id
+      denomination
+      image_url
+      is_correct
+      rank
+    }
+  }
+}
+
 fragment Section on CourseSection {
   id
   denomination
   items {
     ... on Lesson {
       ...EditableLesson
+    }
+    ... on Quiz {
+      ...EditableQuiz
     }
   }
 }
@@ -77,6 +118,36 @@ mutation UpdateLesson($lessonInfo: UpdateLessonInfoInput!) {
       id
       denomination
       duration
+      is_published
+    }
+  }
+}
+
+mutation CreateQuiz($quizInfo: QuizInfoInput!) {
+  createQuiz(quizInfo: $quizInfo) {
+    success
+    errors {
+      message
+    }
+    quiz {
+      id
+      itemId
+      denomination
+      is_published
+    }
+  }
+}
+
+mutation UpdateQuiz($quizInfo: UpdateQuizInfoInput!) {
+  updateQuiz(quizInfo: $quizInfo) {
+    success
+    errors {
+      message
+    }
+    quiz {
+      id
+      itemId
+      denomination
       is_published
     }
   }

@@ -34,10 +34,13 @@ import { ToasterContext } from '@/ui/context';
 import { StyledLink } from '../CourseSections/CourseSections.style';
 import { DraggableItem, ItemCreationForm, ItemEditForm } from './composition';
 
-type ItemType = 'lesson';
+type ItemType = 'lesson' | 'quiz';
 type SectionItemType = SectionFragment['items'][0];
 
-const contentOptions = [{ id: 'lesson', label: 'Lesson' }];
+const contentOptions = [
+  { id: 'lesson', label: 'Lesson' },
+  { id: 'quiz', label: 'Quiz' },
+];
 
 const CourseSection = ({ courseId, section }: { courseId: string; section: SectionFragment }) => {
   const { t } = useTranslation();
@@ -215,6 +218,7 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
         title={t('courseSection.createItem')}
         open={isCreateItemModalOpen}
         onClose={handleCloseModal}
+        maxWidth="md"
       >
         <Autocomplete
           options={contentOptions}
@@ -241,6 +245,7 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
         title={t('sectionItem.editCurriculumItem')}
         open={isEditItemModalOpen}
         onClose={handleCloseEditModal}
+        maxWidth="md"
       >
         {itemToEdit && (
           <ItemEditForm

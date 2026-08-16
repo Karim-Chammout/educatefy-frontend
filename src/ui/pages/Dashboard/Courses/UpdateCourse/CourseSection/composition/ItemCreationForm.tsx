@@ -3,8 +3,9 @@ import { Dispatch, SetStateAction } from 'react';
 import { SectionFragment } from '@/generated/graphql';
 
 import LessonCreationForm from './LessonCreationForm';
+import QuizBuilderForm from './QuizBuilderForm';
 
-type ItemType = 'lesson';
+type ItemType = 'lesson' | 'quiz';
 
 const ItemCreationForm = ({
   itemType,
@@ -27,6 +28,17 @@ const ItemCreationForm = ({
           sectionId={sectionId}
           handleCloseModalCallback={handleCloseModalCallback}
           setSectionItems={setSectionItems}
+        />
+      );
+
+    case 'quiz':
+      return (
+        <QuizBuilderForm
+          mode="create"
+          courseId={courseId}
+          sectionId={sectionId}
+          setSectionItems={setSectionItems}
+          handleCloseModalCallback={handleCloseModalCallback}
         />
       );
 

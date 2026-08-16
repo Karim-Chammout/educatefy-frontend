@@ -62,7 +62,8 @@ const CourseSectionItemContainer = () => {
   }
 
   const currentCourseSectionItem = currentCourseSection.items.find(
-    (item) => item.itemId === itemId,
+    (item): item is Extract<typeof item, { __typename: 'Lesson' }> =>
+      item.itemId === itemId && item.__typename === 'Lesson',
   );
 
   if (!currentCourseSectionItem) {

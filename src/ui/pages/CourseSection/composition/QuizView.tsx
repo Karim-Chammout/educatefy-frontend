@@ -56,6 +56,12 @@ const difficultyColors: Record<string, 'success' | 'warning' | 'error'> = {
   [QuizQuestionDifficulty.Hard]: 'error',
 };
 
+const difficultyBorderColors: Record<string, string> = {
+  [QuizQuestionDifficulty.Easy]: 'success.light',
+  [QuizQuestionDifficulty.Medium]: 'warning.light',
+  [QuizQuestionDifficulty.Hard]: 'error.light',
+};
+
 const difficultyLabelKeys: Record<string, string> = {
   [QuizQuestionDifficulty.Easy]: 'quiz.difficulty.easy',
   [QuizQuestionDifficulty.Medium]: 'quiz.difficulty.medium',
@@ -424,9 +430,21 @@ const QuizView = ({
     const selected = getSelectedAnswerIds(question.id);
     const isMultiSelect = question.question_type === QuizQuestionType.MultiSelect;
     const isHintRevealed = revealedHints[question.id] === true;
+    const borderColor = question.difficulty
+      ? difficultyBorderColors[question.difficulty]
+      : undefined;
 
     return (
-      <Paper key={question.id} variant="outlined" sx={{ p: 2.5, mb: 2 }}>
+      <Paper
+        key={question.id}
+        variant="outlined"
+        sx={{
+          p: 2.5,
+          mb: 2,
+          borderLeft: borderColor ? '3px solid' : undefined,
+          borderColor,
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -840,6 +858,9 @@ const QuizView = ({
                 selected.length === correctIds.length &&
                 selected.every((id) => correctIds.includes(id));
               const isQuestionCorrect = revealAnswers && isAnswerCorrect;
+              const borderColor = question.difficulty
+                ? difficultyBorderColors[question.difficulty]
+                : undefined;
 
               return (
                 <Paper
@@ -848,6 +869,8 @@ const QuizView = ({
                   sx={{
                     p: 2.5,
                     mb: 2,
+                    borderLeft: borderColor ? '3px solid' : undefined,
+                    borderColor,
                   }}
                 >
                   <Box

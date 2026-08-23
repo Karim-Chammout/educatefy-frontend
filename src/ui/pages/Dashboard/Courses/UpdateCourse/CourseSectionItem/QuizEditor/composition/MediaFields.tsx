@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -87,7 +87,7 @@ export const QuestionMediaField = ({
           <>
             <Tooltip title={t('quiz.questionMedia.remove')}>
               <IconButton size="small" color="error" onClick={handleRemove}>
-                <RemoveCircleOutlineIcon />
+                <DeleteOutlineIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <Box sx={{ position: 'relative', maxWidth: 320, mt: 1 }}>
@@ -191,7 +191,7 @@ export const AnswerImageField = ({
       {imageUrl ? (
         <Tooltip title={t('quiz.answerImage.remove')}>
           <IconButton size="small" color="error" onClick={handleRemove}>
-            <RemoveCircleOutlineIcon />
+            <DeleteOutlineIcon fontSize="small" />
           </IconButton>
         </Tooltip>
       ) : isExpanded ? (

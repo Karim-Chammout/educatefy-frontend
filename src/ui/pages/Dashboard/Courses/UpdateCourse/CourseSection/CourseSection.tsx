@@ -10,15 +10,16 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlined';
-import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Container from '@mui/material/Container';
 import DialogActions from '@mui/material/DialogActions';
 import List from '@mui/material/List';
-import TextField from '@mui/material/TextField';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 import {
   DeleteCourseSectionItemDocument,
@@ -34,30 +35,27 @@ import { ToasterContext } from '@/ui/context';
 import { StyledLink } from '../CourseSections/CourseSections.style';
 import { DraggableItem, ItemCreationForm, ItemEditForm } from './composition';
 
-type ItemType = 'lesson' | 'quiz';
 type SectionItemType = SectionFragment['items'][0];
-
-const contentOptions = [
-  { id: 'lesson', label: 'Lesson' },
-  { id: 'quiz', label: 'Quiz' },
-];
 
 const CourseSection = ({ courseId, section }: { courseId: string; section: SectionFragment }) => {
   const { t } = useTranslation();
   const { setToasterVisibility } = useContext(ToasterContext);
+  const navigate = useNavigate();
 
   const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
 
-  const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false);
   const [isEditItemModalOpen, setIsEditItemModalOpen] = useState(false);
-  const [contentType, setContentType] = useState<{ id: ItemType; label: string } | null>(null);
   const [itemToEdit, setItemToEdit] = useState<SectionItemType | null>(null);
   const [sectionItems, setSectionItems] = useState(section.items);
   const [sectionItemIdToDelete, setSectionItemIdToDelete] = useState<null | string>(null);
   const [isDeleteSectionItemModalOpen, setIsDeleteSectionItemModalOpen] = useState(false);
 
+  const [createMenuAnchor, setCreateMenuAnchor] = useState<null | HTMLElement>(null);
+
   const [deleteCourseSectionItem] = useMutation(DeleteCourseSectionItemDocument);
   const [updateCourseSectionItemRanks] = useMutation(UpdateCourseSectionItemRanksDocument);
+
+  const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -78,9 +76,8 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
     }
   };
 
-  const handleCloseModal = () => {
+  const handleCloseCreateModal = () => {
     setIsCreateItemModalOpen(false);
-    setContentType(null);
   };
 
   const handleCloseEditModal = () => {
@@ -148,6 +145,16 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
     });
   };
 
+  const handleCreateLesson = () => {
+    setCreateMenuAnchor(null);
+    setIsCreateItemModalOpen(true);
+  };
+
+  const handleCreateQuiz = () => {
+    setCreateMenuAnchor(null);
+    navigate(`/dashboard/courses/update/${courseId}/sections/${section.id}/item/quiz/create`);
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
       <Breadcrumbs>
@@ -173,10 +180,24 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
         <Typography component="h1" variant="h4">
           {t('courseSection.curriculumItems')}
         </Typography>
-        <Button onClick={() => setIsCreateItemModalOpen(true)} startIcon={<AddCircleOutlineIcon />}>
-          {t('common.create')}
-        </Button>
+        <Box
+          component="span"
+          role="button"
+          tabIndex={0}
+          onClick={(e) => setCreateMenuAnchor(e.currentTarget)}
+        >
+          <Button startIcon={<AddCircleOutlineIcon />}>{t('common.create')}</Button>
+        </Box>
       </Box>
+
+      <Menu
+        anchorEl={createMenuAnchor}
+        open={Boolean(createMenuAnchor)}
+        onClose={() => setCreateMenuAnchor(null)}
+      >
+        <MenuItem onClick={handleCreateLesson}>{t('courseSection.createLesson')}</MenuItem>
+        <MenuItem onClick={handleCreateQuiz}>{t('courseSection.createQuiz')}</MenuItem>
+      </Menu>
 
       {sectionItems.length > 0 ? (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -206,38 +227,28 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
       ) : (
         <InfoState
           btnLabel={t('courseSection.createItem')}
-          btnOnClick={() => setIsCreateItemModalOpen(true)}
+          btnOnClick={(e) => {
+            setCreateMenuAnchor(e.currentTarget);
+          }}
           subtitle={t('courseSection.createFirstItem')}
           title={t('courseSection.noItemsYet')}
           icon={<AddCircleOutlineIcon />}
         />
       )}
 
-      {/* Create Item Modal */}
       <Modal
         title={t('courseSection.createItem')}
         open={isCreateItemModalOpen}
-        onClose={handleCloseModal}
+        onClose={handleCloseCreateModal}
         maxWidth="md"
       >
-        <Autocomplete
-          options={contentOptions}
-          value={contentType}
-          onChange={(_event, newValue: any) => setContentType(newValue)}
-          renderInput={(params) => (
-            <TextField {...params} label={t('courseSection.selectItemType')} />
-          )}
+        <ItemCreationForm
+          itemType="lesson"
+          courseId={courseId}
+          sectionId={section.id}
+          handleCloseModalCallback={handleCloseCreateModal}
+          setSectionItems={setSectionItems}
         />
-
-        {contentType && (
-          <ItemCreationForm
-            itemType={contentType.id}
-            courseId={courseId}
-            sectionId={section.id}
-            handleCloseModalCallback={handleCloseModal}
-            setSectionItems={setSectionItems}
-          />
-        )}
       </Modal>
 
       {/* Edit Item Modal */}

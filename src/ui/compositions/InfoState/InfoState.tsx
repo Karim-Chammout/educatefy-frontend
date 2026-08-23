@@ -9,7 +9,7 @@ type InfoStateType = {
   icon: ReactNode;
   title: string;
   subtitle: string;
-  btnOnClick: () => void;
+  btnOnClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   btnLabel: string;
 };
 

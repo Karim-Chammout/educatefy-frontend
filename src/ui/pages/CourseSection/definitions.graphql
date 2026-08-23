@@ -6,6 +6,8 @@ fragment AttemptQuestion on QuizAttemptQuestion {
   rank
   points
   hint
+  difficulty
+  learning_objective
   media_url
   media_type
   feedback_correct

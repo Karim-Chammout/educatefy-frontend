@@ -3,9 +3,9 @@ import { Dispatch, SetStateAction } from 'react';
 import { SectionFragment } from '@/generated/graphql';
 
 import LessonEditForm from './LessonEditForm';
-import QuizBuilderForm from './QuizBuilderForm';
 
 type SectionItemType = SectionFragment['items'][0];
+type LessonItem = Extract<SectionItemType, { __typename: 'Lesson' }>;
 
 const ItemEditForm = ({
   item,
@@ -20,22 +20,9 @@ const ItemEditForm = ({
   setSectionItems: Dispatch<SetStateAction<SectionFragment['items']>>;
   handleCloseModalCallback: () => void;
 }) => {
-  if (item.__typename === 'Quiz') {
-    return (
-      <QuizBuilderForm
-        mode="edit"
-        item={item}
-        courseId={courseId}
-        sectionId={sectionId}
-        handleCloseModalCallback={handleCloseModalCallback}
-        setSectionItems={setSectionItems}
-      />
-    );
-  }
-
   return (
     <LessonEditForm
-      item={item}
+      item={item as LessonItem}
       courseId={courseId}
       sectionId={sectionId}
       handleCloseModalCallback={handleCloseModalCallback}

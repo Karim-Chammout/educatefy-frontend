@@ -7,24 +7,49 @@ import { EditableCourseSectionDocument } from '@/generated/graphql';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
-import { ComponentProvider } from './composition';
-import CourseSectionItem from './CourseSectionItem';
-import QuizEditorContainer from './QuizEditor/QuizEditorContainer';
+import QuizEditor from './QuizEditor';
 
-const CourseSectionItemContainer = () => {
+const QuizEditorContainer = ({ mode }: { mode: 'create' | 'edit' }) => {
   const {
     id: courseId,
     sectionId,
     itemId,
-  } = useParams<{ id: string; sectionId: string; itemId: string }>();
+  } = useParams<{
+    id: string;
+    sectionId: string;
+    itemId?: string;
+  }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { loading, error, data } = useQuery(EditableCourseSectionDocument, {
-    variables: {
-      id: courseId || '',
-    },
+    variables: { id: courseId || '' },
+    skip: mode === 'create',
   });
+
+  if (mode === 'create') {
+    if (!courseId || !sectionId) {
+      return (
+        <InfoState
+          btnLabel={t('common.backToCourses')}
+          btnOnClick={() => navigate('/dashboard/courses')}
+          subtitle={t('course.notFoundSubtitle')}
+          title={t('course.notFoundTitle')}
+          icon={<CloseIcon />}
+        />
+      );
+    }
+
+    return (
+      <QuizEditor
+        mode="create"
+        courseId={courseId}
+        sectionId={sectionId}
+        sectionDenomination=""
+        quizName=""
+      />
+    );
+  }
 
   if (loading) {
     return <Loader />;
@@ -46,11 +71,9 @@ const CourseSectionItemContainer = () => {
     );
   }
 
-  const currentCourseSection = data.editableCourse.sections.find(
-    (section) => section.id === sectionId,
-  );
+  const currentSection = data.editableCourse.sections.find((section) => section.id === sectionId);
 
-  if (!currentCourseSection) {
+  if (!currentSection) {
     return (
       <InfoState
         btnLabel={t('courseSection.backToSectionsBtn')}
@@ -62,11 +85,12 @@ const CourseSectionItemContainer = () => {
     );
   }
 
-  const currentCourseSectionItem = currentCourseSection.items.find(
-    (item) => item.itemId === itemId,
+  const quizItem = currentSection.items.find(
+    (item): item is Extract<typeof item, { __typename: 'Quiz' }> =>
+      item.__typename === 'Quiz' && item.itemId === itemId,
   );
 
-  if (!currentCourseSectionItem) {
+  if (!quizItem) {
     return (
       <InfoState
         btnLabel={t('sectionItem.backToSectionBtn')}
@@ -78,31 +102,17 @@ const CourseSectionItemContainer = () => {
     );
   }
 
-  if (currentCourseSectionItem.__typename === 'Quiz') {
-    return <QuizEditorContainer mode="edit" />;
-  }
-
-  const lessonItem = currentCourseSectionItem as Extract<
-    typeof currentCourseSectionItem,
-    { __typename: 'Lesson' }
-  >;
-
   return (
-    <ComponentProvider
-      initialComponents={lessonItem.components}
-      courseId={courseId}
-      sectionId={sectionId}
-      itemId={itemId}
-      parentId={lessonItem.id}
-    >
-      <CourseSectionItem
-        sectionItem={lessonItem}
-        courseId={courseId}
-        sectionId={sectionId}
-        sectionDenomination={currentCourseSection.denomination}
-      />
-    </ComponentProvider>
+    <QuizEditor
+      mode="edit"
+      courseId={courseId as string}
+      sectionId={sectionId as string}
+      sectionDenomination={currentSection.denomination}
+      quizName={quizItem.denomination}
+      quizItemId={quizItem.itemId}
+      quizItem={quizItem as any}
+    />
   );
 };
 
-export default CourseSectionItemContainer;
+export default QuizEditorContainer;

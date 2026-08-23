@@ -53,10 +53,12 @@ const DraggableItem = ({
           <IconButton color="error" size="small" onClick={() => handleDelete(sectionItem.itemId)}>
             <DeleteIcon />
           </IconButton>
-          <IconButton color="primary" size="small" onClick={() => handleEdit(sectionItem)}>
-            <EditIcon />
-          </IconButton>
-          {sectionItem.__typename === 'Lesson' && (
+          {sectionItem.__typename !== 'Quiz' && (
+            <IconButton color="primary" size="small" onClick={() => handleEdit(sectionItem)}>
+              <EditIcon />
+            </IconButton>
+          )}
+          {(sectionItem.__typename === 'Lesson' || sectionItem.__typename === 'Quiz') && (
             <Button
               variant="outlined"
               color="inherit"

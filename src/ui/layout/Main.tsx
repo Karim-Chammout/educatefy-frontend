@@ -30,6 +30,7 @@ import {
   Profile,
   Program,
   Programs,
+  QuizCreate,
   Section,
   Subject,
   UpdateCourse,
@@ -209,6 +210,14 @@ const PrivatePagesView = () => {
             element={
               <RouteWrapper>
                 <CourseSection />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/dashboard/courses/update/:id/sections/:sectionId/item/quiz/create"
+            element={
+              <RouteWrapper>
+                <QuizCreate mode="create" />
               </RouteWrapper>
             }
           />

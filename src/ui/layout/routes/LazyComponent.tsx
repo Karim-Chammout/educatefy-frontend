@@ -12,6 +12,9 @@ export const CourseSection = lazy(
 export const CourseSectionItem = lazy(
   () => import('@/ui/pages/Dashboard/Courses/UpdateCourse/CourseSectionItem'),
 );
+export const QuizCreate = lazy(
+  () => import('@/ui/pages/Dashboard/Courses/UpdateCourse/CourseSectionItem/QuizEditor'),
+);
 export const CourseSections = lazy(
   () => import('@/ui/pages/Dashboard/Courses/UpdateCourse/CourseSections'),
 );

@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -27,6 +28,7 @@ import {
   QuizAttemptQuestionDocument,
   QuizAttemptResultFragment,
   QuizNavigationMode,
+  QuizQuestionDifficulty,
   QuizQuestionType,
   QuizAttemptStatus,
   StartQuizDocument,
@@ -47,6 +49,18 @@ type AttemptAnswer = {
 type Phase = 'idle' | 'taking' | 'completed';
 
 const ANSWER_STORAGE_PREFIX = 'quiz-answers:';
+
+const difficultyColors: Record<string, 'success' | 'warning' | 'error'> = {
+  [QuizQuestionDifficulty.Easy]: 'success',
+  [QuizQuestionDifficulty.Medium]: 'warning',
+  [QuizQuestionDifficulty.Hard]: 'error',
+};
+
+const difficultyLabelKeys: Record<string, string> = {
+  [QuizQuestionDifficulty.Easy]: 'quiz.difficulty.easy',
+  [QuizQuestionDifficulty.Medium]: 'quiz.difficulty.medium',
+  [QuizQuestionDifficulty.Hard]: 'quiz.difficulty.hard',
+};
 
 const storageKeyForAttempt = (attemptId: string) => `${ANSWER_STORAGE_PREFIX}${attemptId}`;
 
@@ -413,14 +427,36 @@ const QuizView = ({
 
     return (
       <Paper key={question.id} variant="outlined" sx={{ p: 2.5, mb: 2 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            mb: 1.5,
+            alignItems: 'flex-start',
+          }}
+        >
           <Typography sx={{ flexGrow: 1, mr: 2, fontWeight: 'bold' }}>
             {questionIndex + 1}. {question.prompt}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {question.points} {t('quiz.points')}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+            {question.difficulty && (
+              <Chip
+                label={t(difficultyLabelKeys[question.difficulty])}
+                color={difficultyColors[question.difficulty]}
+                size="small"
+              />
+            )}
+            <Typography variant="caption" color="text.secondary">
+              {question.points} {t('quiz.points')}
+            </Typography>
+          </Box>
         </Box>
+
+        {question.learning_objective && (
+          <Alert severity="info" sx={{ mb: 1.5 }}>
+            {question.learning_objective}
+          </Alert>
+        )}
 
         {renderQuestionMedia(question)}
 
@@ -806,8 +842,22 @@ const QuizView = ({
               const isQuestionCorrect = revealAnswers && isAnswerCorrect;
 
               return (
-                <Paper key={question.id} variant="outlined" sx={{ p: 2.5, mb: 2 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                <Paper
+                  key={question.id}
+                  variant="outlined"
+                  sx={{
+                    p: 2.5,
+                    mb: 2,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 1,
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <Typography
                       color={
                         revealAnswers
@@ -820,10 +870,25 @@ const QuizView = ({
                     >
                       {questionIndex + 1}. {question.prompt}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {question.points} {t('quiz.points')}
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+                      {question.difficulty && (
+                        <Chip
+                          label={t(difficultyLabelKeys[question.difficulty])}
+                          color={difficultyColors[question.difficulty]}
+                          size="small"
+                        />
+                      )}
+                      <Typography variant="caption" color="text.secondary">
+                        {question.points} {t('quiz.points')}
+                      </Typography>
+                    </Box>
                   </Box>
+
+                  {question.learning_objective && (
+                    <Alert severity="info" sx={{ mb: 1.5 }}>
+                      {question.learning_objective}
+                    </Alert>
+                  )}
 
                   {renderQuestionMedia(question)}
 

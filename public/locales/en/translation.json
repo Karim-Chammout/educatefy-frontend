@@ -609,5 +609,9 @@
   "quiz.showHint": "Show hint",
   "quiz.correctAnswersHidden": "The correct answers are hidden for this quiz.",
   "quiz.feedbackPassed": "Feedback when passed",
-  "quiz.feedbackFailed": "Feedback when failed"
+  "quiz.feedbackFailed": "Feedback when failed",
+  "program.isPublished": "Visible in catalog",
+  "program.visibilityHint": "While hidden, new students can't see or join this program. Enrolled students keep their access.",
+  "program.visible": "Visible",
+  "program.hidden": "Hidden"
 }

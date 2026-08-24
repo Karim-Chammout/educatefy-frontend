@@ -618,7 +618,7 @@
   "quiz.denomination": "اسم الاختبار",
   "quiz.timeLimitMinutes": "الحد الزمني (بالدقائق، 0 = بدون حد)",
   "quiz.navigationMode.label": "نمط التنقل",
-  "quiz.navigationMode.helper": "التنقل الحر يتيح للطلاب الإجابة بأي ترتيب، بينما يتطلب التنقل المتسلسل الإجابة على الأسئلة بالترتيب."
+  "quiz.navigationMode.helper": "التنقل الحر يتيح للطلاب الإجابة بأي ترتيب، بينما يتطلب التنقل المتسلسل الإجابة على الأسئلة بالترتيب.",
   "quiz.navigationMode.free": "تنقل حر",
   "quiz.navigationMode.sequential": "تنقل متسلسل",
   "quiz.shuffleQuestions": "ترتيب عشوائي للأسئلة",
@@ -646,5 +646,9 @@
   "quiz.showHint": "إظهار التلميح",
   "quiz.correctAnswersHidden": "الإجابات الصحيحة مخفية لهذا الاختبار.",
   "quiz.feedbackPassed": "ملاحظة عند النجاح",
-  "quiz.feedbackFailed": "ملاحظة عند الرسوب"
+  "quiz.feedbackFailed": "ملاحظة عند الرسوب",
+  "program.isPublished": "ظاهر في الكتالوج",
+  "program.visibilityHint": "أثناء الإخفاء، لا يمكن للطلاب الجدد رؤية هذا البرنامج أو الالتحاق به. يحتفظ الطلاب المسجلون بوصولهم.",
+  "program.visible": "ظاهر",
+  "program.hidden": "مخفي"
 }

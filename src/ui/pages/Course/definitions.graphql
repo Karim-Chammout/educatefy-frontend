@@ -1,7 +1,6 @@
 fragment CourseSection on CourseSection {
   id
   denomination
-  is_published
   rank
   items {
     ... on Lesson {
@@ -9,7 +8,6 @@ fragment CourseSection on CourseSection {
       itemId
       denomination
       duration
-      is_published
       components {
         ... on TextContent {
           ...TextContentComponent
@@ -38,7 +36,6 @@ fragment CourseSection on CourseSection {
       id
       itemId
       denomination
-      is_published
       passing_score
       max_attempts
       navigation_mode

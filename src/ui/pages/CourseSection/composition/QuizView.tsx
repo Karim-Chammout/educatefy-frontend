@@ -180,7 +180,7 @@ const QuizView = ({
   );
   const attemptsRemaining =
     quiz.max_attempts === 0 ? Infinity : Math.max(0, quiz.max_attempts - completedAttempts);
-  const canTakeQuiz = attemptsRemaining > 0 && quiz.is_published;
+  const canTakeQuiz = attemptsRemaining > 0;
 
   const handleStart = async () => {
     setErrorMessage(null);
@@ -618,13 +618,7 @@ const QuizView = ({
               </Alert>
             )}
 
-            {!quiz.is_published && (
-              <Alert severity="info" sx={{ mt: 2 }}>
-                {t('quiz.notPublished')}
-              </Alert>
-            )}
-
-            {quiz.is_published && attemptsRemaining === 0 && (
+            {attemptsRemaining === 0 && (
               <Alert severity="info" sx={{ mt: 2 }}>
                 {t('quiz.noAttemptsLeft')}
               </Alert>

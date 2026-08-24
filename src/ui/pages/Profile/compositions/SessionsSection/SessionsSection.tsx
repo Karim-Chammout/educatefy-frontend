@@ -13,6 +13,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
+import Skeleton from '@mui/material/Skeleton';
 import Tooltip from '@mui/material/Tooltip';
 import { formatDistanceToNow } from 'date-fns';
 import { useContext, useState } from 'react';
@@ -92,9 +93,33 @@ const SessionsSection = () => {
   if (loading) {
     return (
       <InfoSection icon={<DevicesIcon color="primary" />} title={t('profile.activeSessions')}>
-        <Typography variant="body2" color="text.secondary">
-          {t('common.loading')}
-        </Typography>
+        <List disablePadding>
+          {[0, 1].map((index) => (
+            <Box key={`device-skeleton-${index}`}>
+              <ListItem disablePadding sx={{ py: 2 }}>
+                <ListItemAvatar sx={{ minWidth: 48 }}>
+                  <Skeleton variant="rounded" width={28} height={28} />
+                </ListItemAvatar>
+
+                <ListItemText
+                  primary={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Skeleton width={170} height={20} />
+                      <Skeleton variant="rounded" width={100} height={22} />
+                    </Box>
+                  }
+                  secondary={<Skeleton width={190} height={14} />}
+                />
+
+                <IconButton size="small" disabled>
+                  <Skeleton width={44} height={16} />
+                </IconButton>
+              </ListItem>
+
+              {index < 1 && <Divider />}
+            </Box>
+          ))}
+        </List>
       </InfoSection>
     );
   }

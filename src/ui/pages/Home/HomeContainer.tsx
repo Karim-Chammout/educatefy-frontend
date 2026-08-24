@@ -1,16 +1,16 @@
 import { useQuery } from '@apollo/client/react';
 
 import { HomeDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 
 import Home from './Home';
+import { HomeSkeleton } from './composition';
 
 const HomeContainer = () => {
   const { loading, error, data } = useQuery(HomeDocument);
 
   if (loading) {
-    return <Loader />;
+    return <HomeSkeleton />;
   }
 
   if (error || !data || !data.me) {

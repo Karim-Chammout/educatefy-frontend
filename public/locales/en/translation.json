@@ -65,6 +65,8 @@
   "profile.confirm": "Confirm",
   "profile.fillRequiredFields": "Please make sure all required fields are filled correctly!",
   "profile.updateSuccess": "Profile updated successfully!",
+  "profile.maxSubjectsExceeded": "You can choose up to 3 specialty subjects.",
+  "profile.minSubjectsRequired": "Please keep at least one specialty subject.",
   "profile.updateFailed": "Failed to update profile details. Please try again later!",
   "profile.descriptionPlaceholder": "Write a description about yourself here...",
   "profile.activeSessions": "Active Sessions",

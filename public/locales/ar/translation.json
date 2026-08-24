@@ -65,6 +65,8 @@
   "profile.confirm": "تأكيد",
   "profile.fillRequiredFields": "يرجى تعبئة جميع الحقول المطلوبة بشكل صحيح!",
   "profile.updateSuccess": "تم تحديث الملف الشخصي بنجاح!",
+  "profile.maxSubjectsExceeded": "يمكنك اختيار ما يصل إلى 3 مواضيع تخصصية.",
+  "profile.minSubjectsRequired": "يرجى الاحتفاظ بموضوع تخصصي واحد على الأقل.",
   "profile.updateFailed": "فشل في تحديث تفاصيل الملف الشخصي. يرجى المحاولة مرة أخرى لاحقًا!",
   "profile.descriptionPlaceholder": "اكتب وصفًا عن نفسك هنا...",
   "profile.activeSessions": "الجلسات النشطة",

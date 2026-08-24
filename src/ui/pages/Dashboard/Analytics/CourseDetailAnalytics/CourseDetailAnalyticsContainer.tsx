@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { useParams } from 'react-router';
 
 import { CourseDetailAnalyticsDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 
 import CourseDetailAnalytics from './CourseDetailAnalytics';
+import CourseDetailAnalyticsSkeleton from './CourseDetailAnalyticsSkeleton';
 
 const PAGE_SIZE = 20;
 
@@ -24,7 +24,7 @@ const CourseDetailAnalyticsContainer = () => {
   });
 
   if (loading) {
-    return <Loader />;
+    return <CourseDetailAnalyticsSkeleton />;
   }
 
   if (error || !data?.courseDetailAnalytics) {

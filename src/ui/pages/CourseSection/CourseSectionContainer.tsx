@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 
 import { CourseDocument, CourseStatus } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 import { MUST_ENROLL_TO_COURSE_FIRST } from '@/utils/constants';
 
 import Section from './Section';
+import { SectionSkeleton } from './composition';
 import { getItemComponents } from './utils/sectionItems';
 
 const CourseSectionContainer = () => {
@@ -24,7 +24,7 @@ const CourseSectionContainer = () => {
   });
 
   if (loading) {
-    return <Loader />;
+    return <SectionSkeleton />;
   }
 
   if (error || !data) {

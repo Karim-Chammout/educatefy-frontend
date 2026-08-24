@@ -1,8 +1,7 @@
 import { useQuery } from '@apollo/client/react';
 
 import { CreateCoursePageDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
-import { ErrorPlaceholder } from '@/ui/compositions';
+import { CrudFormSkeleton, ErrorPlaceholder } from '@/ui/compositions';
 
 import CreateCourse from './CreateCourse';
 
@@ -10,7 +9,7 @@ const CreateCourseContainer = () => {
   const { loading, error, data } = useQuery(CreateCoursePageDocument);
 
   if (loading) {
-    return <Loader />;
+    return <CrudFormSkeleton variant="course" />;
   }
 
   if (error || !data) {

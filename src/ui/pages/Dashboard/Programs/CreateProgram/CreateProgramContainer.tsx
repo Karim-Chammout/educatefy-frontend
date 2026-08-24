@@ -1,8 +1,7 @@
 import { useQuery } from '@apollo/client/react';
 
 import { CreateProgramPageDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
-import { ErrorPlaceholder } from '@/ui/compositions';
+import { CrudFormSkeleton, ErrorPlaceholder } from '@/ui/compositions';
 
 import CreateProgram from './CreateProgram';
 
@@ -10,7 +9,7 @@ const CreateProgramContainer = () => {
   const { loading, error, data } = useQuery(CreateProgramPageDocument);
 
   if (loading) {
-    return <Loader />;
+    return <CrudFormSkeleton variant="program" />;
   }
 
   if (error || !data) {

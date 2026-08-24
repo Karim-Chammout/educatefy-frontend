@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import { EditableCourseDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
-import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
+import { CrudFormSkeleton, ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
 import UpdateCourse from './UpdateCourse';
 
@@ -20,7 +19,7 @@ const UpdateCourseContainer = () => {
   });
 
   if (loading) {
-    return <Loader />;
+    return <CrudFormSkeleton variant="course" update />;
   }
 
   if (error || !data) {

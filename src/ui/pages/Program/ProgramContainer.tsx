@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import { ProgramDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
 import Program from './Program';
+import { ProgramSkeleton } from './composition';
 
 const ProgramContainer = () => {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ const ProgramContainer = () => {
   });
 
   if (loading) {
-    return <Loader />;
+    return <ProgramSkeleton />;
   }
 
   if (error || !data) {

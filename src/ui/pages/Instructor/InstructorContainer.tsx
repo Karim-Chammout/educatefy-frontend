@@ -2,10 +2,10 @@ import { useQuery } from '@apollo/client/react';
 import { useParams } from 'react-router';
 
 import { InstructorDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 
 import Instructor from './Instructor';
+import InstructorSkeleton from './InstructorSkeleton';
 
 const InstructorContainer = () => {
   const { id } = useParams();
@@ -17,7 +17,7 @@ const InstructorContainer = () => {
   });
 
   if (loading) {
-    return <Loader />;
+    return <InstructorSkeleton />;
   }
 
   if (error || !data || !data.instructor) {

@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
 import { ExploreDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 import { PERMISSION_DENIED } from '@/utils/constants';
 
 import Explore from './Explore';
+import ExploreSkeleton from './ExploreSkeleton';
 
 const ExploreContainer = () => {
   const location = useLocation();
@@ -30,7 +30,7 @@ const ExploreContainer = () => {
   }, [location.state?.action]);
 
   if (loading) {
-    return <Loader />;
+    return <ExploreSkeleton />;
   }
 
   if (error || !data || !data.subjectsWithLinkedContent) {

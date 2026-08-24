@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import { EditableProgramDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
-import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
+import { CrudFormSkeleton, ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
 import UpdateProgram from './UpdateProgram';
 
@@ -20,7 +19,7 @@ const UpdateProgramContainer = () => {
   });
 
   if (loading) {
-    return <Loader />;
+    return <CrudFormSkeleton variant="program" update />;
   }
 
   if (error || !data) {

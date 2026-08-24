@@ -2,10 +2,10 @@ import { useQuery } from '@apollo/client/react';
 import { useParams } from 'react-router';
 
 import { SubjectDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 
 import Subject from './Subject';
+import SubjectSkeleton from './SubjectSkeleton';
 
 const SubjectContainer = () => {
   const { id } = useParams();
@@ -17,7 +17,7 @@ const SubjectContainer = () => {
   });
 
   if (loading) {
-    return <Loader />;
+    return <SubjectSkeleton />;
   }
 
   if (error || !data || !data.subject) {

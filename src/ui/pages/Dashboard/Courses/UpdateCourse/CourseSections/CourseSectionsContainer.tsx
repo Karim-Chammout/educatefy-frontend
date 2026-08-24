@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import { EditableCourseSectionsDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
-import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
+import { DndListPageSkeleton, ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
 import CourseSections from './CourseSections';
 
@@ -21,7 +20,7 @@ const CourseSectionsContainer = () => {
   });
 
   if (loading) {
-    return <Loader />;
+    return <DndListPageSkeleton rows={4} showOpenButton />;
   }
 
   if (error || !data) {

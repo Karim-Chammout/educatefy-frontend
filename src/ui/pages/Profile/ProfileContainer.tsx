@@ -1,16 +1,16 @@
 import { useQuery } from '@apollo/client/react';
 
 import { UserProfileDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 
 import Profile from './Profile';
+import ProfileSkeleton from './ProfileSkeleton';
 
 const ProfileContainer = () => {
   const { loading, error, data } = useQuery(UserProfileDocument);
 
   if (loading) {
-    return <Loader />;
+    return <ProfileSkeleton />;
   }
 
   if (error || !data) {

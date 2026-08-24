@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import { EditableCourseSectionDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
 import QuizEditor from './QuizEditor';
+import QuizEditorSkeleton from './QuizEditorSkeleton';
 
 const QuizEditorContainer = ({ mode }: { mode: 'create' | 'edit' }) => {
   const {
@@ -52,7 +52,7 @@ const QuizEditorContainer = ({ mode }: { mode: 'create' | 'edit' }) => {
   }
 
   if (loading) {
-    return <Loader />;
+    return <QuizEditorSkeleton />;
   }
 
   if (error || !data) {

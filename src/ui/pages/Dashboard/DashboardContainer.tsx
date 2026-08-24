@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client/react';
 
 import { DashboardDocument, MeDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder } from '@/ui/compositions';
 
 import Dashboard from './Dashboard';
+import DashboardSkeleton from './DashboardSkeleton';
 
 const DashboardContainer = () => {
   const { data: userInfo, loading: userLoading } = useQuery(MeDocument, {
@@ -19,7 +19,7 @@ const DashboardContainer = () => {
   });
 
   if (userLoading || loading) {
-    return <Loader />;
+    return <DashboardSkeleton />;
   }
 
   if (!userInfo?.me.id || error || !data || !data.instructor) {

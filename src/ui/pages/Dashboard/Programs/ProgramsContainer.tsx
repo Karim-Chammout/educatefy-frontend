@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
 import { TeacherProgramsDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
+import { TableSkeleton } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
 import Programs from './Programs';
@@ -16,7 +16,7 @@ const ProgramsContainer = () => {
   const { loading, error, data } = useQuery(TeacherProgramsDocument);
 
   if (loading) {
-    return <Loader />;
+    return <TableSkeleton columns={6} rows={10} />;
   }
 
   if (error || !data) {

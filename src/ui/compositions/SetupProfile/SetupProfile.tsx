@@ -23,7 +23,7 @@ import {
   UpdateAccountInfoDocument,
 } from '@/generated/graphql';
 import { useLanguageSelection } from '@/hooks';
-import { Button, Loader, Typography } from '@/ui/components';
+import { Button, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
 import { genderOptions } from '@/utils/genderOptions';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
@@ -31,6 +31,7 @@ import { hasRichTextContent } from '@/utils/hasRichTextContent';
 import ErrorPlaceholder from '../ErrorPlaceholder';
 import LanguageSelector from '../LanguageSelector';
 import RichTextEditor from '../RichTextEditor';
+import SetupProfileSkeleton from './SetupProfileSkeleton';
 
 const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
   const { t } = useTranslation();
@@ -135,7 +136,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
   };
 
   if (loading) {
-    return <Loader />;
+    return <SetupProfileSkeleton userInfo={userInfo} />;
   }
 
   if (error || !data) {

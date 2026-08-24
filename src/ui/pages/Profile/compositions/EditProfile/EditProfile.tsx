@@ -124,9 +124,18 @@ const EditProfile = ({
 
           setIsEditModalOpen(false);
         } else {
+          const messages = (data.updateProfile?.errors ?? [])
+            .map((errorItem) => errorItem.message)
+            .join(' ');
+          const newText = messages.includes('MAX_SUBJECTS_EXCEEDED')
+            ? t('profile.maxSubjectsExceeded')
+            : messages.includes('MIN_SUBJECTS_REQUIRED')
+              ? t('profile.minSubjectsRequired')
+              : t('profile.updateFailed');
+
           setToasterVisibility({
             newDuration: 5000,
-            newText: t('profile.updateFailed'),
+            newText,
             newType: 'error',
           });
         }

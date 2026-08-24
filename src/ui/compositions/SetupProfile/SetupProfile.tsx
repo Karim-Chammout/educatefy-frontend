@@ -118,9 +118,18 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
         if (res.updateAccountInfo?.success) {
           window.location.href = '/explore';
         } else {
+          const messages = (res.updateAccountInfo?.errors ?? [])
+            .map((errorItem) => errorItem.message)
+            .join(' ');
+          const newText = messages.includes('MAX_SUBJECTS_EXCEEDED')
+            ? t('profile.maxSubjectsExceeded')
+            : messages.includes('MIN_SUBJECTS_REQUIRED')
+              ? t('profile.minSubjectsRequired')
+              : t('profile.updateFailed');
+
           setToasterVisibility({
             newDuration: 5000,
-            newText: t('profile.updateFailed'),
+            newText,
             newType: 'error',
           });
         }

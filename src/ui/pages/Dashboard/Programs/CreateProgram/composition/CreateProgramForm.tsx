@@ -49,7 +49,7 @@ const CreateProgramForm = ({
       <Paper elevation={0} variant="outlined" sx={{ p: 3 }}>
         <FormControlLabel
           control={
-            <SwitchElement name="isPublished" control={control} label={t('common.isPublished')} />
+            <SwitchElement name="isPublished" control={control} label={t('program.isPublished')} />
           }
           label=""
           sx={{ ml: 1 }}

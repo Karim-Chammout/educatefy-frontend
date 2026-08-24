@@ -234,12 +234,15 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
                 <SwitchElement
                   name="isPublished"
                   control={control}
-                  label={t('common.isPublished')}
+                  label={t('program.isPublished')}
                 />
               }
               label=""
               sx={{ ml: 1 }}
             />
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+              {t('program.visibilityHint')}
+            </Typography>
           </Paper>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>

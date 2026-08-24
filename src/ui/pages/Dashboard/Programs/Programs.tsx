@@ -182,7 +182,7 @@ const Programs = ({ programs }: { programs: Array<TeacherProgramFragment> }) => 
                     <TableCell>{program.denomination}</TableCell>
                     <TableCell>{program.level}</TableCell>
                     <TableCell>
-                      {program.is_published ? t('content.published') : t('content.unpublished')}
+                      {program.is_published ? t('program.visible') : t('program.hidden')}
                     </TableCell>
                     <TableCell>{formatDate(program.updated_at)}</TableCell>
                     <TableCell>{formatDate(program.created_at)}</TableCell>

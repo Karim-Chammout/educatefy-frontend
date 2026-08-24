@@ -536,7 +536,6 @@
   "quiz.attemptLabel": "Attempt {{number}}",
   "quiz.completed": "Completed",
   "quiz.inProgress": "In progress",
-  "quiz.notPublished": "This quiz has not been published yet.",
   "quiz.noAttemptsLeft": "You have used all your attempts for this quiz.",
   "quiz.points": "points",
   "quiz.passed": "Quiz Passed",

@@ -573,7 +573,6 @@
   "quiz.attemptLabel": "المحاولة {{number}}",
   "quiz.completed": "مكتمل",
   "quiz.inProgress": "قيد التنفيذ",
-  "quiz.notPublished": "لم يتم نشر هذا الاختبار بعد.",
   "quiz.noAttemptsLeft": "لقد استنفدت جميع محاولاتك لهذا الاختبار.",
   "quiz.points": "نقطة",
   "quiz.passed": "نجحت في الاختبار",

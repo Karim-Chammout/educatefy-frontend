@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import { CourseDocument } from '@/generated/graphql';
-import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 
 import Course from './Course';
+import { CourseSkeleton } from './composition';
 
 const CourseContainer = () => {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ const CourseContainer = () => {
   });
 
   if (loading) {
-    return <Loader />;
+    return <CourseSkeleton />;
   }
 
   if (error || !data) {

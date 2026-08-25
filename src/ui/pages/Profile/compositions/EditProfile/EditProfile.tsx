@@ -99,7 +99,7 @@ const EditProfile = ({
       return;
     }
 
-    await updateProfile({
+    const profileResult = await updateProfile({
       variables: {
         profileDetails: {
           firstName: trimmedFirstName,
@@ -114,33 +114,33 @@ const EditProfile = ({
           teacherDescription: descriptionContent,
         },
       },
-      onCompleted(data) {
-        if (data.updateProfile?.success) {
-          setToasterVisibility({
-            newDuration: 3000,
-            newText: t('profile.updateSuccess'),
-            newType: 'success',
-          });
-
-          setIsEditModalOpen(false);
-        } else {
-          const messages = (data.updateProfile?.errors ?? [])
-            .map((errorItem) => errorItem.message)
-            .join(' ');
-          const newText = messages.includes('MAX_SUBJECTS_EXCEEDED')
-            ? t('profile.maxSubjectsExceeded')
-            : messages.includes('MIN_SUBJECTS_REQUIRED')
-              ? t('profile.minSubjectsRequired')
-              : t('profile.updateFailed');
-
-          setToasterVisibility({
-            newDuration: 5000,
-            newText,
-            newType: 'error',
-          });
-        }
-      },
     });
+
+    if (!profileResult.data?.updateProfile?.success) {
+      const messages = (profileResult.data?.updateProfile?.errors ?? [])
+        .map((errorItem) => errorItem.message)
+        .join(' ');
+      const newText = messages.includes('MAX_SUBJECTS_EXCEEDED')
+        ? t('profile.maxSubjectsExceeded')
+        : messages.includes('MIN_SUBJECTS_REQUIRED')
+          ? t('profile.minSubjectsRequired')
+          : t('profile.updateFailed');
+
+      setToasterVisibility({
+        newDuration: 5000,
+        newText,
+        newType: 'error',
+      });
+
+      return;
+    }
+
+    setToasterVisibility({
+      newDuration: 3000,
+      newText: t('profile.updateSuccess'),
+      newType: 'success',
+    });
+    setIsEditModalOpen(false);
   };
 
   return (

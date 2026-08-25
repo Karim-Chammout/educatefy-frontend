@@ -7,16 +7,18 @@ import StarIcon from '@mui/icons-material/Star';
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';
 import { FollowTeacherDocument, TeacherFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
-import { ContentCard, RichTextContent } from '@/ui/compositions';
+import { ContentCard, RichTextContent, SocialLinksDisplay } from '@/ui/compositions';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 import { HeaderSection, InstructorInfo, StatCard, StatContent, StatIcon } from './Instructor.style';
@@ -24,6 +26,7 @@ import { HeaderSection, InstructorInfo, StatCard, StatContent, StatIcon } from '
 const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const navigate = useNavigate();
   const [followTeacher, { loading: updatingFollow }] = useMutation(FollowTeacherDocument);
 
   const handleFollowTeacher = async () => {
@@ -49,11 +52,15 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
     0,
   );
 
+  // Weighted average over rated courses only: unrated courses must not drag
+  // the score down, and courses with many ratings should weigh more.
+  const ratedCourses = instructor.courses.filter((course) => course.ratingsCount > 0);
+  const ratingsWeight = ratedCourses.reduce((sum, course) => sum + course.ratingsCount, 0);
   const averageRating =
-    instructor.courses.length > 0
-      ? instructor.courses.reduce((sum, course) => sum + course.rating, 0) /
-        instructor.courses.length
-      : 0;
+    ratingsWeight > 0
+      ? ratedCourses.reduce((sum, course) => sum + course.rating * course.ratingsCount, 0) /
+        ratingsWeight
+      : null;
 
   const programCount = instructor.programs.length;
 
@@ -79,7 +86,7 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
           </Typography>
 
           {instructor.isAllowedToFollow && (
-            <div>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Button
                 variant={instructor.isFollowed ? 'outlined' : 'contained'}
                 startIcon={instructor.isFollowed ? <PersonRemoveIcon /> : <PersonAddAlt1Icon />}
@@ -88,20 +95,48 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
               >
                 {instructor.isFollowed ? t('instructor.unfollow') : t('instructor.follow')}
               </Button>
-            </div>
+              <Typography variant="body2" color="text.secondary">
+                {t('instructor.followersCount', { count: instructor.followersCount })}
+              </Typography>
+            </Box>
           )}
         </InstructorInfo>
       </HeaderSection>
 
+      {instructor.socialLinks.length > 0 && (
+        <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 1.5 }}>
+            {t('instructor.socialLinks')}
+          </Typography>
+          <SocialLinksDisplay links={instructor.socialLinks} />
+        </Paper>
+      )}
+
       <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
-            {t('account.bio')}
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-            {instructor.bio}
-          </Typography>
-        </Box>
+        {instructor.subjects.length > 0 && (
+          <Box sx={{ mb: instructor.bio ? 3 : 0, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            {instructor.subjects.map((subject) => (
+              <Chip
+                key={subject.id}
+                label={subject.denomination}
+                color="primary"
+                variant="outlined"
+                clickable
+                onClick={() => navigate(`/subject/${subject.id}`)}
+              />
+            ))}
+          </Box>
+        )}
+        {instructor.bio && (
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+              {t('account.bio')}
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+              {instructor.bio}
+            </Typography>
+          </Box>
+        )}
 
         {hasRichTextContent(instructor.description) && (
           <Box>
@@ -161,7 +196,7 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
                   {totalStudents}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t('instructor.students', {
+                  {t('instructor.enrollments', {
                     count: totalStudents,
                   })}
                 </Typography>
@@ -176,10 +211,10 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
               </StatIcon>
               <StatContent>
                 <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary' }}>
-                  {averageRating > 0 ? averageRating.toFixed(1) : '—'}
+                  {averageRating !== null ? averageRating.toFixed(1) : '—'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t('averageRating')}
+                  {t('averageCourseRating')}
                 </Typography>
               </StatContent>
             </StatCard>

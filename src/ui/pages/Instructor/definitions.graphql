@@ -7,6 +7,20 @@ fragment Teacher on Teacher {
   bio
   isFollowed
   isAllowedToFollow
+  followersCount
+  subjects {
+    id
+    denomination
+  }
+  socialLinks {
+    id
+    platform
+    platformDisplayName
+    userName
+    displayName
+    url
+    isPrimary
+  }
   courses {
     id
     denomination
@@ -14,6 +28,7 @@ fragment Teacher on Teacher {
     level
     image
     rating
+    ratingsCount
     participationCount
   }
   programs {

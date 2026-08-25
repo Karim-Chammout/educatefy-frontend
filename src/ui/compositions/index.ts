@@ -11,3 +11,4 @@ export { default as LanguageSelector } from './LanguageSelector';
 export { default as RichTextContent } from './RichTextContent';
 export { default as RichTextEditor } from './RichTextEditor';
 export { default as SetupProfile } from './SetupProfile';
+export { default as SocialLinksDisplay } from './SocialLinks';

@@ -21,7 +21,14 @@ import { Button, Typography } from '@/ui/components';
 import { ContentCard, RichTextContent, SocialLinksDisplay } from '@/ui/compositions';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
-import { HeaderSection, InstructorInfo, StatCard, StatContent, StatIcon } from './Instructor.style';
+import {
+  HeaderSection,
+  InstructorInfo,
+  StatCard,
+  StatContent,
+  StatIcon,
+  SubjectsRow,
+} from './Instructor.style';
 
 const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
   const { t } = useTranslation();
@@ -83,6 +90,22 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
             {instructor.first_name} {instructor.last_name}
           </Typography>
 
+          {instructor.subjects.length > 0 && (
+            <SubjectsRow>
+              {instructor.subjects.map((subject) => (
+                <Chip
+                  key={subject.id}
+                  label={subject.denomination}
+                  color="primary"
+                  variant="outlined"
+                  size="small"
+                  clickable
+                  onClick={() => navigate(`/subject/${subject.id}`)}
+                />
+              ))}
+            </SubjectsRow>
+          )}
+
           {instructor.isAllowedToFollow && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Button
@@ -111,20 +134,6 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
       )}
 
       <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
-        {instructor.subjects.length > 0 && (
-          <Box sx={{ mb: instructor.bio ? 3 : 0, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {instructor.subjects.map((subject) => (
-              <Chip
-                key={subject.id}
-                label={subject.denomination}
-                color="primary"
-                variant="outlined"
-                clickable
-                onClick={() => navigate(`/subject/${subject.id}`)}
-              />
-            ))}
-          </Box>
-        )}
         {instructor.bio && (
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>

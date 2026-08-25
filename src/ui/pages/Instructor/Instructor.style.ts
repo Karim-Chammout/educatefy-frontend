@@ -23,6 +23,18 @@ export const InstructorInfo = styled(Box)(({ theme }) => ({
   alignSelf: 'center',
 }));
 
+export const SubjectsRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: theme.spacing(1),
+  marginTop: theme.spacing(-0.5),
+
+  [theme.breakpoints.down('md')]: {
+    justifyContent: 'center',
+    marginTop: 0,
+  },
+}));
+
 export const StatCard = styled(Paper)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',

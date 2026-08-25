@@ -52,8 +52,6 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
     0,
   );
 
-  // Weighted average over rated courses only: unrated courses must not drag
-  // the score down, and courses with many ratings should weigh more.
   const ratedCourses = instructor.courses.filter((course) => course.ratingsCount > 0);
   const ratingsWeight = ratedCourses.reduce((sum, course) => sum + course.ratingsCount, 0);
   const averageRating =

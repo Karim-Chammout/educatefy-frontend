@@ -50,8 +50,6 @@ const SocialLinksSection = ({ userInfo }: { userInfo: UserFragment }) => {
 
   const { fields, append, remove } = useFieldArray({ control, name: 'socialLinks' });
 
-  // Live values: `fields` snapshots go stale after setValue, which is why the
-  // primary star must render from the watched array instead.
   const watchedLinks = useWatch({ control, name: 'socialLinks' });
 
   const previewLinks = (watchedLinks ?? [])
@@ -174,8 +172,6 @@ const SocialLinksSection = ({ userInfo }: { userInfo: UserFragment }) => {
                   bgcolor: 'background.default',
                 }}
               >
-                {/* Card header: index + row actions (responsive by design — the
-                    actions never share a grid row with the inputs). */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1.5, mx: -0.5 }}>
                   <Typography variant="caption" color="text.secondary" sx={{ mr: 'auto' }}>
                     {t('profile.socialLinkLabel', { index: index + 1 })}

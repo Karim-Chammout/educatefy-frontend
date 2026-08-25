@@ -23,6 +23,15 @@ fragment User on Account {
     id
     denomination
   }
+  socialLinks {
+    id
+    platform
+    platformDisplayName
+    userName
+    displayName
+    url
+    isPrimary
+  }
 }
 
 query UserProfile {
@@ -47,6 +56,15 @@ mutation UpdateProfile($profileDetails: ProfileDetailsInput!) {
     }
     user {
       ...User
+    }
+  }
+}
+
+mutation UpdateAccountSocialLinks($links: [SocialLinkInfo!]!) {
+  updateAccountSocialLinks(links: $links) {
+    success
+    errors {
+      message
     }
   }
 }

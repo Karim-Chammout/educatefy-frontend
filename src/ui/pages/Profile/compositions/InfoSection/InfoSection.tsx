@@ -7,10 +7,12 @@ import { Typography } from '@/ui/components';
 const InfoSection = ({
   icon,
   title,
+  action,
   children,
 }: {
   icon: React.ReactNode;
   title: string;
+  action?: React.ReactNode;
   children: React.ReactNode;
 }) => {
   const theme = useTheme();
@@ -28,6 +30,7 @@ const InfoSection = ({
           <Typography variant="h6" color="text.primary" sx={{ fontWeight: 600 }}>
             {title}
           </Typography>
+          {action && <Box sx={{ ml: 'auto' }}>{action}</Box>}
         </Box>
         {children}
       </Box>

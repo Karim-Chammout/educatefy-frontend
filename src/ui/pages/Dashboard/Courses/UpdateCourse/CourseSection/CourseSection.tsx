@@ -285,7 +285,11 @@ const CourseSection = ({ courseId, section }: { courseId: string; section: Secti
             </Button>
           </DialogActions>
         }
-      />
+      >
+        <Typography variant="body2" color="text.secondary">
+          {t('courseSection.deleteItemWarning')}
+        </Typography>
+      </Modal>
     </Container>
   );
 };

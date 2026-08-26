@@ -27,7 +27,7 @@ import {
   QuizQuestionDifficulty,
   UpdateQuizDocument,
 } from '@/generated/graphql';
-import { Button, Modal } from '@/ui/components';
+import { Button, Modal, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
 
 import QuizQuestionsField from './QuizQuestionsField';
@@ -458,7 +458,11 @@ const QuizBuilderForm = ({ mode, courseId, sectionId, item }: QuizBuilderFormPro
             </Button>
           </DialogActions>
         }
-      />
+      >
+        <Typography variant="body2" color="text.secondary">
+          {t('courseSection.deleteItemWarning')}
+        </Typography>
+      </Modal>
     </FormContainer>
   );
 };

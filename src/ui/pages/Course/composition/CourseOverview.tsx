@@ -1,6 +1,8 @@
 import CheckIcon from '@mui/icons-material/Check';
 import LinkIcon from '@mui/icons-material/Link';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -95,9 +97,21 @@ const CourseOverview = ({ courseInfo }: { courseInfo: CourseFragment }) => {
         </Paper>
       )}
 
-      {courseInfo.sections.length > 0 && (
+      {courseInfo.sections.length > 0 ? (
         <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
           <CourseSections sections={courseInfo.sections} />
+        </Paper>
+      ) : (
+        <Paper variant="outlined" sx={{ p: 4, mb: 2 }}>
+          <Box
+            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, py: 2 }}
+          >
+            <MenuBookIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
+            <Typography variant="h6">{t('course.noContentTitle')}</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('course.noContentSubtitle')}
+            </Typography>
+          </Box>
         </Paper>
       )}
     </>

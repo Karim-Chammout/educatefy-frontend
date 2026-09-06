@@ -3,4 +3,5 @@ export { default as CourseInstructor } from './CourseInstructor';
 export { default as CourseOverview } from './CourseOverview';
 export { default as CourseSections } from './CourseSections';
 export { default as CourseSkeleton } from './CourseSkeleton';
+export { default as CompletedCourseModal } from './CompletedCourseModal';
 export { default as ReviewsList } from './ReviewsList';

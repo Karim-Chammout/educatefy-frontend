@@ -41,3 +41,7 @@ export const isItemCompleted = (item: SectionItem): boolean => {
 
   return item.components.every((component) => component.progress?.is_completed);
 };
+
+/** Whether a section exposes any content at all (a quiz, or a lesson with components). */
+export const hasSectionContent = (section: CourseSectionFragment): boolean =>
+  Boolean(section.items?.some((item) => getItemComponents(item).length > 0));

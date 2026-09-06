@@ -180,6 +180,7 @@ mutation UpdateContentComponentProgress($progressInput: UpdateContentComponentPr
     errors {
       message
     }
+    courseCompleted
     contentComponentProgress {
       id
       content_component_id

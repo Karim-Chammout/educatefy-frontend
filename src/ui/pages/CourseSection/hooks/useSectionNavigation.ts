@@ -7,7 +7,14 @@ import { ContentComponentsType } from '@/types/types';
 
 import { getItemComponents, isQuizItem } from '../utils/sectionItems';
 
-export const useSectionNavigation = (section: CourseSectionFragment) => {
+type SectionNavigationOptions = {
+  onCourseCompleted?: () => void;
+};
+
+export const useSectionNavigation = (
+  section: CourseSectionFragment,
+  options?: SectionNavigationOptions,
+) => {
   const { slug, itemId, componentId } = useParams();
   const navigate = useNavigate();
 
@@ -196,6 +203,12 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
       },
       onCompleted: (data) => {
         if (data.updateContentComponentProgress?.success) {
+          if (data.updateContentComponentProgress.courseCompleted) {
+            options?.onCourseCompleted?.();
+
+            return;
+          }
+
           const nextComponent = getNextComponent();
 
           if (nextComponent) {
@@ -214,6 +227,7 @@ export const useSectionNavigation = (section: CourseSectionFragment) => {
     navigate,
     slug,
     section.id,
+    options,
   ]);
 
   const handleNavigateNext = useCallback(() => {

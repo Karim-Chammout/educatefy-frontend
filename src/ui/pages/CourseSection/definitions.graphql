@@ -52,6 +52,7 @@ mutation SubmitQuiz($submission: QuizSubmissionInput!) {
     errors {
       message
     }
+    courseCompleted
     quizAttempt {
       ...QuizAttemptResult
       questions {

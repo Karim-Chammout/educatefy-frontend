@@ -1,3 +1,5 @@
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 import { useMutation } from '@apollo/client/react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +11,7 @@ import {
   HomeDocument,
   UpdateCourseStatusDocument,
 } from '@/generated/graphql';
-import { Button } from '@/ui/components';
+import { Button, Typography } from '@/ui/components';
 import { AuthContext, ToasterContext } from '@/ui/context';
 import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
@@ -67,14 +69,9 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
   };
 
   const handleUpdateCourseStatus = async () => {
-    const status =
-      isCourseAvailable || isCourseCompleted ? CourseStatus.Enrolled : CourseStatus.Unenrolled;
+    const status = isCourseAvailable ? CourseStatus.Enrolled : CourseStatus.Unenrolled;
 
     await handleStatusUpdate(status);
-  };
-
-  const handleCompleteCourse = async () => {
-    await handleStatusUpdate(CourseStatus.Completed);
   };
 
   return (
@@ -100,27 +97,18 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
           >
             {t('content.unenroll')}
           </Button>
-          <Button
-            variant="contained"
-            size="large"
-            color="success"
-            onClick={handleCompleteCourse}
-            disabled={loading}
-          >
-            {t('course.markCompleted')}
-          </Button>
         </div>
       )}
 
       {isCourseCompleted && (
-        <Button
-          variant="contained"
-          size="large"
-          onClick={handleUpdateCourseStatus}
-          disabled={loading}
-        >
-          {t('course.retake')}
-        </Button>
+        <Alert severity="success" variant="filled" sx={{ alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              {t('course.completedTitle')}
+            </Typography>
+            <Typography variant="body2">{t('course.completedSubtitle')}</Typography>
+          </Box>
+        </Alert>
       )}
     </div>
   );

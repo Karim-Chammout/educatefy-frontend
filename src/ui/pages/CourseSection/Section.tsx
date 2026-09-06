@@ -22,7 +22,13 @@ import {
 import QuizView from './composition/QuizView';
 import { useSectionNavigation } from './hooks/useSectionNavigation';
 
-const Section = ({ section }: { section: CourseSectionFragment }) => {
+const Section = ({
+  section,
+  onCourseCompleted,
+}: {
+  section: CourseSectionFragment;
+  onCourseCompleted: () => void;
+}) => {
   const { t } = useTranslation();
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -42,7 +48,9 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
     handleNavigateNext,
     navigateToComponent,
     navigateToCourse,
-  } = useSectionNavigation(section);
+  } = useSectionNavigation(section, {
+    onCourseCompleted,
+  });
 
   const isItemCompleted = useCallback(
     (itemID: string) => {
@@ -107,6 +115,7 @@ const Section = ({ section }: { section: CourseSectionFragment }) => {
               quiz={selectedItem}
               onNavigateNext={handleNavigateNext}
               onBackToCourse={navigateToCourse}
+              onCourseCompleted={onCourseCompleted}
             />
           ) : (
             <>

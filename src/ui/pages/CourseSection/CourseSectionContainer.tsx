@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client/react';
 import CloseIcon from '@mui/icons-material/Close';
 import ContentPasteOffIcon from '@mui/icons-material/ContentPasteOff';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 
@@ -8,6 +9,7 @@ import { CourseDocument, CourseStatus } from '@/generated/graphql';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 import { MUST_ENROLL_TO_COURSE_FIRST } from '@/utils/constants';
 
+import { CompletedCourseModal } from '../Course/composition';
 import Section from './Section';
 import { SectionSkeleton } from './composition';
 import { getItemComponents } from './utils/sectionItems';
@@ -16,41 +18,34 @@ const CourseSectionContainer = () => {
   const { t } = useTranslation();
   const { slug, sectionId, itemId } = useParams();
   const navigate = useNavigate();
+  const [showCompletedModal, setShowCompletedModal] = useState(false);
 
-  const { loading, error, data } = useQuery(CourseDocument, {
+  const { loading, error, data, refetch } = useQuery(CourseDocument, {
     variables: {
       slug: slug || '',
     },
   });
 
+  const handleCourseCompleted = useCallback(() => {
+    setShowCompletedModal(true);
+    refetch().catch(() => {});
+  }, [refetch]);
+
   if (loading) {
     return <SectionSkeleton />;
   }
 
-  if (error || !data) {
+  if (error || !data || !data.course) {
     return <ErrorPlaceholder />;
   }
 
-  if (!data.course) {
-    return (
-      <InfoState
-        title={t('course.notFoundTitle')}
-        subtitle={t('course.notFoundSubtitle')}
-        btnLabel={t('common.exploreBtnLabel')}
-        btnOnClick={() => navigate('/explore')}
-        icon={<CloseIcon />}
-      />
-    );
-  }
+  const { course } = data;
 
-  if (
-    data.course.status === CourseStatus.Available ||
-    data.course.status === CourseStatus.Unenrolled
-  ) {
+  if (course.status === CourseStatus.Available || course.status === CourseStatus.Unenrolled) {
     return <Navigate to={`/course/${slug}`} state={{ action: MUST_ENROLL_TO_COURSE_FIRST }} />;
   }
 
-  const section = data.course.sections.find((s) => s.id === sectionId);
+  const section = course.sections.find((s) => s.id === sectionId);
 
   if (!section) {
     return (
@@ -64,11 +59,12 @@ const CourseSectionContainer = () => {
     );
   }
 
-  if (
+  const hasNoItems =
     !section.items ||
     section.items.length === 0 ||
-    section.items.every((item) => item.__typename === 'Lesson' && item.components.length === 0)
-  ) {
+    section.items.every((item) => item.__typename === 'Lesson' && item.components.length === 0);
+
+  if (hasNoItems) {
     return (
       <InfoState
         btnLabel={t('courseSection.backToCourse')}
@@ -83,19 +79,16 @@ const CourseSectionContainer = () => {
   if (!itemId) {
     const firstContentItem = section.items.find((item) => getItemComponents(item).length > 0);
 
-    if (firstContentItem) {
-      return (
-        <Navigate
-          to={`/course/${slug}/section/${section.id}/item/${firstContentItem.id}`}
-          replace
-        />
-      );
+    if (!firstContentItem) {
+      return null;
     }
+
+    return (
+      <Navigate to={`/course/${slug}/section/${section.id}/item/${firstContentItem.id}`} replace />
+    );
   }
 
-  const hasValidItem = section.items.some((item) => item.id === itemId);
-
-  if (!hasValidItem) {
+  if (!section.items.some((item) => item.id === itemId)) {
     return (
       <InfoState
         btnLabel={t('courseSection.backToCourse')}
@@ -107,7 +100,16 @@ const CourseSectionContainer = () => {
     );
   }
 
-  return <Section section={section} />;
+  return (
+    <>
+      <Section section={section} onCourseCompleted={handleCourseCompleted} />
+      <CompletedCourseModal
+        open={showCompletedModal}
+        courseId={course.id}
+        onClose={() => setShowCompletedModal(false)}
+      />
+    </>
+  );
 };
 
 export default CourseSectionContainer;

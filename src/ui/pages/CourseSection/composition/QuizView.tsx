@@ -109,10 +109,12 @@ const QuizView = ({
   quiz,
   onNavigateNext,
   onBackToCourse,
+  onCourseCompleted,
 }: {
   quiz: QuizItem;
   onNavigateNext: () => void;
   onBackToCourse: () => void;
+  onCourseCompleted?: () => void;
 }) => {
   const { t } = useTranslation();
   const { slug } = useParams();
@@ -312,6 +314,10 @@ const QuizView = ({
 
     setAttempt(data.submitQuiz.quizAttempt);
     setPhase('completed');
+
+    if (data.submitQuiz.courseCompleted) {
+      onCourseCompleted?.();
+    }
 
     if (autoTimedOut) {
       setToasterVisibility({

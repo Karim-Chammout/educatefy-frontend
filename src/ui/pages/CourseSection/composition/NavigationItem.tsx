@@ -13,7 +13,43 @@ import { CourseSectionFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 
 import { getItemComponents, isQuizItem } from '../utils/sectionItems';
-import { ComponentButton, ItemButton } from '../Section.style';
+import {
+  ComponentButton,
+  ComponentTree,
+  ItemButton,
+  StatusDot,
+  type ComponentState,
+} from '../Section.style';
+
+const resolveComponentState = ({
+  isAccessible,
+  isActive,
+  isCompleted,
+  isRequired,
+}: {
+  isAccessible: boolean;
+  isActive: boolean;
+  isCompleted: boolean;
+  isRequired: boolean;
+}): ComponentState => {
+  if (!isAccessible) {
+    return 'locked';
+  }
+
+  if (isActive) {
+    return 'active';
+  }
+
+  if (isCompleted) {
+    return 'completed';
+  }
+
+  if (isRequired) {
+    return 'required';
+  }
+
+  return 'default';
+};
 
 type NavigationItemType = {
   item: CourseSectionFragment['items'][0];
@@ -69,47 +105,57 @@ const NavigationItem = ({
 
       {!isQuiz && (
         <Collapse in={isOpen} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {components.map((component) => {
-              const isAccessible = isComponentAccessible(item.id, component.component_id);
-              const isComponentActive = component.component_id === selectedComponentId;
+          <ComponentTree>
+            <List component="div" disablePadding>
+              {components.map((component) => {
+                const isAccessible = isComponentAccessible(item.id, component.component_id);
+                const isComponentActive = component.component_id === selectedComponentId;
 
-              return (
-                <Tooltip
-                  key={component.component_id}
-                  title={
-                    !isAccessible
-                      ? t('contentComponent.completeRequiredContents')
-                      : component.is_required
-                        ? t('contentComponent.requiredContent')
-                        : ''
-                  }
-                  arrow
-                >
-                  <span>
-                    <ComponentButton
-                      isActive={isComponentActive}
-                      onClick={() => onComponentClick(item.id, component.component_id)}
-                      isCompleted={component.progress?.is_completed ?? false}
-                      isRequired={component.is_required}
-                      isAccessible={isAccessible}
-                      disabled={!isAccessible}
-                    >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1 }}>
-                        <Typography variant="body2" sx={{ flexGrow: 1 }}>
-                          {component.denomination}
-                        </Typography>
-                        {component.is_required && (
-                          <StarIcon sx={{ fontSize: '16px', color: '#ff9800' }} />
-                        )}
-                        {!isAccessible && <LockIcon sx={{ fontSize: '16px' }} />}
-                      </Box>
-                    </ComponentButton>
-                  </span>
-                </Tooltip>
-              );
-            })}
-          </List>
+                return (
+                  <Tooltip
+                    key={component.component_id}
+                    title={
+                      !isAccessible
+                        ? t('contentComponent.completeRequiredContents')
+                        : component.is_required
+                          ? t('contentComponent.requiredContent')
+                          : ''
+                    }
+                    arrow
+                  >
+                    <span>
+                      <ComponentButton
+                        isActive={isComponentActive}
+                        onClick={() => onComponentClick(item.id, component.component_id)}
+                        isCompleted={component.progress?.is_completed ?? false}
+                        isRequired={component.is_required}
+                        isAccessible={isAccessible}
+                        disabled={!isAccessible}
+                      >
+                        <StatusDot
+                          state={resolveComponentState({
+                            isAccessible,
+                            isActive: isComponentActive,
+                            isCompleted: component.progress?.is_completed ?? false,
+                            isRequired: component.is_required,
+                          })}
+                        />
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexGrow: 1 }}>
+                          <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                            {component.denomination}
+                          </Typography>
+                          {component.is_required && (
+                            <StarIcon sx={{ fontSize: '16px', color: '#ff9800' }} />
+                          )}
+                          {!isAccessible && <LockIcon sx={{ fontSize: '16px' }} />}
+                        </Box>
+                      </ComponentButton>
+                    </span>
+                  </Tooltip>
+                );
+              })}
+            </List>
+          </ComponentTree>
         </Collapse>
       )}
     </Box>

@@ -102,7 +102,11 @@ const CourseSectionContainer = () => {
 
   return (
     <>
-      <Section section={section} onCourseCompleted={handleCourseCompleted} />
+      <Section
+        section={section}
+        sections={course.sections}
+        onCourseCompleted={handleCourseCompleted}
+      />
       <CompletedCourseModal
         open={showCompletedModal}
         courseId={course.id}

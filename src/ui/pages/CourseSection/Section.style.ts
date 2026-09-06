@@ -62,6 +62,16 @@ export const ItemButton = styled(ListItemButton, {
   }
 `;
 
+export type ComponentState = 'locked' | 'active' | 'completed' | 'required' | 'default';
+
+export const ComponentTree = styled(Box)(
+  ({ theme }) => css`
+    margin-left: 16px;
+    padding: 4px 0 8px 8px;
+    border-left: 1px solid ${theme.colors.divider};
+  `,
+);
+
 export const ComponentButton = styled(ListItemButton, {
   shouldForwardProp: (prop) =>
     prop !== 'isActive' &&
@@ -74,31 +84,37 @@ export const ComponentButton = styled(ListItemButton, {
   isRequired: boolean;
   isAccessible: boolean;
 }>`
-  padding-left: 32px !important;
+  position: relative;
+  padding-left: 12px !important;
 
   ${({ isActive, isCompleted, isRequired, isAccessible }) => {
-    let borderColor = 'transparent';
     let backgroundColor = 'inherit';
 
     if (!isAccessible) {
-      borderColor = '#bdbdbd';
       backgroundColor = 'rgba(189, 189, 189, 0.05)';
     } else if (isActive) {
-      borderColor = '#1976d2';
       backgroundColor = 'rgba(25, 118, 210, 0.08)';
     } else if (isCompleted) {
-      borderColor = '#4caf50';
       backgroundColor = 'rgba(76, 175, 80, 0.05)';
     } else if (isRequired) {
-      borderColor = '#ff9800';
       backgroundColor = 'rgba(255, 152, 0, 0.05)';
     }
 
     return css`
-      border-left: 3px solid ${borderColor};
       background-color: ${backgroundColor};
     `;
   }}
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: 50%;
+    width: 9px;
+    height: 1px;
+    background-color: ${({ theme }) => theme.colors.divider};
+    transform: translateY(-50%);
+  }
 
   &:hover:not(:disabled) {
     background-color: ${({ isActive, isCompleted, isRequired, isAccessible }) => {
@@ -117,6 +133,37 @@ export const ComponentButton = styled(ListItemButton, {
     color: #757575;
   }
 `;
+
+export const StatusDot = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'state',
+})<{ state: ComponentState }>(({ state }: { state: ComponentState }) => {
+  let backgroundColor = 'transparent';
+  let border = '1px solid #bdbdbd';
+
+  if (state === 'active') {
+    backgroundColor = '#1976d2';
+    border = 'none';
+  } else if (state === 'completed') {
+    backgroundColor = '#4caf50';
+    border = 'none';
+  } else if (state === 'required') {
+    backgroundColor = '#ff9800';
+    border = 'none';
+  } else if (state === 'locked') {
+    backgroundColor = '#bdbdbd';
+    border = 'none';
+  }
+
+  return css`
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 10px;
+    background-color: ${backgroundColor};
+    border: ${border};
+  `;
+});
 
 export const ContentArea = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'fullWidth',

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 
 import CloseIcon from '@mui/icons-material/Close';
 
-import { CourseSectionFragment } from '@/generated/graphql';
+import { CourseFragment, CourseSectionFragment } from '@/generated/graphql';
 import { ContentComponentsType } from '@/types/types';
 import { InfoState } from '@/ui/compositions';
 
@@ -16,7 +16,6 @@ import {
   ContentRenderer,
   LockedContent,
   SectionHeader,
-  SectionLoader,
   SectionNavigation,
 } from './composition';
 import QuizView from './composition/QuizView';
@@ -24,9 +23,11 @@ import { useSectionNavigation } from './hooks/useSectionNavigation';
 
 const Section = ({
   section,
+  sections,
   onCourseCompleted,
 }: {
   section: CourseSectionFragment;
+  sections: CourseFragment['sections'];
   onCourseCompleted: () => void;
 }) => {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ const Section = ({
     mobileOpen,
     openItems,
     isUpdatingProgress,
+    hasNextSection,
     isComponentAccessible,
     getNextComponent,
     getBlockingComponent,
@@ -46,10 +48,12 @@ const Section = ({
     handleComponentClick,
     handleCompleteAndNext,
     handleNavigateNext,
+    navigateToNextSection,
     navigateToComponent,
     navigateToCourse,
   } = useSectionNavigation(section, {
     onCourseCompleted,
+    sections,
   });
 
   const isItemCompleted = useCallback(
@@ -101,39 +105,40 @@ const Section = ({
         isItemCompleted={isItemCompleted}
       />
 
-      {isUpdatingProgress ? (
-        <SectionLoader />
-      ) : (
-        <ContentArea fullWidth={mobileOpen}>
-          {!isCurrentComponentAccessible ? (
-            <LockedContent
-              blockingComponent={blockingComponent}
-              onNavigateToRequired={navigateToComponent}
-            />
-          ) : selectedItem.__typename === 'Quiz' ? (
-            <QuizView
-              quiz={selectedItem}
+      <ContentArea fullWidth={mobileOpen}>
+        {!isCurrentComponentAccessible ? (
+          <LockedContent
+            blockingComponent={blockingComponent}
+            onNavigateToRequired={navigateToComponent}
+          />
+        ) : selectedItem.__typename === 'Quiz' ? (
+          <QuizView
+            key={selectedItem.id}
+            quiz={selectedItem}
+            onNavigateNext={handleNavigateNext}
+            onBackToCourse={navigateToCourse}
+            onCourseCompleted={onCourseCompleted}
+            hasNextComponent={!!nextComponent}
+            hasNextSection={hasNextSection}
+          />
+        ) : (
+          <>
+            <ComponentHeader component={selectedComponent as Partial<ContentComponentsType>} />
+            <ContentRenderer component={selectedComponent as Partial<ContentComponentsType>} />
+            <ActionButtons
+              isCompleted={isSelectedComponentCompleted}
+              isItemCompleted={isItemCompleted(selectedItem.id)}
+              hasNext={!!nextComponent}
+              hasNextSection={hasNextSection}
+              isUpdating={isUpdatingProgress}
+              onCompleteAndNext={handleCompleteAndNext}
               onNavigateNext={handleNavigateNext}
+              onNavigateNextSection={navigateToNextSection}
               onBackToCourse={navigateToCourse}
-              onCourseCompleted={onCourseCompleted}
             />
-          ) : (
-            <>
-              <ComponentHeader component={selectedComponent as Partial<ContentComponentsType>} />
-              <ContentRenderer component={selectedComponent as Partial<ContentComponentsType>} />
-              <ActionButtons
-                isCompleted={isSelectedComponentCompleted}
-                isItemCompleted={isItemCompleted(selectedItem.id)}
-                hasNext={!!nextComponent}
-                isUpdating={isUpdatingProgress}
-                onCompleteAndNext={handleCompleteAndNext}
-                onNavigateNext={handleNavigateNext}
-                onBackToCourse={navigateToCourse}
-              />
-            </>
-          )}
-        </ContentArea>
-      )}
+          </>
+        )}
+      </ContentArea>
     </SectionContainer>
   );
 };

@@ -3,6 +3,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -12,20 +13,24 @@ import { Button } from '@/ui/components';
 type ActionButtonsType = {
   isCompleted: boolean;
   hasNext: boolean;
+  hasNextSection: boolean;
   isUpdating: boolean;
   isItemCompleted: boolean;
   onCompleteAndNext: () => void;
   onNavigateNext: () => void;
+  onNavigateNextSection: () => void;
   onBackToCourse: () => void;
 };
 
 const ActionButtons = ({
   isCompleted,
   hasNext,
+  hasNextSection,
   isUpdating,
   isItemCompleted,
   onCompleteAndNext,
   onNavigateNext,
+  onNavigateNextSection,
   onBackToCourse,
 }: ActionButtonsType) => {
   const { t } = useTranslation();
@@ -37,7 +42,7 @@ const ActionButtons = ({
         {!isCompleted && (
           <Button
             variant="contained"
-            startIcon={<DoneIcon />}
+            startIcon={isUpdating ? <CircularProgress size={20} color="inherit" /> : <DoneIcon />}
             onClick={onCompleteAndNext}
             disabled={isUpdating}
           >
@@ -47,7 +52,7 @@ const ActionButtons = ({
         {isCompleted && hasNext && (
           <Button
             variant="outlined"
-            startIcon={<NavigateNextIcon />}
+            startIcon={isUpdating ? <CircularProgress size={20} /> : <NavigateNextIcon />}
             onClick={onNavigateNext}
             disabled={!isCompleted || isUpdating}
           >
@@ -71,9 +76,19 @@ const ActionButtons = ({
           >
             {t('courseSection.sectionCompleted')}
           </Alert>
-          <Button variant="outlined" startIcon={<ArrowBackIcon />} onClick={onBackToCourse}>
-            {t('courseSection.backToCourse')}
-          </Button>
+          {hasNextSection ? (
+            <Button
+              variant="contained"
+              startIcon={<NavigateNextIcon />}
+              onClick={onNavigateNextSection}
+            >
+              {t('courseSection.nextSection')}
+            </Button>
+          ) : (
+            <Button variant="outlined" startIcon={<ArrowBackIcon />} onClick={onBackToCourse}>
+              {t('courseSection.backToCourse')}
+            </Button>
+          )}
         </Box>
       )}
     </Box>

@@ -110,11 +110,15 @@ const QuizView = ({
   onNavigateNext,
   onBackToCourse,
   onCourseCompleted,
+  hasNextComponent,
+  hasNextSection,
 }: {
   quiz: QuizItem;
   onNavigateNext: () => void;
   onBackToCourse: () => void;
   onCourseCompleted?: () => void;
+  hasNextComponent: boolean;
+  hasNextSection: boolean;
 }) => {
   const { t } = useTranslation();
   const { slug } = useParams();
@@ -183,6 +187,18 @@ const QuizView = ({
   const attemptsRemaining =
     quiz.max_attempts === 0 ? Infinity : Math.max(0, quiz.max_attempts - completedAttempts);
   const canTakeQuiz = attemptsRemaining > 0;
+
+  const nextActionLabel = (() => {
+    if (hasNextComponent) {
+      return t('quiz.nextLesson');
+    }
+
+    if (hasNextSection) {
+      return t('quiz.continue');
+    }
+
+    return t('courseSection.backToCourse');
+  })();
 
   const handleStart = async () => {
     setErrorMessage(null);
@@ -998,7 +1014,7 @@ const QuizView = ({
                 </Button>
               )}
               <Button variant="contained" color="primary" onClick={onNavigateNext}>
-                {t('quiz.nextLesson')}
+                {nextActionLabel}
               </Button>
             </Box>
           </CardContent>

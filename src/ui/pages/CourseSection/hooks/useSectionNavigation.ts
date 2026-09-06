@@ -1,14 +1,20 @@
 import { useMutation } from '@apollo/client/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
-import { CourseSectionFragment, UpdateContentComponentProgressDocument } from '@/generated/graphql';
+import {
+  CourseFragment,
+  CourseSectionFragment,
+  UpdateContentComponentProgressDocument,
+} from '@/generated/graphql';
 import { ContentComponentsType } from '@/types/types';
 
+import { getNextSection } from '../utils/navigationTargets';
 import { getItemComponents, isQuizItem } from '../utils/sectionItems';
 
 type SectionNavigationOptions = {
   onCourseCompleted?: () => void;
+  sections?: CourseFragment['sections'];
 };
 
 export const useSectionNavigation = (
@@ -22,6 +28,15 @@ export const useSectionNavigation = (
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({
     [itemId ?? section.items[0].id]: true,
   });
+
+  useEffect(() => {
+    if (itemId) {
+      setOpenItems((prev) => ({
+        ...prev,
+        [itemId]: true,
+      }));
+    }
+  }, [itemId]);
 
   const selectedItem = useMemo(
     () => section.items.find((item) => item.id === itemId) ?? null,
@@ -173,7 +188,7 @@ export const useSectionNavigation = (
           isCompleted: true,
         },
       },
-      update: (cache) => {
+      update: (cache, result) => {
         if (selectedItem.__typename !== 'Lesson') {
           return;
         }
@@ -182,7 +197,9 @@ export const useSectionNavigation = (
           (comp) => comp.component_id === selectedComponent.component_id,
         );
 
-        if (!component) {
+        const progress = result.data?.updateContentComponentProgress?.contentComponentProgress;
+
+        if (!component || !progress) {
           return;
         }
 
@@ -192,11 +209,8 @@ export const useSectionNavigation = (
             id: component.id,
           }),
           fields: {
-            progress(existingProgress) {
-              return {
-                ...existingProgress,
-                is_completed: true,
-              };
+            progress() {
+              return { ...progress };
             },
           },
         });
@@ -230,14 +244,73 @@ export const useSectionNavigation = (
     options,
   ]);
 
+  const getNextSectionTarget = useCallback(() => {
+    if (!options?.sections) {
+      return null;
+    }
+
+    const nextSection = getNextSection(options.sections, section.id);
+
+    if (!nextSection) {
+      return null;
+    }
+
+    const firstItem = nextSection.items.find((item) => getItemComponents(item).length > 0);
+
+    if (!firstItem) {
+      return null;
+    }
+
+    return {
+      sectionId: nextSection.id,
+      itemId: firstItem.id,
+      componentId: getItemComponents(firstItem)[0].component_id,
+    };
+  }, [options?.sections, section.id]);
+
   const handleNavigateNext = useCallback(() => {
     const nextComponent = getNextComponent();
+
     if (nextComponent) {
       navigate(
         `/course/${slug}/section/${section.id}/item/${nextComponent.itemId}/component/${nextComponent.componentId}`,
       );
+
+      return;
     }
-  }, [getNextComponent, navigate, slug, section.id]);
+
+    const nextSectionTarget = getNextSectionTarget();
+
+    if (nextSectionTarget) {
+      navigate(
+        `/course/${slug}/section/${nextSectionTarget.sectionId}/item/${nextSectionTarget.itemId}/component/${nextSectionTarget.componentId}`,
+      );
+
+      return;
+    }
+
+    navigate(`/course/${slug}`);
+  }, [getNextComponent, getNextSectionTarget, navigate, slug, section.id]);
+
+  const hasNextSection = useMemo(() => {
+    if (!options?.sections) {
+      return false;
+    }
+
+    return Boolean(getNextSection(options.sections, section.id));
+  }, [options?.sections, section.id]);
+
+  const navigateToNextSection = useCallback(() => {
+    const target = getNextSectionTarget();
+
+    if (!target) {
+      return;
+    }
+
+    navigate(
+      `/course/${slug}/section/${target.sectionId}/item/${target.itemId}/component/${target.componentId}`,
+    );
+  }, [getNextSectionTarget, navigate, slug]);
 
   const navigateToComponent = useCallback(
     (itemID: string, componentID: string) => {
@@ -256,6 +329,7 @@ export const useSectionNavigation = (
     mobileOpen,
     openItems,
     isUpdatingProgress,
+    hasNextSection,
     isComponentAccessible,
     getNextComponent,
     getBlockingComponent,
@@ -264,6 +338,7 @@ export const useSectionNavigation = (
     handleComponentClick,
     handleCompleteAndNext,
     handleNavigateNext,
+    navigateToNextSection,
     navigateToComponent,
     navigateToCourse,
   };

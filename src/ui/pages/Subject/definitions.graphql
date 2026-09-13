@@ -9,6 +9,13 @@ fragment SubjectContent on Subject {
     image
     rating
     participationCount
+    status
+    progress {
+      completedComponents
+      totalComponents
+      progressPercentage
+      isCompleted
+    }
     instructor {
       first_name
       last_name

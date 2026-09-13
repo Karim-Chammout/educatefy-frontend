@@ -43,6 +43,12 @@ fragment Program on Program {
       status
       rating
       participationCount
+      progress {
+        completedComponents
+        totalComponents
+        progressPercentage
+        isCompleted
+      }
       instructor {
         first_name
         last_name

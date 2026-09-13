@@ -131,6 +131,8 @@ const Subject = ({ subject }: { subject: SubjectContentFragment }) => {
               difficulty={course.level}
               rating={course.rating}
               studentsCount={course.participationCount}
+              status={course.status}
+              progress={course.progress}
             />
           </Grid>
         ))}

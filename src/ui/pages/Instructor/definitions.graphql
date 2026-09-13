@@ -30,6 +30,13 @@ fragment Teacher on Teacher {
     rating
     ratingsCount
     participationCount
+    status
+    progress {
+      completedComponents
+      totalComponents
+      progressPercentage
+      isCompleted
+    }
   }
   programs {
     id

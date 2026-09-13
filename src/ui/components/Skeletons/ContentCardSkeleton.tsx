@@ -41,6 +41,11 @@ const ContentCardSkeleton = () => {
             <Skeleton variant="circular" width={24} height={24} />
             <Skeleton width={90} />
           </Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+            <Skeleton variant="rounded" sx={{ flex: 1, height: 4 }} />
+            <Skeleton width={28} />
+          </Box>
         </Box>
       </Box>
     </Card>

@@ -1,26 +1,45 @@
 import { css, Theme } from '@emotion/react';
 import styled from '@emotion/styled';
+import MuiCheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MuiStarIcon from '@mui/icons-material/Star';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import MuiCardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
+import LinearProgress from '@mui/material/LinearProgress';
+import { styled as MuiStyled } from '@mui/material/styles';
 
 import { CourseLevel, ProgramLevel } from '@/generated/graphql';
 import { ThemeType } from '@/ui/theme/theme';
 
 type ContentType = 'course' | 'program';
 
-const cardStyles = ({ theme, contentType }: { theme: ThemeType; contentType: ContentType }) => css`
+const cardStyles = ({
+  theme,
+  contentType,
+  completed,
+}: {
+  theme: ThemeType;
+  contentType: ContentType;
+  completed?: boolean;
+}) => css`
   min-width: 280px;
   width: 100%;
   max-width: 420px;
   border-radius: 4px;
   height: 100%;
-  transition: border-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+
+  ${completed &&
+  css`
+    background-color: ${theme.colors.success['50']};
+  `}
 
   ${contentType === 'program' &&
+  !completed &&
   css`
     border-left: 2px solid ${theme.colors.error['500']};
   `}
@@ -31,13 +50,16 @@ const cardStyles = ({ theme, contentType }: { theme: ThemeType; contentType: Con
   }
 
   &:hover {
-    border-color: ${contentType === 'course'
-      ? theme.colors.primary['500']
-      : theme.colors.error['500']};
+    border-color: ${completed
+      ? theme.colors.success['500']
+      : contentType === 'course'
+        ? theme.colors.primary['500']
+        : theme.colors.error['500']};
   }
 `;
 
 const mediaWrapperStyles = css`
+  position: relative;
   border-radius: 4px;
   overflow: hidden;
 `;
@@ -115,10 +137,47 @@ const teacherContainerStyles = css`
   gap: 8px;
 `;
 
+const completedChipStyles = ({ theme }: { theme: ThemeType }) => css`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  background-color: ${theme.colors.success['500']};
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+`;
+
+const completedOverlayStyles = css`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const completedCheckIconStyles = ({ theme }: { theme: ThemeType }) => css`
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 48px;
+  filter: drop-shadow(0 1px 4px ${theme.colors.gray['900']});
+`;
+
+const progressBarWrapperStyles = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+`;
+
+const progressPercentLabelStyles = css`
+  white-space: nowrap;
+`;
+
 export const CardActionArea = styled(MuiCardActionArea)<{ to: string }>();
 export const StyledCard = styled(Card, {
-  shouldForwardProp: (prop) => prop !== 'contentType',
-})<{ contentType: ContentType }>(cardStyles);
+  shouldForwardProp: (prop) => prop !== 'contentType' && prop !== 'completed',
+})<{ contentType: ContentType; completed?: boolean }>(cardStyles);
 export const StyledMediaWrapper = styled(Box)(mediaWrapperStyles);
 export const DifficultyChip = styled(Chip)<{
   difficulty: CourseLevel | ProgramLevel;
@@ -130,3 +189,18 @@ export const StatsContainer = styled(Box)(statsContainerStyles);
 export const Statistic = styled(Box)(statisticStyles);
 export const StarIcon = styled(MuiStarIcon)(starIconStyles);
 export const TeacherContainer = styled(Box)(teacherContainerStyles);
+export const CompletedChip = styled(Chip)(completedChipStyles);
+export const CompletedOverlay = styled(Box)(completedOverlayStyles);
+export const CompletedCheckIcon = styled(MuiCheckCircleIcon)(completedCheckIconStyles);
+export const ProgressBarWrapper = styled(Box)(progressBarWrapperStyles);
+export const ProgressPercentLabel = styled(Box)(progressPercentLabelStyles);
+export const StyledProgressBar = MuiStyled(LinearProgress)(({ theme }) => ({
+  flex: 1,
+  height: 4,
+  borderRadius: 2,
+  backgroundColor: theme.palette.grey[200],
+  '& .MuiLinearProgress-bar': {
+    borderRadius: 2,
+    backgroundColor: theme.palette.success.main,
+  },
+}));

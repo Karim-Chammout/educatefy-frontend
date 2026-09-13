@@ -6,6 +6,13 @@ fragment HomeCourse on Course {
   image
   rating
   participationCount
+  status
+  progress {
+    completedComponents
+    totalComponents
+    progressPercentage
+    isCompleted
+  }
   instructor {
     first_name
     last_name

@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router';
 import {
   CourseFragment,
   CourseSectionFragment,
+  CourseStatus,
   UpdateContentComponentProgressDocument,
 } from '@/generated/graphql';
 import { ContentComponentsType } from '@/types/types';
@@ -15,6 +16,7 @@ import { getItemComponents, isQuizItem } from '../utils/sectionItems';
 type SectionNavigationOptions = {
   onCourseCompleted?: () => void;
   sections?: CourseFragment['sections'];
+  courseId?: string;
 };
 
 export const useSectionNavigation = (
@@ -189,6 +191,34 @@ export const useSectionNavigation = (
         },
       },
       update: (cache, result) => {
+        const { courseCompleted, progress: courseProgress } =
+          result.data?.updateContentComponentProgress ?? {};
+
+        if (options?.courseId) {
+          cache.modify({
+            id: cache.identify({
+              __typename: 'Course',
+              id: options.courseId,
+            }),
+            fields: {
+              ...(courseProgress
+                ? {
+                    progress() {
+                      return courseProgress;
+                    },
+                  }
+                : {}),
+              ...(courseCompleted
+                ? {
+                    status() {
+                      return CourseStatus.Completed;
+                    },
+                  }
+                : {}),
+            },
+          });
+        }
+
         if (selectedItem.__typename !== 'Lesson') {
           return;
         }

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client/react';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -20,11 +20,10 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
 
 import {
   AttemptQuestionFragment,
-  CourseDocument,
+  CourseStatus,
   QuizAttemptQuestionDocument,
   QuizAttemptResultFragment,
   QuizNavigationMode,
@@ -107,6 +106,8 @@ const formatDuration = (totalMinutes: number) => {
 
 const QuizView = ({
   quiz,
+  courseId,
+  refetchCourse,
   onNavigateNext,
   onBackToCourse,
   onCourseCompleted,
@@ -114,6 +115,8 @@ const QuizView = ({
   hasNextSection,
 }: {
   quiz: QuizItem;
+  courseId: string;
+  refetchCourse: () => Promise<unknown>;
   onNavigateNext: () => void;
   onBackToCourse: () => void;
   onCourseCompleted?: () => void;
@@ -121,7 +124,6 @@ const QuizView = ({
   hasNextSection: boolean;
 }) => {
   const { t } = useTranslation();
-  const { slug } = useParams();
   const { setToasterVisibility } = useContext(ToasterContext);
 
   const [phase, setPhase] = useState<Phase>('idle');
@@ -151,10 +153,7 @@ const QuizView = ({
 
   const [startQuiz, { loading: isStarting }] = useMutation(StartQuizDocument);
   const [submitQuiz] = useMutation(SubmitQuizDocument);
-  const { refetch: refetchCourse } = useQuery(CourseDocument, {
-    variables: { slug: slug || '' },
-    skip: true,
-  });
+  const { cache } = useApolloClient();
 
   const { data: singleQuestionData, loading: isQuestionLoading } = useQuery(
     QuizAttemptQuestionDocument,
@@ -331,7 +330,31 @@ const QuizView = ({
     setAttempt(data.submitQuiz.quizAttempt);
     setPhase('completed');
 
-    if (data.submitQuiz.courseCompleted) {
+    const { progress: courseProgress, courseCompleted } = data.submitQuiz;
+
+    cache.modify({
+      id: cache.identify({ __typename: 'Course', id: courseId }),
+      fields: {
+        ...(courseProgress
+          ? {
+              progress() {
+                return courseProgress;
+              },
+            }
+          : {}),
+        ...(courseCompleted
+          ? {
+              status() {
+                return CourseStatus.Completed;
+              },
+            }
+          : {}),
+      },
+    });
+
+    await refetchCourse();
+
+    if (courseCompleted) {
       onCourseCompleted?.();
     }
 
@@ -342,8 +365,6 @@ const QuizView = ({
         newDuration: 4000,
       });
     }
-
-    await refetchCourse();
   };
 
   const submitRef = useRef(handleSubmit);

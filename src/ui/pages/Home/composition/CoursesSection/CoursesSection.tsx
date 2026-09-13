@@ -29,6 +29,8 @@ const CoursesSection = ({ title, courses }: { title: string; courses: HomeCourse
               difficulty={course.level}
               rating={course.rating}
               studentsCount={course.participationCount}
+              status={course.status}
+              progress={course.progress}
             />
           </Grid>
         ))}

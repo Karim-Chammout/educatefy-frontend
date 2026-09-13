@@ -25,7 +25,6 @@ import {
   StyledLinearProgress,
   SubjectsContainer,
 } from '../Course.style';
-import { useCourseProgress } from '../hooks/useCourseProgress';
 import CourseCTA from './CourseCTA';
 
 const CourseHeader = ({ courseInfo }: { courseInfo: CourseFragment }) => {
@@ -34,7 +33,8 @@ const CourseHeader = ({ courseInfo }: { courseInfo: CourseFragment }) => {
   const isEnrolledOrCompleted =
     courseInfo.status === CourseStatus.Enrolled || courseInfo.status === CourseStatus.Completed;
 
-  const { completedSections, totalSections, percentage } = useCourseProgress(courseInfo);
+  const progress = courseInfo.progress;
+  const percentage = progress?.progressPercentage ?? 0;
 
   return (
     <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
@@ -110,14 +110,14 @@ const CourseHeader = ({ courseInfo }: { courseInfo: CourseFragment }) => {
             ))}
           </SubjectsContainer>
 
-          {isEnrolledOrCompleted && totalSections > 0 && (
+          {isEnrolledOrCompleted && progress != null && progress.totalComponents > 0 && (
             <Box sx={{ mb: 2, maxWidth: 420 }}>
               <StyledLinearProgress variant="determinate" value={percentage} sx={{ mb: 1 }} />
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="caption" color="text.secondary">
-                  {t('course.progress', {
-                    completed: completedSections,
-                    total: totalSections,
+                  {t('course.progressComponents', {
+                    completed: progress.completedComponents,
+                    count: progress.totalComponents,
                   })}
                 </Typography>
                 <Typography variant="caption" sx={{ fontWeight: 'medium', color: 'primary.main' }}>

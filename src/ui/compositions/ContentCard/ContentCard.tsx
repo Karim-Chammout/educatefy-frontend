@@ -4,21 +4,34 @@ import CardMedia from '@mui/material/CardMedia';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 
-import { CourseLevel, ProgramLevel } from '@/generated/graphql';
+import { CourseLevel, CourseStatus, ProgramLevel } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 
 import {
   CardActionArea,
+  CompletedCheckIcon,
+  CompletedChip,
+  CompletedOverlay,
   DifficultyChip,
   MetadataContainer,
+  ProgressBarWrapper,
+  ProgressPercentLabel,
   StarIcon,
   Statistic,
   StatsContainer,
   StyledCard,
   StyledCardContent,
   StyledMediaWrapper,
+  StyledProgressBar,
   TeacherContainer,
 } from './ContentCard.style';
+
+type ContentCardProgress = {
+  completedComponents: number;
+  totalComponents: number;
+  progressPercentage: number;
+  isCompleted: boolean;
+};
 
 type ContentCardType = {
   type: 'course' | 'program';
@@ -31,6 +44,8 @@ type ContentCardType = {
   difficulty: CourseLevel | ProgramLevel;
   rating?: number;
   coursesCount?: number;
+  status?: CourseStatus;
+  progress?: ContentCardProgress | null;
 };
 
 const ContentCard = ({
@@ -44,14 +59,31 @@ const ContentCard = ({
   teacherName,
   difficulty,
   coursesCount,
+  status,
+  progress,
 }: ContentCardType) => {
   const { t } = useTranslation();
 
+  const showCompletedChip = type === 'course' && status === CourseStatus.Completed;
+  const showProgressBar =
+    type === 'course' &&
+    status === CourseStatus.Enrolled &&
+    progress != null &&
+    progress.progressPercentage > 0;
+
   return (
-    <StyledCard variant="outlined" contentType={type}>
+    <StyledCard variant="outlined" contentType={type} completed={showCompletedChip}>
       <CardActionArea LinkComponent={Link} to={linkPath}>
         <StyledMediaWrapper>
           <CardMedia component="img" loading="lazy" height="200" image={image} alt={title} />
+          {showCompletedChip && (
+            <>
+              <CompletedOverlay>
+                <CompletedCheckIcon />
+              </CompletedOverlay>
+              <CompletedChip size="small" label={t('contentCard.completed')} />
+            </>
+          )}
         </StyledMediaWrapper>
 
         <StyledCardContent>
@@ -97,6 +129,17 @@ const ContentCard = ({
               {teacherName}
             </Typography>
           </TeacherContainer>
+
+          {showProgressBar && (
+            <ProgressBarWrapper>
+              <StyledProgressBar variant="determinate" value={progress.progressPercentage} />
+              <ProgressPercentLabel>
+                <Typography variant="caption" color="text.secondary">
+                  {Math.round(progress.progressPercentage)}%
+                </Typography>
+              </ProgressPercentLabel>
+            </ProgressBarWrapper>
+          )}
         </StyledCardContent>
       </CardActionArea>
     </StyledCard>

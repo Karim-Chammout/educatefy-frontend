@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 
-import { CourseDocument, CourseStatus } from '@/generated/graphql';
+import { CourseDocument, CourseStatus, HomeDocument } from '@/generated/graphql';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 import { MUST_ENROLL_TO_COURSE_FIRST } from '@/utils/constants';
 
@@ -25,11 +25,13 @@ const CourseSectionContainer = () => {
       slug: slug || '',
     },
   });
+  const { refetch: refetchHome } = useQuery(HomeDocument, { skip: true });
 
   const handleCourseCompleted = useCallback(() => {
     setShowCompletedModal(true);
     refetch().catch(() => {});
-  }, [refetch]);
+    refetchHome().catch(() => {});
+  }, [refetch, refetchHome]);
 
   if (loading) {
     return <SectionSkeleton />;
@@ -105,7 +107,9 @@ const CourseSectionContainer = () => {
       <Section
         section={section}
         sections={course.sections}
+        courseId={course.id}
         onCourseCompleted={handleCourseCompleted}
+        refetchCourse={refetch}
       />
       <CompletedCourseModal
         open={showCompletedModal}

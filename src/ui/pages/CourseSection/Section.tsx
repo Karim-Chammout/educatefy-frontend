@@ -24,11 +24,15 @@ import { useSectionNavigation } from './hooks/useSectionNavigation';
 const Section = ({
   section,
   sections,
+  courseId,
   onCourseCompleted,
+  refetchCourse,
 }: {
   section: CourseSectionFragment;
   sections: CourseFragment['sections'];
+  courseId: string;
   onCourseCompleted: () => void;
+  refetchCourse: () => Promise<unknown>;
 }) => {
   const { t } = useTranslation();
   const { slug } = useParams();
@@ -54,6 +58,7 @@ const Section = ({
   } = useSectionNavigation(section, {
     onCourseCompleted,
     sections,
+    courseId,
   });
 
   const isItemCompleted = useCallback(
@@ -115,6 +120,8 @@ const Section = ({
           <QuizView
             key={selectedItem.id}
             quiz={selectedItem}
+            courseId={courseId}
+            refetchCourse={refetchCourse}
             onNavigateNext={handleNavigateNext}
             onBackToCourse={navigateToCourse}
             onCourseCompleted={onCourseCompleted}

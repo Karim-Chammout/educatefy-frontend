@@ -53,6 +53,12 @@ mutation SubmitQuiz($submission: QuizSubmissionInput!) {
       message
     }
     courseCompleted
+    progress {
+      completedComponents
+      totalComponents
+      progressPercentage
+      isCompleted
+    }
     quizAttempt {
       ...QuizAttemptResult
       questions {

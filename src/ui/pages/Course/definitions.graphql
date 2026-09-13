@@ -86,6 +86,12 @@ fragment Course on Course {
   updated_at
   created_at
   status
+  progress {
+    completedComponents
+    totalComponents
+    progressPercentage
+    isCompleted
+  }
   subjects {
     id
     denomination
@@ -181,6 +187,12 @@ mutation UpdateContentComponentProgress($progressInput: UpdateContentComponentPr
       message
     }
     courseCompleted
+    progress {
+      completedComponents
+      totalComponents
+      progressPercentage
+      isCompleted
+    }
     contentComponentProgress {
       id
       content_component_id

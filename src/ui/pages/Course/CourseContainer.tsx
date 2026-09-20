@@ -33,8 +33,8 @@ const CourseContainer = () => {
       <InfoState
         title={t('course.notFoundTitle')}
         subtitle={t('course.notFoundSubtitle')}
-        btnLabel={t('common.exploreBtnLabel')}
-        btnOnClick={() => navigate('/explore')}
+        btnLabel={t('common.catalogBtnLabel')}
+        btnOnClick={() => navigate('/catalog')}
         icon={<CloseIcon />}
       />
     );

@@ -116,7 +116,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
       },
       onCompleted(res) {
         if (res.updateAccountInfo?.success) {
-          window.location.href = '/explore';
+          window.location.href = '/catalog';
         } else {
           const messages = (res.updateAccountInfo?.errors ?? [])
             .map((errorItem) => errorItem.message)

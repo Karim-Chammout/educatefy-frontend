@@ -10,8 +10,8 @@ const NotFound = () => {
 
   return (
     <InfoState
-      btnLabel={t('common.exploreBtnLabel')}
-      btnOnClick={() => navigate('/explore')}
+      btnLabel={t('common.catalogBtnLabel')}
+      btnOnClick={() => navigate('/catalog')}
       icon={<ErrorOutlineRoundedIcon />}
       title={t('notFound.title')}
       subtitle={t('notFound.subtitle')}

@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router';
 
 import {
+  Catalog,
   Course,
-  Explore,
   Instructor,
   Login,
   LoginCallback,
@@ -23,7 +23,7 @@ const privateRoutes = ['/profile', '/dashboard/*', '/course/:slug/*'];
 const PublicRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/explore" replace />} />
+      <Route path="/" element={<Navigate to="/catalog" replace />} />
       <Route
         path="/openid/callback"
         element={
@@ -49,10 +49,10 @@ const PublicRoutes = () => {
         }
       />
       <Route
-        path="/explore"
+        path="/catalog"
         element={
           <RouteWrapper>
-            <Explore />
+            <Catalog />
           </RouteWrapper>
         }
       />

@@ -27,7 +27,7 @@ const SubjectTileSkeleton = () => {
   );
 };
 
-const ExploreSkeleton = () => {
+const CatalogSkeleton = () => {
   return (
     <div style={{ marginTop: '16px' }}>
       <Box
@@ -54,4 +54,4 @@ const ExploreSkeleton = () => {
   );
 };
 
-export default ExploreSkeleton;
+export default CatalogSkeleton;

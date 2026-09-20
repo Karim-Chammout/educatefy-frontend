@@ -3,24 +3,24 @@ import Grid from '@mui/material/Grid';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
-import { ExploreSubjectFragment } from '@/generated/graphql';
+import { CatalogSubjectFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 
-import { ExploreHeader, StyledPaper } from './Explore.styles';
+import { CatalogHeader, StyledPaper } from './Catalog.styles';
 
-const Explore = ({ subjects }: { subjects: ExploreSubjectFragment[] }) => {
+const Catalog = ({ subjects }: { subjects: CatalogSubjectFragment[] }) => {
   const { t } = useTranslation();
 
   return (
     <div style={{ marginTop: '16px' }}>
-      <ExploreHeader>
+      <CatalogHeader>
         <Typography variant="h3" component="h1" sx={{ fontWeight: 'bold' }} gutterBottom>
-          {t('explore.heading')}
+          {t('catalog.heading')}
         </Typography>
         <Typography variant="h6" color="text.secondary">
-          {t('explore.subHeading')}
+          {t('catalog.subHeading')}
         </Typography>
-      </ExploreHeader>
+      </CatalogHeader>
 
       <Grid container spacing={3}>
         {subjects.map((subject) => {
@@ -74,4 +74,4 @@ const Explore = ({ subjects }: { subjects: ExploreSubjectFragment[] }) => {
   );
 };
 
-export default Explore;
+export default Catalog;

@@ -58,7 +58,7 @@ const LoginCallback = () => {
         localStorage.setItem('refreshToken', data.refreshToken);
         await userAuth.refresh();
 
-        const redirectPath = sessionStorage.getItem('postLoginRedirect') || '/explore';
+        const redirectPath = sessionStorage.getItem('postLoginRedirect') || '/catalog';
 
         navigate(redirectPath, { replace: true });
 

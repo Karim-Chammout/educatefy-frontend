@@ -14,6 +14,7 @@ import PublicPageTemplate from './PublicPageTemplate';
 import { DashboardRoutes } from './routes/DashboardRoutes';
 import {
   Analytics,
+  Catalog,
   Course,
   CourseDetailAnalytics,
   Courses,
@@ -23,7 +24,6 @@ import {
   CreateCourse,
   CreateProgram,
   Dashboard,
-  Explore,
   Home,
   Instructor,
   NotFound,
@@ -88,10 +88,10 @@ const PrivatePagesView = () => {
           }
         />
         <Route
-          path="/explore"
+          path="/catalog"
           element={
             <RouteWrapper>
-              <Explore />
+              <Catalog />
             </RouteWrapper>
           }
         />
@@ -267,9 +267,9 @@ const PrivatePagesView = () => {
           />
         </Route>
 
-        <Route path="/login" element={<Navigate to="/explore" />} />
-        <Route path="/register" element={<Navigate to="/explore" />} />
-        <Route path="/openid/callback" element={<Navigate to="/explore" />} />
+        <Route path="/login" element={<Navigate to="/catalog" />} />
+        <Route path="/register" element={<Navigate to="/catalog" />} />
+        <Route path="/openid/callback" element={<Navigate to="/catalog" />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

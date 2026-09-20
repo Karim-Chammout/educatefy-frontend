@@ -1,4 +1,4 @@
-fragment ExploreSubject on Subject {
+fragment CatalogSubject on Subject {
   id
   denomination
   courses {
@@ -11,8 +11,8 @@ fragment ExploreSubject on Subject {
   }
 }
 
-query Explore {
+query Catalog {
   subjectsWithLinkedContent {
-    ...ExploreSubject
+    ...CatalogSubject
   }
 }

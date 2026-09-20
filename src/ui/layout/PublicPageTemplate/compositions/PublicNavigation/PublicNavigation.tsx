@@ -1,4 +1,4 @@
-import ExploreIcon from '@mui/icons-material/Explore';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import { useMediaQuery, useTheme } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -18,9 +18,9 @@ import { LogoWrapper, StyledNavLink } from './PublicNavigation.style';
 
 const navItems = [
   {
-    label: 'navigation.explore',
-    icon: <ExploreIcon />,
-    path: '/explore',
+    label: 'navigation.catalog',
+    icon: <LibraryBooksIcon />,
+    path: '/catalog',
   },
 ];
 
@@ -44,7 +44,7 @@ const PublicNavigation = () => {
               width={60}
               alt="Logo"
               role="presentation"
-              onClick={() => navigate('/explore')}
+              onClick={() => navigate('/catalog')}
             />
           </LogoWrapper>
           <Box sx={{ display: 'flex', flexGrow: 1 }}>

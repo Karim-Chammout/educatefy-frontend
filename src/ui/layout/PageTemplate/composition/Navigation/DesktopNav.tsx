@@ -1,8 +1,8 @@
 import Brightness4 from '@mui/icons-material/Brightness4';
 import Brightness7 from '@mui/icons-material/Brightness7';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ExploreIcon from '@mui/icons-material/Explore';
 import HomeIcon from '@mui/icons-material/Home';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Person2Icon from '@mui/icons-material/Person2';
 import AppBar from '@mui/material/AppBar';
@@ -44,9 +44,9 @@ const navItems: NavItemType[] = [
     roleAccess: AccountRole.Student,
   },
   {
-    label: 'navigation.explore',
-    icon: <ExploreIcon />,
-    path: '/explore',
+    label: 'navigation.catalog',
+    icon: <LibraryBooksIcon />,
+    path: '/catalog',
     roleAccess: AccountRole.Student,
   },
   {

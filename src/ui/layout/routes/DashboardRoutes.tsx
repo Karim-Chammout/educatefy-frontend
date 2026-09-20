@@ -49,7 +49,7 @@ export const DashboardRoutes = ({ hasPermission }: { hasPermission: boolean }) =
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   if (!hasPermission) {
-    return <Navigate to="/explore" state={{ action: PERMISSION_DENIED }} />;
+    return <Navigate to="/catalog" state={{ action: PERMISSION_DENIED }} />;
   }
 
   const activeTab = navigationItems.find(

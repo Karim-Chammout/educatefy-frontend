@@ -32,5 +32,5 @@ export const terminatSession = async () => {
 export const logout = async () => {
   await terminatSession();
 
-  return (window.location.href = '/explore');
+  return (window.location.href = '/catalog');
 };

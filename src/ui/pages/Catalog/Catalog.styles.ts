@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 
-export const ExploreHeader = styled(Box)(({ theme }) => ({
+export const CatalogHeader = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   marginBottom: theme.spacing(6),
   paddingBottom: theme.spacing(3),

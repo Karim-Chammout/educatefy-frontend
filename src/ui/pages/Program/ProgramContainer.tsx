@@ -33,8 +33,8 @@ const ProgramContainer = () => {
       <InfoState
         title={t('program.notFoundTitle')}
         subtitle={t('program.notFoundSubtitle')}
-        btnLabel={t('common.exploreBtnLabel')}
-        btnOnClick={() => navigate('/explore')}
+        btnLabel={t('common.catalogBtnLabel')}
+        btnOnClick={() => navigate('/catalog')}
         icon={<CloseIcon />}
       />
     );

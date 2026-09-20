@@ -24,6 +24,7 @@ import {
   StyledMediaWrapper,
   StyledProgressBar,
   TeacherContainer,
+  TeacherLink,
 } from './ContentCard.style';
 
 type ContentCardProgress = {
@@ -39,6 +40,7 @@ type ContentCardType = {
   linkPath: string;
   teacherName: string;
   teacherAvatar: string;
+  teacherLink: string;
   image: string;
   studentsCount: number;
   difficulty: CourseLevel | ProgramLevel;
@@ -57,6 +59,7 @@ const ContentCard = ({
   studentsCount,
   teacherAvatar,
   teacherName,
+  teacherLink,
   difficulty,
   coursesCount,
   status,
@@ -123,13 +126,6 @@ const ContentCard = ({
             {title}
           </Typography>
 
-          <TeacherContainer>
-            <Avatar src={teacherAvatar} alt={teacherName} sx={{ width: 24, height: 24 }} />
-            <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
-              {teacherName}
-            </Typography>
-          </TeacherContainer>
-
           {showProgressBar && (
             <ProgressBarWrapper>
               <StyledProgressBar variant="determinate" value={progress.progressPercentage} />
@@ -142,6 +138,15 @@ const ContentCard = ({
           )}
         </StyledCardContent>
       </CardActionArea>
+
+      <TeacherLink to={teacherLink}>
+        <TeacherContainer>
+          <Avatar src={teacherAvatar} alt={teacherName} sx={{ width: 24, height: 24 }} />
+          <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
+            {teacherName}
+          </Typography>
+        </TeacherContainer>
+      </TeacherLink>
     </StyledCard>
   );
 };

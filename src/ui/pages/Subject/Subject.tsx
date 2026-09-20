@@ -6,6 +6,7 @@ import person from '@/assets/person.png';
 import { SubjectContentFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 import { ContentCard } from '@/ui/compositions';
+import { getTeacherPath } from '@/utils/getTeacherPath';
 
 import { StatsContainer, SubjectHeader } from './Subject.styles';
 
@@ -108,6 +109,7 @@ const Subject = ({ subject }: { subject: SubjectContentFragment }) => {
               linkPath={`/program/${program.slug}`}
               teacherName={`${program.instructor.first_name} ${program.instructor.last_name}`}
               teacherAvatar={program.instructor.avatar_url || person}
+              teacherLink={getTeacherPath(program.instructor.id)}
               image={program.image || fallbackImage}
               difficulty={program.level}
               studentsCount={program.enrolledLearnersCount}
@@ -127,6 +129,7 @@ const Subject = ({ subject }: { subject: SubjectContentFragment }) => {
               linkPath={`/course/${course.slug}`}
               teacherName={`${course.instructor.first_name} ${course.instructor.last_name}`}
               teacherAvatar={course.instructor.avatar_url || person}
+              teacherLink={getTeacherPath(course.instructor.id)}
               image={course.image || fallbackImage}
               difficulty={course.level}
               rating={course.rating}

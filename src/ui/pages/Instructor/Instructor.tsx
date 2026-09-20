@@ -19,6 +19,7 @@ import person from '@/assets/person.png';
 import { FollowTeacherDocument, TeacherFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { ContentCard, RichTextContent, SocialLinksDisplay } from '@/ui/compositions';
+import { getTeacherPath } from '@/utils/getTeacherPath';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 import {
@@ -250,6 +251,7 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
                   linkPath={`/program/${program.slug}`}
                   teacherName={`${program.instructor.first_name} ${program.instructor.last_name}`}
                   teacherAvatar={program.instructor.avatar_url || person}
+                  teacherLink={getTeacherPath(program.instructor.id)}
                   image={program.image || fallbackImage}
                   difficulty={program.level}
                   studentsCount={program.enrolledLearnersCount}
@@ -269,6 +271,7 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
                   linkPath={`/course/${course.slug}`}
                   teacherName={`${instructor.first_name} ${instructor.last_name}`}
                   teacherAvatar={instructor.avatar_url || person}
+                  teacherLink={getTeacherPath(instructor.id)}
                   image={course.image || fallbackImage}
                   difficulty={course.level}
                   rating={course.rating}

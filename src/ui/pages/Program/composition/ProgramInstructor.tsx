@@ -7,6 +7,7 @@ import person from '@/assets/person.png';
 import { FollowTeacherDocument, ProgramFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { RichTextContent } from '@/ui/compositions';
+import { getTeacherPath } from '@/utils/getTeacherPath';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
 import { InstructorInfoWrapper, SectionTitle } from '../Program.styles';
@@ -41,7 +42,7 @@ const ProgramInstructor = ({ program }: { program: ProgramFragment }) => {
       <SectionTitle component="h3" variant="h6" gutterBottom>
         {t('program.instructor')}
       </SectionTitle>
-      <InstructorInfoWrapper to={`/teacher/${id}`}>
+      <InstructorInfoWrapper to={getTeacherPath(id)}>
         <Avatar src={avatar_url || person} sx={{ height: '96px', width: '96px' }} />
         <Typography variant="h6" gutterBottom>
           {first_name} {last_name}

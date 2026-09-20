@@ -9,6 +9,7 @@ import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import LinearProgress from '@mui/material/LinearProgress';
 import { styled as MuiStyled } from '@mui/material/styles';
+import { Link } from 'react-router';
 
 import { CourseLevel, ProgramLevel } from '@/generated/graphql';
 import { ThemeType } from '@/ui/theme/theme';
@@ -29,6 +30,8 @@ const cardStyles = ({
   max-width: 420px;
   border-radius: 4px;
   height: 100%;
+  display: flex;
+  flex-direction: column;
   transition:
     border-color 0.2s ease,
     background-color 0.2s ease;
@@ -45,7 +48,7 @@ const cardStyles = ({
   `}
 
   & .MuiCardActionArea-root {
-    height: 100%;
+    flex-grow: 1;
     padding: 16px;
   }
 
@@ -137,6 +140,35 @@ const teacherContainerStyles = css`
   gap: 8px;
 `;
 
+const teacherLinkStyles = ({ theme }: { theme: ThemeType }) => css`
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  margin: 0 8px 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+
+  & .MuiAvatar-root {
+    transition: box-shadow 0.15s ease-in-out;
+  }
+
+  &:hover {
+    background-color: ${theme.colors.gray['200']};
+
+    & .MuiAvatar-root {
+      box-shadow: 0 0 0 2px ${theme.colors.primary['500']};
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${theme.colors.primary['500']};
+    outline-offset: 2px;
+  }
+`;
+
 const completedChipStyles = ({ theme }: { theme: ThemeType }) => css`
   position: absolute;
   top: 8px;
@@ -189,6 +221,7 @@ export const StatsContainer = styled(Box)(statsContainerStyles);
 export const Statistic = styled(Box)(statisticStyles);
 export const StarIcon = styled(MuiStarIcon)(starIconStyles);
 export const TeacherContainer = styled(Box)(teacherContainerStyles);
+export const TeacherLink = styled(Link)<{ to: string }>(teacherLinkStyles);
 export const CompletedChip = styled(Chip)(completedChipStyles);
 export const CompletedOverlay = styled(Box)(completedOverlayStyles);
 export const CompletedCheckIcon = styled(MuiCheckCircleIcon)(completedCheckIconStyles);

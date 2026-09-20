@@ -17,6 +17,7 @@ fragment SubjectContent on Subject {
       isCompleted
     }
     instructor {
+      id
       first_name
       last_name
       avatar_url
@@ -30,6 +31,7 @@ fragment SubjectContent on Subject {
     image
     enrolledLearnersCount
     instructor {
+      id
       first_name
       last_name
       avatar_url

@@ -8,6 +8,7 @@ import person from '@/assets/person.png';
 import { ProgramFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 import { ContentCard } from '@/ui/compositions';
+import { getTeacherPath } from '@/utils/getTeacherPath';
 
 import { SectionTitle } from '../Program.styles';
 import VersionUpgradeBanner from './VersionUpgradeBanner';
@@ -42,6 +43,7 @@ const ContentSection = ({ program }: { program: ProgramFragment }) => {
                 linkPath={`/program/${program.slug}/course/${course.slug}`}
                 teacherName={`${course.instructor.first_name} ${course.instructor.last_name}`}
                 teacherAvatar={course.instructor.avatar_url || person}
+                teacherLink={getTeacherPath(course.instructor.id)}
                 image={course.image || fallbackImage}
                 difficulty={course.level}
                 rating={course.rating}

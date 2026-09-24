@@ -1,18 +1,73 @@
 fragment CatalogSubject on Subject {
   id
   denomination
-  courses {
+}
+
+fragment CatalogTeacher on Teacher {
+  id
+  first_name
+  last_name
+  avatar_url
+  followersCount
+  subjects {
     id
-    participationCount
-  }
-  programs {
-    id
-    enrolledLearnersCount
+    denomination
   }
 }
 
-query Catalog {
+fragment CatalogCourse on Course {
+  id
+  denomination
+  slug
+  level
+  image
+  rating
+  participationCount
+  instructor {
+    id
+    first_name
+    last_name
+    avatar_url
+  }
+}
+
+fragment CatalogProgram on Program {
+  id
+  denomination
+  slug
+  programLevel: level
+  image
+  enrolledLearnersCount
+  instructor {
+    id
+    first_name
+    last_name
+    avatar_url
+  }
+  currentVersion {
+    courses {
+      id
+    }
+  }
+}
+
+query Catalog($teachersFirst: Int!, $topContentFirst: Int!) {
   subjectsWithLinkedContent {
     ...CatalogSubject
+  }
+  teachers(first: $teachersFirst, offset: 0) {
+    items {
+      ...CatalogTeacher
+    }
+  }
+  topContent(first: $topContentFirst, offset: 0) {
+    items {
+      ... on Course {
+        ...CatalogCourse
+      }
+      ... on Program {
+        ...CatalogProgram
+      }
+    }
   }
 }

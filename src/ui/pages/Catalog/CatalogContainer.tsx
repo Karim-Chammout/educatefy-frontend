@@ -11,11 +11,20 @@ import { PERMISSION_DENIED } from '@/utils/constants';
 import Catalog from './Catalog';
 import CatalogSkeleton from './CatalogSkeleton';
 
+const TEACHERS_BLOCK_SIZE = 4;
+const TOP_CONTENT_BLOCK_SIZE = 8;
+
 const CatalogContainer = () => {
   const location = useLocation();
   const { setToasterVisibility } = useContext(ToasterContext);
   const { t } = useTranslation();
-  const { loading, error, data } = useQuery(CatalogDocument);
+
+  const { loading, error, data } = useQuery(CatalogDocument, {
+    variables: {
+      teachersFirst: TEACHERS_BLOCK_SIZE,
+      topContentFirst: TOP_CONTENT_BLOCK_SIZE,
+    },
+  });
 
   useEffect(() => {
     // Display a toaster when a user tries to access a page without permissions
@@ -33,15 +42,17 @@ const CatalogContainer = () => {
     return <CatalogSkeleton />;
   }
 
-  if (error || !data || !data.subjectsWithLinkedContent) {
+  if (error || !data) {
     return <ErrorPlaceholder />;
   }
 
-  const filteredSubjects = data.subjectsWithLinkedContent.filter(
-    (subject) => subject.courses.length > 0 || subject.programs.length > 0,
+  return (
+    <Catalog
+      subjects={data.subjectsWithLinkedContent}
+      teachers={data.teachers.items}
+      topContent={data.topContent.items}
+    />
   );
-
-  return <Catalog subjects={filteredSubjects} />;
 };
 
 export default CatalogContainer;

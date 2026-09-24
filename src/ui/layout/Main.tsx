@@ -33,6 +33,8 @@ import {
   QuizCreate,
   Section,
   Subject,
+  Teachers,
+  TopContent,
   UpdateCourse,
   UpdateProgram,
 } from './routes/LazyComponent';
@@ -116,6 +118,22 @@ const PrivatePagesView = () => {
           element={
             <RouteWrapper>
               <Instructor />
+            </RouteWrapper>
+          }
+        />
+        <Route
+          path="/teachers"
+          element={
+            <RouteWrapper>
+              <Teachers />
+            </RouteWrapper>
+          }
+        />
+        <Route
+          path="/top-content"
+          element={
+            <RouteWrapper>
+              <TopContent />
             </RouteWrapper>
           }
         />

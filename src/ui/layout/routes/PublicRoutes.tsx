@@ -10,6 +10,8 @@ import {
   Program,
   Register,
   Subject,
+  Teachers,
+  TopContent,
 } from './LazyComponent';
 import Redirect from './Redirect';
 import RouteWrapper from './RouteWrapper';
@@ -69,6 +71,22 @@ const PublicRoutes = () => {
         element={
           <RouteWrapper>
             <Instructor />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path="/teachers"
+        element={
+          <RouteWrapper>
+            <Teachers />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path="/top-content"
+        element={
+          <RouteWrapper>
+            <TopContent />
           </RouteWrapper>
         }
       />

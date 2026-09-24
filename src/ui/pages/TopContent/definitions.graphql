@@ -1,0 +1,13 @@
+query TopContent($first: Int!, $offset: Int!) {
+  topContent(first: $first, offset: $offset) {
+    totalCount
+    items {
+      ... on Course {
+        ...CatalogCourse
+      }
+      ... on Program {
+        ...CatalogProgram
+      }
+    }
+  }
+}

@@ -33,5 +33,7 @@ export const Programs = lazy(() => import('@/ui/pages/Dashboard/Programs'));
 export const Register = lazy(() => import('@/ui/pages/Register'));
 export const Section = lazy(() => import('@/ui/pages/CourseSection'));
 export const Subject = lazy(() => import('@/ui/pages/Subject'));
+export const Teachers = lazy(() => import('@/ui/pages/Teachers'));
+export const TopContent = lazy(() => import('@/ui/pages/TopContent'));
 export const UpdateCourse = lazy(() => import('@/ui/pages/Dashboard/Courses/UpdateCourse'));
 export const UpdateProgram = lazy(() => import('@/ui/pages/Dashboard/Programs/UpdateProgram'));

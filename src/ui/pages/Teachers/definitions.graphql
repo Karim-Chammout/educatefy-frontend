@@ -1,0 +1,33 @@
+fragment TeachersTeacher on Teacher {
+  id
+  first_name
+  last_name
+  avatar_url
+  bio
+  isFollowed
+  isAllowedToFollow
+  followersCount
+  subjects {
+    id
+    denomination
+  }
+}
+
+query Teachers($first: Int!, $offset: Int!) {
+  teachers(first: $first, offset: $offset) {
+    totalCount
+    items {
+      ...TeachersTeacher
+    }
+  }
+}
+
+mutation FollowTeacher($followTeacherInfo: FollowTeacherInput!) {
+  followTeacher(followTeacherInfo: $followTeacherInfo) {
+    success
+    errors {
+      message
+    }
+    isFollowing
+  }
+}

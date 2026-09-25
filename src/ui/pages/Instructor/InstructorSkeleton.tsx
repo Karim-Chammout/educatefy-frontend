@@ -5,52 +5,63 @@ import Skeleton from '@mui/material/Skeleton';
 
 import { ContentCardSkeleton, StatCardSkeleton } from '@/ui/components';
 
+import {
+  FollowActions,
+  HeaderIdentity,
+  HeaderSection,
+  InstructorInfo,
+  SocialLinksGroup,
+  SocialLinksRow,
+} from './Instructor.style';
+
 const InstructorSkeleton = () => {
   return (
     <div style={{ marginTop: '16px' }}>
-      <Paper
-        variant="outlined"
-        sx={{
-          display: 'flex',
-          flexDirection: { xxs: 'column', md: 'row' },
-          alignItems: { xxs: 'center', md: 'flex-start' },
-          gap: 4,
-          p: 3,
-          mb: 3,
-          textAlign: { xxs: 'center', md: 'start' },
-        }}
-      >
+      <HeaderSection variant="outlined">
         <Skeleton variant="circular" width={120} height={120} />
 
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
-            alignSelf: 'center',
-          }}
-        >
-          <Skeleton variant="text" height={40} width={240} />
-          <Box>
-            <Skeleton variant="rectangular" width={140} height={36} />
+        <InstructorInfo>
+          <HeaderIdentity>
+            <Skeleton variant="text" height={40} width="55%" sx={{ mx: { xxs: 'auto', md: 0 } }} />
+            <Skeleton
+              variant="rectangular"
+              width={140}
+              height={32}
+              sx={{ mx: { xxs: 'auto', md: 0 } }}
+            />
+          </HeaderIdentity>
+
+          <Box sx={{ width: '100%' }}>
+            <Skeleton variant="text" width="100%" />
+            <Skeleton variant="text" width="75%" />
           </Box>
-        </Box>
-      </Paper>
+
+          <SocialLinksGroup>
+            <Skeleton variant="text" width={72} height={14} />
+            <SocialLinksRow>
+              {Array.from({ length: 3 }, (_, index) => (
+                <Skeleton
+                  key={`social-${index}`}
+                  variant="rounded"
+                  width={index === 0 ? 96 : 88}
+                  height={40}
+                  sx={{ borderRadius: 999 }}
+                />
+              ))}
+            </SocialLinksRow>
+          </SocialLinksGroup>
+
+          <FollowActions>
+            <Skeleton variant="rectangular" width={150} height={36} />
+          </FollowActions>
+        </InstructorInfo>
+      </HeaderSection>
 
       <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
-        <Box sx={{ mb: 3 }}>
-          <Skeleton height={24} width={60} />
-          <Skeleton sx={{ mt: 1 }} width="90%" />
-          <Skeleton width="75%" />
-        </Box>
-
-        <Box>
-          <Skeleton height={24} width={80} />
-          <Skeleton sx={{ mt: 1 }} width="95%" />
-          <Skeleton width="85%" />
-          <Skeleton width="40%" />
-        </Box>
+        <Skeleton height={24} width={80} />
+        <Skeleton sx={{ mt: 1 }} width="95%" />
+        <Skeleton width="85%" />
+        <Skeleton width="40%" />
       </Paper>
 
       <Box sx={{ mb: 3 }}>

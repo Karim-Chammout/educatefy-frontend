@@ -18,13 +18,30 @@ import fallbackImage from '@/assets/educatefy_background.png';
 import person from '@/assets/person.png';
 import { FollowTeacherDocument, TeacherFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
-import { ContentCard, RichTextContent, SocialLinksDisplay } from '@/ui/compositions';
+import { ContentCard, RichTextContent } from '@/ui/compositions';
 import { getTeacherPath } from '@/utils/getTeacherPath';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
+import {
+  darkModeHostileBrands,
+  getSocialLinkText,
+  getSocialPlatformIcon,
+  socialPlatformBrandColors,
+} from '@/utils/socialPlatform';
 
 import {
+  BioText,
+  FollowActions,
+  FollowButtonContent,
+  FollowerCount,
+  HeaderIdentity,
   HeaderSection,
+  InstructorName,
   InstructorInfo,
+  SocialLinkButton,
+  SocialLinksGroup,
+  SocialLinksLabel,
+  SocialLinksRow,
+  SocialLinkText,
   StatCard,
   StatContent,
   StatIcon,
@@ -44,11 +61,18 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
           teacherId: instructor.id,
         },
       },
-      update: (cache) => {
+      update: (cache, { data }) => {
+        const isFollowing = data?.followTeacher?.isFollowing;
+
+        if (isFollowing === undefined || isFollowing === null) {
+          return;
+        }
+
         cache.modify({
           id: cache.identify(instructor),
           fields: {
-            isFollowed: (prev) => !prev,
+            isFollowed: () => isFollowing,
+            followersCount: (current: number) => Math.max(0, current + (isFollowing ? 1 : -1)),
           },
         });
       },
@@ -71,90 +95,129 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
   const programCount = instructor.programs.length;
 
   const courseCount = instructor.courses.length;
+  const bio = instructor.bio?.trim();
 
   return (
     <div style={{ marginTop: '16px' }}>
-      <HeaderSection variant="outlined" sx={{ p: 3, mb: 3 }}>
+      <HeaderSection variant="outlined">
         <Avatar
           src={instructor.avatar_url || undefined}
           alt={`${instructor.first_name} ${instructor.last_name}`}
           sx={{
             width: 120,
             height: 120,
+            flexShrink: 0,
             border: `4px solid ${theme.palette.background.paper}`,
             boxShadow: theme.shadows[8],
           }}
         />
 
         <InstructorInfo>
-          <Typography variant="h3" component="h1" sx={{ fontWeight: 700 }}>
-            {instructor.first_name} {instructor.last_name}
-          </Typography>
+          <HeaderIdentity>
+            <InstructorName component="h1">
+              {instructor.first_name} {instructor.last_name}
+            </InstructorName>
 
-          {instructor.subjects.length > 0 && (
-            <SubjectsRow>
-              {instructor.subjects.map((subject) => (
-                <Chip
-                  key={subject.id}
-                  label={subject.denomination}
-                  color="primary"
-                  variant="outlined"
-                  size="small"
-                  clickable
-                  onClick={() => navigate(`/subject/${subject.id}`)}
-                />
-              ))}
-            </SubjectsRow>
+            {instructor.subjects.length > 0 && (
+              <SubjectsRow>
+                {instructor.subjects.map((subject) => (
+                  <Chip
+                    key={subject.id}
+                    label={subject.denomination}
+                    color="primary"
+                    variant="outlined"
+                    size="small"
+                    clickable
+                    onClick={() => navigate(`/subject/${subject.id}`)}
+                    sx={{
+                      maxWidth: '100%',
+                      '& .MuiChip-label': {
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      },
+                    }}
+                  />
+                ))}
+              </SubjectsRow>
+            )}
+          </HeaderIdentity>
+
+          {bio && <BioText component="p">{bio}</BioText>}
+
+          {instructor.socialLinks.length > 0 && (
+            <SocialLinksGroup>
+              <SocialLinksLabel variant="caption" component="span">
+                {t('instructor.socialLinks')}
+              </SocialLinksLabel>
+
+              <SocialLinksRow>
+                {instructor.socialLinks.map((link) => {
+                  const IconComponent = getSocialPlatformIcon(link.platform);
+                  const brandColor = socialPlatformBrandColors[link.platform];
+                  const iconColor =
+                    brandColor &&
+                    !(theme.palette.mode === 'dark' && darkModeHostileBrands.has(link.platform))
+                      ? brandColor
+                      : theme.palette.text.secondary;
+
+                  return (
+                    <SocialLinkButton
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={getSocialLinkText(link)}
+                    >
+                      <IconComponent aria-hidden="true" sx={{ fontSize: 20, color: iconColor }} />
+                      <SocialLinkText>{getSocialLinkText(link)}</SocialLinkText>
+                      {link.isPrimary && (
+                        <StarIcon
+                          aria-hidden="true"
+                          sx={{ fontSize: 14, color: 'warning.main', flexShrink: 0 }}
+                        />
+                      )}
+                    </SocialLinkButton>
+                  );
+                })}
+              </SocialLinksRow>
+            </SocialLinksGroup>
           )}
 
           {instructor.isAllowedToFollow && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <FollowActions>
               <Button
                 variant={instructor.isFollowed ? 'outlined' : 'contained'}
                 startIcon={instructor.isFollowed ? <PersonRemoveIcon /> : <PersonAddAlt1Icon />}
                 onClick={handleFollowTeacher}
                 disabled={updatingFollow}
               >
-                {instructor.isFollowed ? t('instructor.unfollow') : t('instructor.follow')}
+                <FollowButtonContent>
+                  <span>
+                    {instructor.isFollowed ? t('instructor.unfollow') : t('instructor.follow')}
+                  </span>
+                  <FollowerCount
+                    role="img"
+                    aria-label={t('instructor.followersCount', {
+                      count: instructor.followersCount,
+                    })}
+                  >
+                    {instructor.followersCount}
+                  </FollowerCount>
+                </FollowButtonContent>
               </Button>
-              <Typography variant="body2" color="text.secondary">
-                {t('instructor.followersCount', { count: instructor.followersCount })}
-              </Typography>
-            </Box>
+            </FollowActions>
           )}
         </InstructorInfo>
       </HeaderSection>
 
-      {instructor.socialLinks.length > 0 && (
+      {hasRichTextContent(instructor.description) && (
         <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 1.5 }}>
-            {t('instructor.socialLinks')}
+            {t('account.about')}
           </Typography>
-          <SocialLinksDisplay links={instructor.socialLinks} />
+          <RichTextContent value={instructor.description} />
         </Paper>
       )}
-
-      <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
-        {instructor.bio && (
-          <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
-              {t('account.bio')}
-            </Typography>
-            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-              {instructor.bio}
-            </Typography>
-          </Box>
-        )}
-
-        {hasRichTextContent(instructor.description) && (
-          <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 1 }}>
-              {t('account.about')}
-            </Typography>
-            <RichTextContent value={instructor.description} />
-          </Box>
-        )}
-      </Paper>
 
       <Box sx={{ mb: 3 }}>
         <Grid container spacing={3}>

@@ -50,6 +50,21 @@ export const darkModeHostileBrands = new Set(['x', 'github']);
 export const getSocialPlatformIcon = (platform: string) =>
   socialPlatformIcons[platform] ?? socialPlatformFallbackIcon;
 
+export const getSocialLinkText = (link: {
+  displayName?: string | null;
+  userName?: string | null;
+  platformDisplayName: string;
+}) => {
+  const displayName = link.displayName?.trim();
+  const userName = link.userName?.trim();
+
+  if (displayName) {
+    return displayName;
+  }
+
+  return userName ? `@${userName}` : link.platformDisplayName;
+};
+
 export type SocialLinkInputPayload = {
   platform: string;
   displayName?: string | null;

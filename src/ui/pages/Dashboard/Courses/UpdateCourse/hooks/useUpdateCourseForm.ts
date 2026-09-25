@@ -4,7 +4,7 @@ import { useForm, useWatch } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
 
 import api from '@/api';
-import { CourseLevel, EditableCourseFragment, LanguageFragment } from '@/generated/graphql';
+import { ContentLevel, EditableCourseFragment, LanguageFragment } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
 import { getMediaUrl } from '@/utils/getMediaUrl';
@@ -16,7 +16,7 @@ export type UpdateCourseFormValues = {
   denomination: string;
   subtitle: string;
   slug: string;
-  level: CourseLevel;
+  level: ContentLevel;
   language: string | null;
   subjects: { __typename: 'Subject'; id: string; denomination: string }[] | null;
   externalResourceLink: string | null;

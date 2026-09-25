@@ -4,7 +4,7 @@ import CardMedia from '@mui/material/CardMedia';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 
-import { CourseLevel, CourseStatus, ProgramLevel } from '@/generated/graphql';
+import { ContentLevel, CourseStatus } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 
 import {
@@ -43,7 +43,7 @@ type ContentCardType = {
   teacherLink: string;
   image: string;
   studentsCount: number;
-  difficulty: CourseLevel | ProgramLevel;
+  difficulty: ContentLevel;
   rating?: number;
   coursesCount?: number;
   status?: CourseStatus;
@@ -97,7 +97,7 @@ const ContentCard = ({
               <div style={{ display: 'flex', gap: '8px' }}>
                 <DifficultyChip difficulty={difficulty} label={difficulty} size="small" />
                 <DifficultyChip
-                  difficulty={CourseLevel.Beginner}
+                  difficulty={ContentLevel.Beginner}
                   label={t('courses.count', { count: coursesCount })}
                   size="small"
                   isProgramChip

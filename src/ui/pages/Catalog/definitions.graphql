@@ -35,7 +35,7 @@ fragment CatalogProgram on Program {
   id
   denomination
   slug
-  programLevel: level
+  level
   image
   enrolledLearnersCount
   instructor {

@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import { AutocompleteElement, Control, TextFieldElement } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
 
-import { CourseLevel, SubjectFragment } from '@/generated/graphql';
+import { ContentLevel, SubjectFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { RichTextEditor } from '@/ui/compositions';
 import { isValidSlug } from '@/utils/isValidSlug';
@@ -93,7 +93,7 @@ const BasicInfoSection = ({
           label={t('program.level')}
           control={control}
           required
-          options={Object.values(CourseLevel).map((courseLevel) => ({
+          options={Object.values(ContentLevel).map((courseLevel) => ({
             id: courseLevel,
             label: t(`course.courseLevel.${courseLevel}`),
           }))}

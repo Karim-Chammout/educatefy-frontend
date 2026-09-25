@@ -35,7 +35,7 @@ const TopContentCard = ({ item }: { item: TopContentCardItem }) => {
       teacherAvatar={item.instructor.avatar_url || person}
       teacherLink={getTeacherPath(item.instructor.id)}
       image={item.image || fallbackImage}
-      difficulty={item.programLevel}
+      difficulty={item.level}
       studentsCount={item.enrolledLearnersCount}
       coursesCount={item.currentVersion.courses.length}
     />

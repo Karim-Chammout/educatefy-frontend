@@ -4,7 +4,7 @@ import { useForm, useWatch } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
 
 import api from '@/api';
-import { EditableProgramFragment, ProgramLevel } from '@/generated/graphql';
+import { EditableProgramFragment, ContentLevel } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
 import { getMediaUrl } from '@/utils/getMediaUrl';
@@ -15,7 +15,7 @@ export type UpdateProgramFormValues = {
   denomination: string;
   subtitle: string;
   slug: string;
-  level: ProgramLevel;
+  level: ContentLevel;
   subjects: { __typename: 'Subject'; id: string; denomination: string }[] | null;
   isPublished: boolean;
 };

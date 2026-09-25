@@ -6,7 +6,7 @@ import { Control } from 'react-hook-form';
 import { AutocompleteElement, TextFieldElement } from 'react-hook-form-mui';
 import { useTranslation } from 'react-i18next';
 
-import { ProgramLevel, SubjectFragment } from '@/generated/graphql';
+import { ContentLevel, SubjectFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 import { RichTextEditor } from '@/ui/compositions';
 import { isValidSlug } from '@/utils/isValidSlug';
@@ -94,7 +94,7 @@ const BasicInfoSection = ({
           label={t('program.level')}
           control={control}
           required
-          options={Object.values(ProgramLevel).map((programLevel) => ({
+          options={Object.values(ContentLevel).map((programLevel) => ({
             id: programLevel,
             label: t(`course.courseLevel.${programLevel}`),
           }))}

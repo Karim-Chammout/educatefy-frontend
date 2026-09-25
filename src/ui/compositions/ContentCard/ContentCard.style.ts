@@ -11,7 +11,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { styled as MuiStyled } from '@mui/material/styles';
 import { Link } from 'react-router';
 
-import { CourseLevel, ProgramLevel } from '@/generated/graphql';
+import { ContentLevel } from '@/generated/graphql';
 import { ThemeType } from '@/ui/theme/theme';
 
 type ContentType = 'course' | 'program';
@@ -73,7 +73,7 @@ const difficultyChipStyles = ({
   isProgramChip,
 }: {
   theme: Theme;
-  difficulty: CourseLevel | ProgramLevel;
+  difficulty: ContentLevel;
   isProgramChip?: boolean;
 }) => css`
   ${isProgramChip
@@ -82,14 +82,14 @@ const difficultyChipStyles = ({
         color: #f97316;
       `
     : css`
-        background-color: ${difficulty === CourseLevel.Beginner
+        background-color: ${difficulty === ContentLevel.Beginner
           ? 'rgba(52, 168, 83, 0.1)'
-          : difficulty === CourseLevel.Intermediate
+          : difficulty === ContentLevel.Intermediate
             ? 'rgba(251, 188, 5, 0.1)'
             : 'rgba(234, 67, 53, 0.1)'};
-        color: ${difficulty === CourseLevel.Beginner
+        color: ${difficulty === ContentLevel.Beginner
           ? theme.colors.success['500']
-          : difficulty === CourseLevel.Intermediate
+          : difficulty === ContentLevel.Intermediate
             ? theme.colors.warning['500']
             : theme.colors.error['500']};
       `}
@@ -211,8 +211,10 @@ export const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'contentType' && prop !== 'completed',
 })<{ contentType: ContentType; completed?: boolean }>(cardStyles);
 export const StyledMediaWrapper = styled(Box)(mediaWrapperStyles);
-export const DifficultyChip = styled(Chip)<{
-  difficulty: CourseLevel | ProgramLevel;
+export const DifficultyChip = styled(Chip, {
+  shouldForwardProp: (prop) => prop !== 'difficulty' && prop !== 'isProgramChip',
+})<{
+  difficulty: ContentLevel;
   isProgramChip?: boolean;
 }>(difficultyChipStyles);
 export const StyledCardContent = styled(CardContent)(cardContentStyles);

@@ -6,7 +6,7 @@ import { AutocompleteElement, Control, TextFieldElement } from 'react-hook-form-
 import { useTranslation } from 'react-i18next';
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 
-import { CourseLevel, LanguageFragment, SubjectFragment } from '@/generated/graphql';
+import { ContentLevel, LanguageFragment, SubjectFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { RichTextEditor } from '@/ui/compositions';
 import { isValidSlug } from '@/utils/isValidSlug';
@@ -115,7 +115,7 @@ export const BasicInfoSection = ({
           label={t('course.level')}
           control={control}
           required
-          options={Object.values(CourseLevel).map((courseLevel) => ({
+          options={Object.values(ContentLevel).map((courseLevel) => ({
             id: courseLevel,
             label: t(`course.courseLevel.${courseLevel}`),
           }))}

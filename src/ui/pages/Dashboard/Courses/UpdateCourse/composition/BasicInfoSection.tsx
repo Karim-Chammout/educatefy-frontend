@@ -10,7 +10,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 
 import {
-  CourseLevel,
+  ContentLevel,
   EditableCourseFragment,
   LanguageFragment,
   SubjectFragment,
@@ -125,7 +125,7 @@ const BasicInfoSection = ({
           label={t('course.level')}
           control={control}
           required
-          options={Object.values(CourseLevel).map((courseLevel) => ({
+          options={Object.values(ContentLevel).map((courseLevel) => ({
             id: courseLevel,
             label: t(`course.courseLevel.${courseLevel}`),
           }))}

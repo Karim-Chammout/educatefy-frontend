@@ -31,19 +31,27 @@ export const InstructorInfo = styled(Box)(({ theme }) => ({
 }));
 
 export const HeaderIdentity = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) auto',
+  gridTemplateRows: 'auto auto',
+  alignItems: 'center',
   gap: theme.spacing(1),
+  columnGap: theme.spacing(3),
   minWidth: 0,
 
   [theme.breakpoints.down('md')]: {
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
+    gap: theme.spacing(1),
     textAlign: 'center',
     width: '100%',
   },
 }));
 
 export const InstructorName = styled(Typography)(({ theme }) => ({
+  gridColumn: 1,
+  gridRow: 1,
   fontWeight: 700,
   fontSize: theme.typography.h4.fontSize,
 
@@ -118,7 +126,20 @@ export const FollowActions = styled(Box)(({ theme }) => ({
   flexWrap: 'wrap',
   gap: theme.spacing(2),
   rowGap: theme.spacing(1),
-  width: '100%',
+  minWidth: 0,
+  width: 'auto',
+
+  [theme.breakpoints.up('md')]: {
+    gridColumn: 2,
+    gridRow: '1 / span 2',
+    alignSelf: 'center',
+  },
+
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    justifyContent: 'center',
+    marginBlock: theme.spacing(1),
+  },
 }));
 
 export const FollowButtonContent = styled('span')({
@@ -140,6 +161,8 @@ export const FollowerCount = styled('span')(({ theme }) => ({
 }));
 
 export const SubjectsRow = styled(Box)(({ theme }) => ({
+  gridColumn: 1,
+  gridRow: 2,
   display: 'flex',
   flexWrap: 'wrap',
   gap: theme.spacing(1),

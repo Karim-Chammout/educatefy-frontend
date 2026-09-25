@@ -140,6 +140,31 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
                 ))}
               </SubjectsRow>
             )}
+
+            {instructor.isAllowedToFollow && (
+              <FollowActions>
+                <Button
+                  variant={instructor.isFollowed ? 'outlined' : 'contained'}
+                  startIcon={instructor.isFollowed ? <PersonRemoveIcon /> : <PersonAddAlt1Icon />}
+                  onClick={handleFollowTeacher}
+                  disabled={updatingFollow}
+                >
+                  <FollowButtonContent>
+                    <span>
+                      {instructor.isFollowed ? t('instructor.unfollow') : t('instructor.follow')}
+                    </span>
+                    <FollowerCount
+                      role="img"
+                      aria-label={t('instructor.followersCount', {
+                        count: instructor.followersCount,
+                      })}
+                    >
+                      {instructor.followersCount}
+                    </FollowerCount>
+                  </FollowButtonContent>
+                </Button>
+              </FollowActions>
+            )}
           </HeaderIdentity>
 
           {bio && <BioText component="p">{bio}</BioText>}
@@ -181,31 +206,6 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
                 })}
               </SocialLinksRow>
             </SocialLinksGroup>
-          )}
-
-          {instructor.isAllowedToFollow && (
-            <FollowActions>
-              <Button
-                variant={instructor.isFollowed ? 'outlined' : 'contained'}
-                startIcon={instructor.isFollowed ? <PersonRemoveIcon /> : <PersonAddAlt1Icon />}
-                onClick={handleFollowTeacher}
-                disabled={updatingFollow}
-              >
-                <FollowButtonContent>
-                  <span>
-                    {instructor.isFollowed ? t('instructor.unfollow') : t('instructor.follow')}
-                  </span>
-                  <FollowerCount
-                    role="img"
-                    aria-label={t('instructor.followersCount', {
-                      count: instructor.followersCount,
-                    })}
-                  >
-                    {instructor.followersCount}
-                  </FollowerCount>
-                </FollowButtonContent>
-              </Button>
-            </FollowActions>
           )}
         </InstructorInfo>
       </HeaderSection>

@@ -29,6 +29,10 @@ const InstructorSkeleton = () => {
               height={32}
               sx={{ mx: { xxs: 'auto', md: 0 } }}
             />
+
+            <FollowActions>
+              <Skeleton variant="rectangular" width={150} height={36} />
+            </FollowActions>
           </HeaderIdentity>
 
           <Box sx={{ width: '100%' }}>
@@ -50,10 +54,6 @@ const InstructorSkeleton = () => {
               ))}
             </SocialLinksRow>
           </SocialLinksGroup>
-
-          <FollowActions>
-            <Skeleton variant="rectangular" width={150} height={36} />
-          </FollowActions>
         </InstructorInfo>
       </HeaderSection>
 

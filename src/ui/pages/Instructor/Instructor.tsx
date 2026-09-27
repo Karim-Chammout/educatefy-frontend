@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client/react';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
@@ -9,17 +9,17 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
+import Pagination from '@mui/material/Pagination';
 import Paper from '@mui/material/Paper';
 import { useTheme } from '@mui/material/styles';
+import ToggleButton from '@mui/material/ToggleButton';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
-import fallbackImage from '@/assets/educatefy_background.png';
-import person from '@/assets/person.png';
 import { FollowTeacherDocument, TeacherFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
-import { ContentCard, RichTextContent } from '@/ui/compositions';
-import { getTeacherPath } from '@/utils/getTeacherPath';
+import { RichTextContent, TopContentCard, TopContentCardItem } from '@/ui/compositions';
+import { applyFollowTeacherResult } from '@/utils/followTeacherCache';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 import {
   darkModeHostileBrands,
@@ -28,8 +28,11 @@ import {
   socialPlatformBrandColors,
 } from '@/utils/socialPlatform';
 
+import { ContentTypeFilter } from './types';
 import {
   BioText,
+  ContentFilter,
+  ContentHeader,
   FollowActions,
   FollowButtonContent,
   FollowerCount,
@@ -48,35 +51,43 @@ import {
   SubjectsRow,
 } from './Instructor.style';
 
-const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
+type InstructorProps = {
+  instructor: TeacherFragment;
+  contentItems: TopContentCardItem[];
+  contentTotalCount: number;
+  contentType: ContentTypeFilter;
+  onContentTypeChange: (contentType: ContentTypeFilter) => void;
+  currentPage: number;
+  pageCount: number;
+  onPageChange: (page: number) => void;
+};
+
+const Instructor = ({
+  instructor,
+  contentItems,
+  contentTotalCount,
+  contentType,
+  onContentTypeChange,
+  currentPage,
+  pageCount,
+  onPageChange,
+}: InstructorProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
+  const client = useApolloClient();
   const [followTeacher, { loading: updatingFollow }] = useMutation(FollowTeacherDocument);
 
   const handleFollowTeacher = async () => {
-    await followTeacher({
+    const { data } = await followTeacher({
       variables: {
         followTeacherInfo: {
           teacherId: instructor.id,
         },
       },
-      update: (cache, { data }) => {
-        const isFollowing = data?.followTeacher?.isFollowing;
-
-        if (isFollowing === undefined || isFollowing === null) {
-          return;
-        }
-
-        cache.modify({
-          id: cache.identify(instructor),
-          fields: {
-            isFollowed: () => isFollowing,
-            followersCount: (current: number) => Math.max(0, current + (isFollowing ? 1 : -1)),
-          },
-        });
-      },
     });
+
+    applyFollowTeacherResult(client, instructor.id, data?.followTeacher);
   };
 
   const totalStudents = instructor.courses.reduce(
@@ -96,6 +107,13 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
 
   const courseCount = instructor.courses.length;
   const bio = instructor.bio?.trim();
+
+  const emptyStateLabels: Record<ContentTypeFilter, string> = {
+    all: t('instructor.noPublishedContent'),
+    course: t('instructor.noPublishedCourses'),
+    program: t('instructor.noPublishedPrograms'),
+  };
+  const emptyStateLabel = emptyStateLabels[contentType];
 
   return (
     <div style={{ marginTop: '16px' }}>
@@ -293,60 +311,68 @@ const Instructor = ({ instructor }: { instructor: TeacherFragment }) => {
         </Grid>
       </Box>
 
-      {(instructor.courses.length > 0 || instructor.programs.length > 0) && (
-        <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
-          <Typography variant="h4" component="h2" sx={{ fontWeight: 700, mb: 3 }}>
-            {t('instructor.contentBy', {
-              name: instructor.first_name,
-            })}
-          </Typography>
+      <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
+        <ContentHeader>
+          <Box>
+            <Typography variant="h4" component="h2" sx={{ fontWeight: 700 }}>
+              {t('instructor.contentBy', {
+                name: instructor.first_name,
+              })}
+            </Typography>
 
+            {contentTotalCount > 0 && (
+              <Typography variant="body2" color="text.secondary">
+                {t('instructor.contentCount', { count: contentTotalCount })}
+              </Typography>
+            )}
+          </Box>
+
+          <ContentFilter
+            value={contentType}
+            exclusive
+            onChange={(_, value: ContentTypeFilter | null) => {
+              if (value) {
+                onContentTypeChange(value);
+              }
+            }}
+            size="small"
+            aria-label={t('instructor.contentFilterLabel')}
+          >
+            <ToggleButton value="all">{t('instructor.contentFilterAll')}</ToggleButton>
+            <ToggleButton value="course">{t('instructor.contentFilterCourses')}</ToggleButton>
+            <ToggleButton value="program">{t('instructor.contentFilterPrograms')}</ToggleButton>
+          </ContentFilter>
+        </ContentHeader>
+
+        {contentItems.length === 0 ? (
+          <Typography color="text.secondary" sx={{ py: 4, textAlign: 'center' }}>
+            {emptyStateLabel}
+          </Typography>
+        ) : (
           <Grid container spacing={3}>
-            {instructor.programs.map((program) => (
+            {contentItems.map((item) => (
               <Grid
-                key={program.id}
+                key={`${item.__typename}-${item.id}`}
                 size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}
                 sx={{ display: 'flex', justifyContent: 'center' }}
               >
-                <ContentCard
-                  type="program"
-                  title={program.denomination}
-                  linkPath={`/program/${program.slug}`}
-                  teacherName={`${program.instructor.first_name} ${program.instructor.last_name}`}
-                  teacherAvatar={program.instructor.avatar_url || person}
-                  teacherLink={getTeacherPath(program.instructor.id)}
-                  image={program.image || fallbackImage}
-                  difficulty={program.level}
-                  studentsCount={program.enrolledLearnersCount}
-                  coursesCount={program.currentVersion.courses.length}
-                />
-              </Grid>
-            ))}
-            {instructor.courses.map((course) => (
-              <Grid
-                key={course.id}
-                size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}
-                sx={{ display: 'flex', justifyContent: 'center' }}
-              >
-                <ContentCard
-                  type="course"
-                  title={course.denomination}
-                  linkPath={`/course/${course.slug}`}
-                  teacherName={`${instructor.first_name} ${instructor.last_name}`}
-                  teacherAvatar={instructor.avatar_url || person}
-                  teacherLink={getTeacherPath(instructor.id)}
-                  image={course.image || fallbackImage}
-                  difficulty={course.level}
-                  rating={course.rating}
-                  studentsCount={course.participationCount}
-                  status={course.status}
-                  progress={course.progress}
-                />
+                <TopContentCard item={item} />
               </Grid>
             ))}
           </Grid>
-        </Paper>
-      )}
+        )}
+
+        {pageCount > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px' }}>
+            <Pagination
+              color="primary"
+              page={currentPage}
+              count={pageCount}
+              onChange={(_, value) => onPageChange(value)}
+            />
+          </div>
+        )}
+      </Paper>
     </div>
   );
 };

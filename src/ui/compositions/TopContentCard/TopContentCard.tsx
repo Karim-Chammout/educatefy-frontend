@@ -4,7 +4,7 @@ import { CatalogCourseFragment, CatalogProgramFragment } from '@/generated/graph
 import { ContentCard } from '@/ui/compositions';
 import { getTeacherPath } from '@/utils/getTeacherPath';
 
-type TopContentCardItem =
+export type TopContentCardItem =
   | (CatalogCourseFragment & { __typename: 'Course' })
   | (CatalogProgramFragment & { __typename: 'Program' });
 

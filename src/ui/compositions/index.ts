@@ -15,3 +15,4 @@ export { default as SetupProfile } from './SetupProfile';
 export { default as SocialLinksDisplay } from './SocialLinks';
 export { default as TeacherCard } from './TeacherCard';
 export { default as TopContentCard } from './TopContentCard';
+export type { TopContentCardItem } from './TopContentCard';

@@ -1,21 +1,17 @@
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import { useMutation } from '@apollo/client/react';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
 
-import {
-  CourseFragment,
-  CourseStatus,
-  HomeDocument,
-  UpdateCourseStatusDocument,
-} from '@/generated/graphql';
+import { CourseFragment, CourseStatus, UpdateCourseStatusDocument } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { AuthContext, ToasterContext } from '@/ui/context';
 import { getFirstIncompleteComponent } from '@/ui/pages/CourseSection/utils/navigationTargets';
 import type { ComponentNavigationTarget } from '@/ui/pages/CourseSection/utils/navigationTargets';
 import { hasSectionContent } from '@/ui/pages/CourseSection/utils/sectionItems';
+import { invalidateHomeContent } from '@/utils/homeCache';
 import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
 const CourseCTA = ({ course }: { course: CourseFragment }) => {
@@ -29,6 +25,7 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
     user,
   } = useContext(AuthContext);
   const { setToasterVisibility } = useContext(ToasterContext);
+  const client = useApolloClient();
 
   const isCourseAvailable = course.status === CourseStatus.Available;
   const isEnrolled = course.status === CourseStatus.Enrolled;
@@ -91,6 +88,10 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
           return;
         }
 
+        if (result.success) {
+          invalidateHomeContent(client);
+        }
+
         if (isEnrolling && result.success) {
           if (continueTarget) {
             navigateToFirstIncomplete(continueTarget);
@@ -112,7 +113,6 @@ const CourseCTA = ({ course }: { course: CourseFragment }) => {
           newType: 'error',
         });
       },
-      refetchQueries: [{ query: HomeDocument }],
     });
   };
 

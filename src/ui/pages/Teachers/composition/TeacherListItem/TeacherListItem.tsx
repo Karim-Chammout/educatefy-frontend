@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client/react';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
@@ -8,6 +8,7 @@ import { Link } from 'react-router';
 import person from '@/assets/person.png';
 import { FollowTeacherDocument } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
+import { applyFollowTeacherResult } from '@/utils/followTeacherCache';
 
 import {
   CardActionArea,
@@ -50,32 +51,20 @@ const TeacherListItem = ({
   subjects,
 }: TeacherListItemProps) => {
   const { t } = useTranslation();
+  const client = useApolloClient();
 
   const [followTeacher, { loading: updatingFollow }] = useMutation(FollowTeacherDocument);
 
   const displayName = `${firstName ?? ''} ${lastName ?? ''}`.trim();
 
   const handleFollowTeacher = async () => {
-    await followTeacher({
+    const { data } = await followTeacher({
       variables: {
         followTeacherInfo: { teacherId: id },
       },
-      update: (cache, { data }) => {
-        const isFollowing = data?.followTeacher?.isFollowing;
-
-        if (isFollowing === undefined || isFollowing === null) {
-          return;
-        }
-
-        cache.modify({
-          id: cache.identify({ __typename: 'Teacher', id }),
-          fields: {
-            isFollowed: () => isFollowing,
-            followersCount: (current: number) => Math.max(0, current + (isFollowing ? 1 : -1)),
-          },
-        });
-      },
     });
+
+    applyFollowTeacherResult(client, id, data?.followTeacher);
   };
 
   return (

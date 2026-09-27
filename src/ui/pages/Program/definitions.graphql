@@ -30,6 +30,7 @@ fragment Program on Program {
     description
     isFollowed
     isAllowedToFollow
+    followersCount
   }
   currentVersion {
     id

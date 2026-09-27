@@ -123,6 +123,7 @@ fragment Course on Course {
     description
     isFollowed
     isAllowedToFollow
+    followersCount
   }
   participationCount
 }

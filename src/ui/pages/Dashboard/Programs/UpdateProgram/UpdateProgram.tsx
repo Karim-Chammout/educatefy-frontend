@@ -80,14 +80,22 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
       return;
     }
 
+    if (!values.subjects || values.subjects.length === 0) {
+      setToasterVisibility({
+        newDuration: 5000,
+        newText: t('program.subjectsRequired'),
+        newType: 'error',
+      });
+
+      return;
+    }
+
     if (
       !values.denomination ||
       !values.slug ||
       !values.subtitle ||
       !descriptionContent ||
       !values.level ||
-      !values.subjects ||
-      values.subjects.length === 0 ||
       !objectivesList ||
       objectivesList.length === 0 ||
       !requirementsList ||
@@ -137,6 +145,15 @@ const UpdateProgram = ({ program, teacherCourses, subjectsList }: UpdateProgramT
           setToasterVisibility({
             newDuration: null,
             newText: t('program.slugTaken'),
+            newType: 'error',
+          });
+        } else if (
+          data.updateProgram?.errors[0].message === ServerErrorType.MIN_CONTENT_SUBJECTS_REQUIRED ||
+          data.updateProgram?.errors[0].message === ServerErrorType.INVALID_SUBJECTS
+        ) {
+          setToasterVisibility({
+            newDuration: 5000,
+            newText: t('program.subjectsRequired'),
             newType: 'error',
           });
         } else {

@@ -179,14 +179,22 @@ export const useUpdateProgramForm = ({ program, descriptionContent }: UseUpdateP
       return;
     }
 
+    if (!values.subjects || values.subjects.length === 0) {
+      setToasterVisibility({
+        newDuration: 5000,
+        newText: t('program.subjectsRequired'),
+        newType: 'error',
+      });
+
+      return;
+    }
+
     if (
       !values.denomination ||
       !values.slug ||
       !values.subtitle ||
       !descriptionContent ||
-      !values.level ||
-      !values.subjects ||
-      values.subjects.length === 0
+      !values.level
     ) {
       setToasterVisibility({
         newDuration: 5000,

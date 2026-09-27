@@ -147,14 +147,22 @@ export const useCreateProgramForm = () => {
       return;
     }
 
+    if (!values.subjects || values.subjects.length === 0) {
+      setToasterVisibility({
+        newDuration: 5000,
+        newText: t('program.subjectsRequired'),
+        newType: 'error',
+      });
+
+      return;
+    }
+
     if (
       !values.denomination ||
       !values.slug ||
       !values.subtitle ||
       !descriptionContent ||
       !values.level.id ||
-      !values.subjects ||
-      values.subjects.length === 0 ||
       !objectivesList ||
       objectivesList.length === 0 ||
       !requirementsList ||
@@ -204,6 +212,15 @@ export const useCreateProgramForm = () => {
           setToasterVisibility({
             newDuration: null,
             newText: t('program.slugTaken'),
+            newType: 'error',
+          });
+        } else if (
+          data.createProgram?.errors[0].message === ServerErrorType.MIN_CONTENT_SUBJECTS_REQUIRED ||
+          data.createProgram?.errors[0].message === ServerErrorType.INVALID_SUBJECTS
+        ) {
+          setToasterVisibility({
+            newDuration: 5000,
+            newText: t('program.subjectsRequired'),
             newType: 'error',
           });
         } else {

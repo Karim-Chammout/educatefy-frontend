@@ -90,6 +90,16 @@ const UpdateCourse = ({ course, languages, subjectsList }: UpdateCourseType) => 
       : null;
     const formatedEndDate = values.endDate ? format(new Date(values.endDate), 'yyyy-MM-dd') : null;
 
+    if (!values.subjects || values.subjects.length === 0) {
+      setToasterVisibility({
+        newDuration: 5000,
+        newText: t('course.subjectsRequired'),
+        newType: 'error',
+      });
+
+      return;
+    }
+
     if (
       !values.denomination ||
       !values.slug ||
@@ -97,8 +107,6 @@ const UpdateCourse = ({ course, languages, subjectsList }: UpdateCourseType) => 
       !descriptionContent ||
       !values.level ||
       !values.language ||
-      !values.subjects ||
-      values.subjects.length === 0 ||
       !objectivesList ||
       (objectivesList && objectivesList.length === 0) ||
       !requirementsList ||
@@ -156,6 +164,15 @@ const UpdateCourse = ({ course, languages, subjectsList }: UpdateCourseType) => 
           setToasterVisibility({
             newDuration: null,
             newText: t('course.slugTaken'),
+            newType: 'error',
+          });
+        } else if (
+          data.updateCourse?.errors[0].message === ServerErrorType.MIN_CONTENT_SUBJECTS_REQUIRED ||
+          data.updateCourse?.errors[0].message === ServerErrorType.INVALID_SUBJECTS
+        ) {
+          setToasterVisibility({
+            newDuration: 5000,
+            newText: t('course.subjectsRequired'),
             newType: 'error',
           });
         } else {

@@ -204,15 +204,23 @@ export const useUpdateCourseForm = ({
       return;
     }
 
+    if (!values.subjects || values.subjects.length === 0) {
+      setToasterVisibility({
+        newDuration: 5000,
+        newText: t('course.subjectsRequired'),
+        newType: 'error',
+      });
+
+      return;
+    }
+
     if (
       !values.denomination ||
       !values.slug ||
       !values.subtitle ||
       !descriptionContent ||
       !values.level ||
-      !values.language ||
-      !values.subjects ||
-      values.subjects.length === 0
+      !values.language
     ) {
       setToasterVisibility({
         newDuration: 5000,

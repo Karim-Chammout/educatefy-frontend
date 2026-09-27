@@ -1,18 +1,20 @@
 import { useTranslation } from 'react-i18next';
 
-import { HomeCourseFragment, StatisticsFragment } from '@/generated/graphql';
+import { HomeCourseFragment, HomeQuery, StatisticsFragment } from '@/generated/graphql';
 import { Typography } from '@/ui/components';
 
-import { CoursesSection, Statistics } from './composition';
+import { CoursesSection, Statistics, TeachersFeedSection } from './composition';
 import { Header } from './Home.style';
 
 const Home = ({
   enrolledCourses,
   completedCourses,
+  teacherFeed,
   statistics,
 }: {
   enrolledCourses: HomeCourseFragment[];
   completedCourses: HomeCourseFragment[];
+  teacherFeed: HomeQuery['followingFeedByTeachers'];
   statistics: StatisticsFragment | null | undefined;
 }) => {
   const { t } = useTranslation();
@@ -32,6 +34,10 @@ const Home = ({
 
       {enrolledCourses.length > 0 && (
         <CoursesSection title={t('home.enrolledContentsContinue')} courses={enrolledCourses} />
+      )}
+
+      {teacherFeed.length > 0 && (
+        <TeachersFeedSection title={t('home.fromYourTeachers')} blocks={teacherFeed} />
       )}
 
       {completedCourses.length > 0 && (

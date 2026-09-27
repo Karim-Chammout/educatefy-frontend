@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client/react';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -9,11 +9,13 @@ import { useTranslation } from 'react-i18next';
 import { UpgradeToLatestProgramVersionDocument } from '@/generated/graphql';
 import { Button } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
+import { invalidateHomeContent } from '@/utils/homeCache';
 
 const VersionUpgradeBanner = ({ programId }: { programId: string }) => {
   const { t } = useTranslation();
   const { setToasterVisibility } = useContext(ToasterContext);
   const [isDismissed, setIsDismissed] = useState(false);
+  const client = useApolloClient();
 
   const [upgradeToLatestProgramVersion, { loading }] = useMutation(
     UpgradeToLatestProgramVersionDocument,
@@ -28,6 +30,7 @@ const VersionUpgradeBanner = ({ programId }: { programId: string }) => {
       variables: { programId },
       onCompleted(data) {
         if (data.upgradeToLatestProgramVersion?.success) {
+          invalidateHomeContent(client);
           setToasterVisibility({
             newDuration: 3000,
             newText: t('program.upgradeSuccess'),

@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client/react';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import person from '@/assets/person.png';
 import { FollowTeacherDocument, ProgramFragment } from '@/generated/graphql';
 import { Button, Typography } from '@/ui/components';
 import { RichTextContent } from '@/ui/compositions';
+import { applyFollowTeacherResult } from '@/utils/followTeacherCache';
 import { getTeacherPath } from '@/utils/getTeacherPath';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
@@ -16,25 +17,20 @@ const ProgramInstructor = ({ program }: { program: ProgramFragment }) => {
   const { t } = useTranslation();
   const { id, first_name, last_name, description, avatar_url, isFollowed, isAllowedToFollow } =
     program.instructor;
+  const client = useApolloClient();
 
   const [followTeacher, { loading: updatingFollow }] = useMutation(FollowTeacherDocument);
 
   const handleFollowTeacher = async () => {
-    await followTeacher({
+    const { data } = await followTeacher({
       variables: {
         followTeacherInfo: {
           teacherId: id,
         },
       },
-      update: (cache) => {
-        cache.modify({
-          id: cache.identify(program.instructor),
-          fields: {
-            isFollowed: (prev) => !prev,
-          },
-        });
-      },
     });
+
+    applyFollowTeacherResult(client, id, data?.followTeacher);
   };
 
   return (

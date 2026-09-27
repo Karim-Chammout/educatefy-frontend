@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client/react';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 import DoneIcon from '@mui/icons-material/Done';
 import Alert from '@mui/material/Alert';
 import DialogActions from '@mui/material/DialogActions';
@@ -15,11 +15,13 @@ import {
 } from '@/generated/graphql';
 import { Button, Modal } from '@/ui/components';
 import { AuthContext, ToasterContext } from '@/ui/context';
+import { invalidateHomeContent } from '@/utils/homeCache';
 import { savePostLoginRedirectPath } from '@/utils/savePostLoginRedirectPath';
 
 const ProgramCTA = ({ program }: { program: ProgramFragment }) => {
   const { t } = useTranslation();
   const location = useLocation();
+  const client = useApolloClient();
 
   const { setToasterVisibility } = useContext(ToasterContext);
   const {
@@ -50,7 +52,11 @@ const ProgramCTA = ({ program }: { program: ProgramFragment }) => {
             newText: t('error.message'),
             newType: 'error',
           });
+
+          return;
         }
+
+        invalidateHomeContent(client);
       },
     }).finally(() => setIsUnenrollModalOpen(false));
   };
@@ -74,7 +80,11 @@ const ProgramCTA = ({ program }: { program: ProgramFragment }) => {
             newText: t('error.message'),
             newType: 'error',
           });
+
+          return;
         }
+
+        invalidateHomeContent(client);
       },
     });
   };

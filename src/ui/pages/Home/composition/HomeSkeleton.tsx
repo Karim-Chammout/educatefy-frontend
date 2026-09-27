@@ -24,6 +24,42 @@ const CoursesSectionSkeleton = () => {
   );
 };
 
+const TeacherRowSkeleton = () => {
+  return (
+    <Box sx={{ mb: 4 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+        <Skeleton variant="circular" width={40} height={40} />
+        <Skeleton variant="text" width={160} height={28} />
+        <Skeleton variant="text" width={72} height={24} />
+      </Box>
+
+      <Grid container spacing={3}>
+        {Array.from({ length: 3 }, (_, index) => (
+          <Grid
+            key={`teacher-item-${index}`}
+            size={{ xxs: 12, sm: 6, md: 4 }}
+            sx={{ display: 'flex', justifyContent: 'center' }}
+          >
+            <ContentCardSkeleton />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+};
+
+const TeachersFeedSkeleton = () => {
+  return (
+    <Box sx={{ my: 6 }}>
+      <Skeleton sx={{ mb: 3 }} height={34} width={260} />
+
+      {Array.from({ length: 2 }, (_, index) => (
+        <TeacherRowSkeleton key={`teacher-row-${index}`} />
+      ))}
+    </Box>
+  );
+};
+
 const HomeSkeleton = () => {
   return (
     <div style={{ marginTop: '16px' }}>
@@ -52,6 +88,7 @@ const HomeSkeleton = () => {
       </Box>
 
       <CoursesSectionSkeleton />
+      <TeachersFeedSkeleton />
       <CoursesSectionSkeleton />
     </div>
   );

@@ -1,13 +1,14 @@
-import { useQuery } from '@apollo/client/react';
+import { useApolloClient, useQuery } from '@apollo/client/react';
 import CloseIcon from '@mui/icons-material/Close';
 import ContentPasteOffIcon from '@mui/icons-material/ContentPasteOff';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 
-import { CourseDocument, CourseStatus, HomeDocument } from '@/generated/graphql';
+import { CourseDocument, CourseStatus } from '@/generated/graphql';
 import { ErrorPlaceholder, InfoState } from '@/ui/compositions';
 import { MUST_ENROLL_TO_COURSE_FIRST } from '@/utils/constants';
+import { invalidateHomeContent } from '@/utils/homeCache';
 
 import { CompletedCourseModal } from '../Course/composition';
 import Section from './Section';
@@ -25,13 +26,13 @@ const CourseSectionContainer = () => {
       slug: slug || '',
     },
   });
-  const { refetch: refetchHome } = useQuery(HomeDocument, { skip: true });
+  const client = useApolloClient();
 
   const handleCourseCompleted = useCallback(() => {
     setShowCompletedModal(true);
     refetch().catch(() => {});
-    refetchHome().catch(() => {});
-  }, [refetch, refetchHome]);
+    invalidateHomeContent(client);
+  }, [refetch, client]);
 
   if (loading) {
     return <SectionSkeleton />;

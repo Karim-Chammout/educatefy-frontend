@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { Typography } from '@/ui/components';
 
@@ -198,3 +199,22 @@ export const StatContent = styled(Box)({
   flexDirection: 'column',
   gap: 4,
 });
+
+export const ContentHeader = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  flexWrap: 'wrap',
+  gap: theme.spacing(2),
+  marginBottom: theme.spacing(3),
+}));
+
+export const ContentFilter = styled(ToggleButtonGroup)(({ theme }) => ({
+  flexShrink: 0,
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+    '& .MuiToggleButtonGroup-grouped': {
+      flex: 1,
+    },
+  },
+}));

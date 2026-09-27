@@ -26,12 +26,33 @@ fragment Statistics on Statistics {
   completedCoursesCount
 }
 
+fragment HomeTeacher on Teacher {
+  id
+  first_name
+  last_name
+  avatar_url
+}
+
 query Home {
   enrolledCourses {
     ...HomeCourse
   }
   completedCourses {
     ...HomeCourse
+  }
+  followingFeedByTeachers(teachersFirst: 3, maxTeachers: 3) {
+    totalCount
+    teacher {
+      ...HomeTeacher
+    }
+    items {
+      ... on Course {
+        ...CatalogCourse
+      }
+      ... on Program {
+        ...CatalogProgram
+      }
+    }
   }
   me {
     id

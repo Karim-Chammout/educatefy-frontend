@@ -59,8 +59,19 @@ fragment Teacher on Teacher {
   }
 }
 
-query Instructor($id: ID!) {
+query Instructor($id: ID!, $first: Int!, $offset: Int!, $type: ContentKind) {
   instructor(id: $id) {
     ...Teacher
+    content(first: $first, offset: $offset, type: $type) {
+      totalCount
+      items {
+        ... on Course {
+          ...CatalogCourse
+        }
+        ... on Program {
+          ...CatalogProgram
+        }
+      }
+    }
   }
 }

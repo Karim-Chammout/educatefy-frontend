@@ -6,6 +6,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { ContentCardSkeleton, StatCardSkeleton } from '@/ui/components';
 
 import {
+  ContentHeader,
   FollowActions,
   HeaderIdentity,
   HeaderSection,
@@ -75,10 +76,17 @@ const InstructorSkeleton = () => {
       </Box>
 
       <Paper variant="outlined" sx={{ p: 3, mb: 2 }}>
-        <Skeleton sx={{ mb: 3 }} height={34} width={300} />
+        <ContentHeader>
+          <Box>
+            <Skeleton height={34} width={300} />
+            <Skeleton height={20} width={120} />
+          </Box>
+
+          <Skeleton variant="rounded" width={220} height={32} sx={{ flexShrink: 0 }} />
+        </ContentHeader>
 
         <Grid container spacing={3}>
-          {Array.from({ length: 4 }, (_, index) => (
+          {Array.from({ length: 8 }, (_, index) => (
             <Grid
               key={`content-${index}`}
               size={{ xxs: 12, sm: 6, md: 4, lg: 3 }}

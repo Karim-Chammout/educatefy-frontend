@@ -1,0 +1,37 @@
+query NotificationPreference {
+  notificationPreference {
+    items {
+      type
+      emailEnabled
+      inAppEnabled
+    }
+  }
+}
+
+query NotificationTypes {
+  notificationTypes {
+    code
+  }
+}
+
+mutation UpdateNotificationPreference(
+  $type: NotificationType!
+  $emailEnabled: Boolean
+  $inAppEnabled: Boolean
+) {
+  updateNotificationPreference(
+    type: $type
+    emailEnabled: $emailEnabled
+    inAppEnabled: $inAppEnabled
+  ) {
+    success
+    errors {
+      message
+    }
+    items {
+      type
+      emailEnabled
+      inAppEnabled
+    }
+  }
+}

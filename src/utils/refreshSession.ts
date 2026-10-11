@@ -15,7 +15,7 @@ export async function refreshSession(): Promise<string | null> {
         return null;
       }
 
-      const response = await fetch(`${BASE_URL}/graphql/`, {
+      const response = await fetch(`${BASE_URL}/graphql`, {
         method: 'POST',
         credentials: 'include',
         headers: {

@@ -4,20 +4,23 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LogoutIcon from '@mui/icons-material/Logout';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import Person2Icon from '@mui/icons-material/Person2';
 import Avatar from '@mui/material/Avatar';
+import Badge from '@mui/material/Badge';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
-import { MouseEvent, SyntheticEvent, useEffect, useState } from 'react';
+import { MouseEvent, SyntheticEvent, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
+import { NotificationContext } from '@/ui/context';
 import { useThemeContext } from '@/ui/theme/ThemeContext';
 import { logout } from '@/utils/logout';
 
@@ -47,6 +50,7 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
   const navigate = useNavigate();
   const location = useLocation();
   const { themeMode, toggleTheme } = useThemeContext();
+  const { unreadCount } = useContext(NotificationContext);
 
   const [value, setValue] = useState(location.pathname);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -122,6 +126,19 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
         disableScrollLock
       >
+        <MenuItem
+          onClick={() => {
+            navigate('/notifications');
+            handleMenuClose();
+          }}
+        >
+          <ListItemIcon>
+            <Badge color="error" badgeContent={unreadCount} max={99}>
+              <NotificationsIcon fontSize="small" />
+            </Badge>
+          </ListItemIcon>
+          {t('notifications.title')}
+        </MenuItem>
         <MenuItem
           onClick={() => {
             navigate('/profile');

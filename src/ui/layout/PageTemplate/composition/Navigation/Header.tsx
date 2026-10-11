@@ -1,9 +1,10 @@
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router';
 
 import logoDark from '@/assets/logo_dark.png';
 import logoLight from '@/assets/logo_light.png';
-import { LanguagePicker } from '@/ui/compositions';
+import { LanguagePicker, NotificationBell } from '@/ui/compositions';
 import { useThemeContext } from '@/ui/theme/ThemeContext';
 
 const Header = () => {
@@ -21,7 +22,10 @@ const Header = () => {
           onClick={() => navigate('/')}
           style={{ cursor: 'pointer' }}
         />
-        <LanguagePicker />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <NotificationBell />
+          <LanguagePicker />
+        </Box>
       </Container>
     </header>
   );

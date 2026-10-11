@@ -10,7 +10,8 @@ ARG VITE_S3_PATH_PREFIX
 ENV VITE_BASE_URL=$VITE_BASE_URL \
     VITE_S3_BUCKET_NAME=$VITE_S3_BUCKET_NAME \
     VITE_S3_PATH_PREFIX=$VITE_S3_PATH_PREFIX
-RUN npm run build
+
+RUN NODE_OPTIONS=--max-old-space-size=3072 npm run build
 
 FROM caddy:2-alpine
 COPY --from=build /app/dist /usr/share/caddy/dist

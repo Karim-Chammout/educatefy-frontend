@@ -6,7 +6,7 @@ import { AccountRole, MeDocument } from '@/generated/graphql';
 import { useLanguageSelection } from '@/hooks';
 import { Loader } from '@/ui/components';
 import { ErrorPlaceholder, SetupProfile } from '@/ui/compositions';
-import { AuthContext } from '@/ui/context';
+import { AuthContext, NotificationProvider } from '@/ui/context';
 import { hasMissingAccountData } from '@/utils/hasMissingAccountData';
 
 import PageTemplate from './PageTemplate';
@@ -27,6 +27,7 @@ import {
   Home,
   Instructor,
   NotFound,
+  Notifications,
   Profile,
   Program,
   Programs,
@@ -79,219 +80,231 @@ const PrivatePagesView = () => {
   }
 
   return (
-    <PageTemplate>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <RouteWrapper>
-              <Home />
-            </RouteWrapper>
-          }
-        />
-        <Route
-          path="/catalog"
-          element={
-            <RouteWrapper>
-              <Catalog />
-            </RouteWrapper>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <RouteWrapper>
-              <Profile />
-            </RouteWrapper>
-          }
-        />
-        <Route
-          path="/subject/:id"
-          element={
-            <RouteWrapper>
-              <Subject />
-            </RouteWrapper>
-          }
-        />
-        <Route
-          path="/teacher/:id"
-          element={
-            <RouteWrapper>
-              <Instructor />
-            </RouteWrapper>
-          }
-        />
-        <Route
-          path="/teachers"
-          element={
-            <RouteWrapper>
-              <Teachers />
-            </RouteWrapper>
-          }
-        />
-        <Route
-          path="/top-content"
-          element={
-            <RouteWrapper>
-              <TopContent />
-            </RouteWrapper>
-          }
-        />
-        <Route
-          path="/course/:slug"
-          element={
-            <RouteWrapper>
-              <Course />
-            </RouteWrapper>
-          }
-        />
-        <Route
-          path="/course/:slug/section/:sectionId"
-          element={
-            <RouteWrapper>
-              <Section />
-            </RouteWrapper>
-          }
-        >
-          {/* Nested routes for items and components */}
-          <Route path="/course/:slug/section/:sectionId/item/:itemId" element={<Section />}>
-            <Route
-              path="/course/:slug/section/:sectionId/item/:itemId/component/:componentId"
-              element={<Section />}
-            />
+    <NotificationProvider>
+      <PageTemplate>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <RouteWrapper>
+                <Home />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/catalog"
+            element={
+              <RouteWrapper>
+                <Catalog />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <RouteWrapper>
+                <Profile />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <RouteWrapper>
+                <Notifications />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/subject/:id"
+            element={
+              <RouteWrapper>
+                <Subject />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/teacher/:id"
+            element={
+              <RouteWrapper>
+                <Instructor />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/teachers"
+            element={
+              <RouteWrapper>
+                <Teachers />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/top-content"
+            element={
+              <RouteWrapper>
+                <TopContent />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/course/:slug"
+            element={
+              <RouteWrapper>
+                <Course />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/course/:slug/section/:sectionId"
+            element={
+              <RouteWrapper>
+                <Section />
+              </RouteWrapper>
+            }
+          >
+            {/* Nested routes for items and components */}
+            <Route path="/course/:slug/section/:sectionId/item/:itemId" element={<Section />}>
+              <Route
+                path="/course/:slug/section/:sectionId/item/:itemId/component/:componentId"
+                element={<Section />}
+              />
+            </Route>
           </Route>
-        </Route>
-        <Route
-          path="/program/:programSlug"
-          element={
-            <RouteWrapper>
-              <Program />
-            </RouteWrapper>
-          }
-        />
-        <Route
-          path="/program/:programSlug/course/:slug"
-          element={
-            <RouteWrapper>
-              <Course />
-            </RouteWrapper>
-          }
-        />
+          <Route
+            path="/program/:programSlug"
+            element={
+              <RouteWrapper>
+                <Program />
+              </RouteWrapper>
+            }
+          />
+          <Route
+            path="/program/:programSlug/course/:slug"
+            element={
+              <RouteWrapper>
+                <Course />
+              </RouteWrapper>
+            }
+          />
 
-        <Route
-          path="/dashboard"
-          element={<DashboardRoutes hasPermission={data.me.accountRole === AccountRole.Teacher} />}
-        >
           <Route
             path="/dashboard"
             element={
-              <RouteWrapper>
-                <Dashboard />
-              </RouteWrapper>
+              <DashboardRoutes hasPermission={data.me.accountRole === AccountRole.Teacher} />
             }
-          />
-          <Route
-            path="/dashboard/courses"
-            element={
-              <RouteWrapper>
-                <Courses />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/courses/create"
-            element={
-              <RouteWrapper>
-                <CreateCourse />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/courses/update/:id"
-            element={
-              <RouteWrapper>
-                <UpdateCourse />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/courses/update/:id/sections"
-            element={
-              <RouteWrapper>
-                <CourseSections />
-              </RouteWrapper>
-            }
-          />
+          >
+            <Route
+              path="/dashboard"
+              element={
+                <RouteWrapper>
+                  <Dashboard />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/courses"
+              element={
+                <RouteWrapper>
+                  <Courses />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/courses/create"
+              element={
+                <RouteWrapper>
+                  <CreateCourse />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/courses/update/:id"
+              element={
+                <RouteWrapper>
+                  <UpdateCourse />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/courses/update/:id/sections"
+              element={
+                <RouteWrapper>
+                  <CourseSections />
+                </RouteWrapper>
+              }
+            />
 
-          <Route
-            path="/dashboard/courses/update/:id/sections/:sectionId"
-            element={
-              <RouteWrapper>
-                <CourseSection />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/courses/update/:id/sections/:sectionId/item/quiz/create"
-            element={
-              <RouteWrapper>
-                <QuizCreate mode="create" />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/courses/update/:id/sections/:sectionId/item/:itemId"
-            element={
-              <RouteWrapper>
-                <CourseSectionItem />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/programs"
-            element={
-              <RouteWrapper>
-                <Programs />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/programs/create"
-            element={
-              <RouteWrapper>
-                <CreateProgram />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/programs/update/:id"
-            element={
-              <RouteWrapper>
-                <UpdateProgram />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/analytics"
-            element={
-              <RouteWrapper>
-                <Analytics />
-              </RouteWrapper>
-            }
-          />
-          <Route
-            path="/dashboard/analytics/courses/:courseId"
-            element={<CourseDetailAnalytics />}
-          />
-        </Route>
+            <Route
+              path="/dashboard/courses/update/:id/sections/:sectionId"
+              element={
+                <RouteWrapper>
+                  <CourseSection />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/courses/update/:id/sections/:sectionId/item/quiz/create"
+              element={
+                <RouteWrapper>
+                  <QuizCreate mode="create" />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/courses/update/:id/sections/:sectionId/item/:itemId"
+              element={
+                <RouteWrapper>
+                  <CourseSectionItem />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/programs"
+              element={
+                <RouteWrapper>
+                  <Programs />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/programs/create"
+              element={
+                <RouteWrapper>
+                  <CreateProgram />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/programs/update/:id"
+              element={
+                <RouteWrapper>
+                  <UpdateProgram />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/analytics"
+              element={
+                <RouteWrapper>
+                  <Analytics />
+                </RouteWrapper>
+              }
+            />
+            <Route
+              path="/dashboard/analytics/courses/:courseId"
+              element={<CourseDetailAnalytics />}
+            />
+          </Route>
 
-        <Route path="/login" element={<Navigate to="/catalog" />} />
-        <Route path="/register" element={<Navigate to="/catalog" />} />
-        <Route path="/openid/callback" element={<Navigate to="/catalog" />} />
+          <Route path="/login" element={<Navigate to="/catalog" />} />
+          <Route path="/register" element={<Navigate to="/catalog" />} />
+          <Route path="/openid/callback" element={<Navigate to="/catalog" />} />
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </PageTemplate>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </PageTemplate>
+    </NotificationProvider>
   );
 };
 

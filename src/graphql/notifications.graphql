@@ -1,0 +1,61 @@
+query UnreadNotificationCount {
+  unreadNotificationCount
+}
+
+query Notifications(
+  $first: Int!
+  $offset: Int!
+  $unreadOnly: Boolean!
+  $categories: [NotificationCategory!]
+) {
+  notifications(
+    first: $first
+    offset: $offset
+    unreadOnly: $unreadOnly
+    categories: $categories
+  ) {
+    items {
+      id
+      type
+      category
+      payload
+      link
+      is_read
+      created_at
+    }
+    totalCount
+    unreadCount
+    availableCategories
+  }
+}
+
+subscription NotificationActivity {
+  notificationActivity {
+    notification {
+      id
+    }
+    unreadCount
+  }
+}
+
+mutation ReadNotifications($ids: [String!]) {
+  readNotifications(ids: $ids) {
+    success
+    errors {
+      message
+    }
+    updatedCount
+    unreadCount
+  }
+}
+
+mutation DeleteNotifications($ids: [String!]!) {
+  deleteNotifications(ids: $ids) {
+    success
+    errors {
+      message
+    }
+    deletedCount
+    unreadCount
+  }
+}

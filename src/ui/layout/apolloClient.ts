@@ -9,10 +9,12 @@ import { refreshSession } from '@/utils/refreshSession';
 import { terminatSession } from '@/utils/logout';
 import { applyRenewRefreshToken, getRefreshTokenHeader } from '@/utils/authHeaders';
 
-export const BASE_URL = import.meta.env.VITE_BASE_URL;
+export const BASE_URL = import.meta.env.VITE_BASE_URL.replace(/\/+$/, '');
+
+const WS_URL = BASE_URL.replace(/^http/, 'ws');
 
 const httpLink = new HttpLink({
-  uri: `${BASE_URL}/graphql/`,
+  uri: `${BASE_URL}/graphql`,
   credentials: 'include',
 });
 
@@ -50,7 +52,7 @@ const hasSubscriptionOperation = (operation: ApolloLink.Operation) =>
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: `${BASE_URL}/graphql/`,
+    url: `${WS_URL}/graphql`,
     keepAlive: 10_000,
   }),
 );

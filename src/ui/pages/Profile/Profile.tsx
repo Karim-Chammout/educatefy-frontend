@@ -3,6 +3,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import LanguageIcon from '@mui/icons-material/Language';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import SchoolIcon from '@mui/icons-material/School';
 import Avatar from '@mui/material/Avatar';
@@ -37,6 +38,7 @@ import { ToasterContext } from '@/ui/context';
 import {
   EditProfile,
   InfoSection,
+  NotificationPreferences,
   ProfileField,
   SessionsSection,
   SocialLinksSection,
@@ -229,6 +231,16 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
             <Box sx={{ maxWidth: 300 }}>
               <LanguageSelector />
             </Box>
+          </InfoSection>
+        </Grid>
+
+        {/* Notification Settings */}
+        <Grid size={{ xxs: 12 }}>
+          <InfoSection
+            icon={<NotificationsIcon color="primary" />}
+            title={t('notificationPreferences.title')}
+          >
+            <NotificationPreferences />
           </InfoSection>
         </Grid>
 

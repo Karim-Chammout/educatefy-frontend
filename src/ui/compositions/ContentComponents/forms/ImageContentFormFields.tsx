@@ -8,6 +8,11 @@ import { ImageContent } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
 import FileDropzone from '@/ui/compositions/FileDropzone';
+import {
+  MAX_UPLOAD_FILE_SIZE_BYTES,
+  MAX_UPLOAD_FILE_SIZE_MB,
+  isFileTooLargeError,
+} from '@/utils/fileUpload';
 import { getMediaUrl } from '@/utils/getMediaUrl';
 
 import { FormFieldsProps } from '../types';
@@ -21,6 +26,16 @@ export const ImageContentFormFields = ({ value, onChange }: FormFieldsProps) => 
 
   const handleImageSelection = async (files: File[]) => {
     if (files.length === 0) return;
+
+    if (files[0].size > MAX_UPLOAD_FILE_SIZE_BYTES) {
+      setToasterVisibility({
+        newDuration: 5000,
+        newText: t('richTextEditor.fileSizeError', { size: MAX_UPLOAD_FILE_SIZE_MB }),
+        newType: 'error',
+      });
+
+      return;
+    }
 
     try {
       setIsUploading(true);
@@ -43,7 +58,9 @@ export const ImageContentFormFields = ({ value, onChange }: FormFieldsProps) => 
     } catch (_error) {
       setToasterVisibility({
         newDuration: 5000,
-        newText: t('error.message'),
+        newText: isFileTooLargeError(_error)
+          ? t('richTextEditor.fileSizeError', { size: MAX_UPLOAD_FILE_SIZE_MB })
+          : t('error.message'),
         newType: 'error',
       });
     } finally {

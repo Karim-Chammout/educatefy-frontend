@@ -7,6 +7,11 @@ import api from '@/api';
 import { ContentLevel, EditableCourseFragment, LanguageFragment } from '@/generated/graphql';
 import { FileResponseType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
+import {
+  MAX_UPLOAD_FILE_SIZE_BYTES,
+  MAX_UPLOAD_FILE_SIZE_MB,
+  isFileTooLargeError,
+} from '@/utils/fileUpload';
 import { getMediaUrl } from '@/utils/getMediaUrl';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 import { isValidSlug } from '@/utils/isValidSlug';
@@ -52,6 +57,16 @@ export const useUpdateCourseForm = ({
 
   const handleFileSelect = async (files: File[]) => {
     if (files.length > 0) {
+      if (files[0].size > MAX_UPLOAD_FILE_SIZE_BYTES) {
+        setToasterVisibility({
+          newDuration: 5000,
+          newText: t('richTextEditor.fileSizeError', { size: MAX_UPLOAD_FILE_SIZE_MB }),
+          newType: 'error',
+        });
+
+        return;
+      }
+
       try {
         setIsImageLoading(true);
 
@@ -76,7 +91,9 @@ export const useUpdateCourseForm = ({
       } catch (_error) {
         setToasterVisibility({
           newDuration: 5000,
-          newText: t('courseImage.uploadError'),
+          newText: isFileTooLargeError(_error)
+            ? t('richTextEditor.fileSizeError', { size: MAX_UPLOAD_FILE_SIZE_MB })
+            : t('courseImage.uploadError'),
           newType: 'error',
         });
       } finally {

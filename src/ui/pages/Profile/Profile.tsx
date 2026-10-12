@@ -34,6 +34,11 @@ import { FileResponseType } from '@/types/types';
 import { Button, Modal, Typography } from '@/ui/components';
 import { FileDropzone, LanguageSelector, RichTextContent } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
+import {
+  MAX_UPLOAD_FILE_SIZE_BYTES,
+  MAX_UPLOAD_FILE_SIZE_MB,
+  isFileTooLargeError,
+} from '@/utils/fileUpload';
 
 import {
   EditProfile,
@@ -64,10 +69,23 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
   const [removeProfilePic] = useMutation(RemoveProfilePictureDocument);
 
   const onFilesSelected = async (files: File[]) => {
+    const file = files[0];
+    if (!file) return;
+
+    if (file.size > MAX_UPLOAD_FILE_SIZE_BYTES) {
+      setToasterVisibility({
+        newDuration: 5000,
+        newText: t('richTextEditor.fileSizeError', { size: MAX_UPLOAD_FILE_SIZE_MB }),
+        newType: 'error',
+      });
+
+      return;
+    }
+
     try {
       setIsLoading(true);
       const formData = new FormData();
-      formData.append('file', files[0]);
+      formData.append('file', file);
       formData.append('destinationFolder', 'profile-imgs');
 
       const uploadedPicture = await api.post<FileResponseType>('/api/file/upload', formData, {
@@ -101,7 +119,9 @@ const Profile = ({ userInfo, countries, subjects }: ProfileType) => {
     } catch (_error) {
       setToasterVisibility({
         newDuration: 5000,
-        newText: t('profile.pictureUpdateFailed'),
+        newText: isFileTooLargeError(_error)
+          ? t('richTextEditor.fileSizeError', { size: MAX_UPLOAD_FILE_SIZE_MB })
+          : t('profile.pictureUpdateFailed'),
         newType: 'error',
       });
       setIsChangePicModalOpen(false);

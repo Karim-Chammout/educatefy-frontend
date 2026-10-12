@@ -46,6 +46,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/api';
 import { FileResponseType } from '@/types/types';
 import { Button } from '@/ui/components';
+import { MAX_UPLOAD_FILE_SIZE_MB, isFileTooLargeError } from '@/utils/fileUpload';
 import { getMediaUrl } from '@/utils/getMediaUrl';
 
 import { ToolbarDivider, ToolbarWrapper } from './RichTextEditor.style';
@@ -237,8 +238,12 @@ const Toolbar = ({ editor, uploadEndpoint, disabled }: ToolbarProps) => {
       } else {
         setImageError(response.message ?? t('toolbar.image.errorUpload'));
       }
-    } catch {
-      setImageError(t('toolbar.image.errorUpload'));
+    } catch (_error) {
+      setImageError(
+        isFileTooLargeError(_error)
+          ? t('richTextEditor.fileSizeError', { size: MAX_UPLOAD_FILE_SIZE_MB })
+          : t('toolbar.image.errorUpload'),
+      );
     } finally {
       setImageUploading(false);
     }

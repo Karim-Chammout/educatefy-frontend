@@ -9,6 +9,7 @@ export { default as InfoState } from './InfoState';
 export { default as LanguagePicker } from './LanguagePicker';
 export { default as LanguageSelector } from './LanguageSelector';
 export { default as NotificationBell } from './NotificationBell';
+export { default as UserMenu } from './UserMenu';
 export { default as NotificationCategoryChips } from './NotificationCategoryChips';
 export { default as PageHeader } from './PageHeader';
 export { default as RichTextContent } from './RichTextContent';

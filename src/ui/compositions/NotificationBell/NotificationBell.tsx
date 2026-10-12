@@ -91,9 +91,11 @@ const NotificationBell = () => {
         onClose={() => setAnchorEl(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        elevation={2}
         slotProps={{
           paper: {
             sx: {
+              mt: 1.5,
               width: { xs: 'calc(100vw - 16px)', sm: 360 },
               maxHeight: 460,
               display: 'flex',
@@ -116,7 +118,7 @@ const NotificationBell = () => {
             flexShrink: 0,
           }}
         >
-          <Typography variant="h6" component="span">
+          <Typography variant="subtitle1" component="span" sx={{ fontWeight: 600 }}>
             {t('notifications.title')}
           </Typography>
           <Button

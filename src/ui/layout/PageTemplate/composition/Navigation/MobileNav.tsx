@@ -1,28 +1,17 @@
-import Brightness4 from '@mui/icons-material/Brightness4';
-import Brightness7 from '@mui/icons-material/Brightness7';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import LogoutIcon from '@mui/icons-material/Logout';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import Person2Icon from '@mui/icons-material/Person2';
 import Avatar from '@mui/material/Avatar';
-import Badge from '@mui/material/Badge';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
-import { MouseEvent, SyntheticEvent, useContext, useEffect, useState } from 'react';
+import { MouseEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
-import { NotificationContext } from '@/ui/context';
-import { useThemeContext } from '@/ui/theme/ThemeContext';
-import { logout } from '@/utils/logout';
+import { UserMenu } from '@/ui/compositions';
 
 const navItems = [
   {
@@ -49,8 +38,6 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { themeMode, toggleTheme } = useThemeContext();
-  const { unreadCount } = useContext(NotificationContext);
 
   const [value, setValue] = useState(location.pathname);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -110,68 +97,13 @@ const MobileNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me']
           }
         />
       </BottomNavigation>
-      <Menu
+      <UserMenu
+        accountInfo={accountInfo}
         anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-        slotProps={{
-          paper: {
-            elevation: 2,
-            sx: {
-              minWidth: 160,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-        disableScrollLock
-      >
-        <MenuItem
-          onClick={() => {
-            navigate('/notifications');
-            handleMenuClose();
-          }}
-        >
-          <ListItemIcon>
-            <Badge color="error" badgeContent={unreadCount} max={99}>
-              <NotificationsIcon fontSize="small" />
-            </Badge>
-          </ListItemIcon>
-          {t('notifications.title')}
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            navigate('/profile');
-            handleMenuClose();
-          }}
-        >
-          <ListItemIcon>
-            <Person2Icon fontSize="small" />
-          </ListItemIcon>
-          {t('navigation.profile')}
-        </MenuItem>
-        <MenuItem onClick={toggleTheme}>
-          <ListItemIcon>
-            {themeMode === 'light' ? (
-              <Brightness4 fontSize="small" />
-            ) : (
-              <Brightness7 fontSize="small" />
-            )}
-          </ListItemIcon>
-          {t(`theme.${themeMode === 'light' ? 'dark' : 'light'}`)}
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            logout();
-            handleMenuClose();
-          }}
-        >
-          <ListItemIcon>
-            <LogoutIcon fontSize="small" />
-          </ListItemIcon>
-          {t('navigation.logout')}
-        </MenuItem>
-      </Menu>
+        transformOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      />
     </Paper>
   );
 };

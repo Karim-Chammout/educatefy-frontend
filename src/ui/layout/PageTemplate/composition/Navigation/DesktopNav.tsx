@@ -1,18 +1,11 @@
-import Brightness4 from '@mui/icons-material/Brightness4';
-import Brightness7 from '@mui/icons-material/Brightness7';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import LogoutIcon from '@mui/icons-material/Logout';
-import Person2Icon from '@mui/icons-material/Person2';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import { TFunction } from 'i18next';
 import { MouseEvent, ReactNode, useState } from 'react';
@@ -23,9 +16,8 @@ import logoDark from '@/assets/logo_dark.png';
 import logoLight from '@/assets/logo_light.png';
 import person from '@/assets/person.png';
 import { AccountInfoQuery, AccountRole } from '@/generated/graphql';
-import { LanguagePicker, NotificationBell } from '@/ui/compositions';
+import { LanguagePicker, NotificationBell, UserMenu } from '@/ui/compositions';
 import { useThemeContext } from '@/ui/theme/ThemeContext';
-import { logout } from '@/utils/logout';
 
 import { LogoWrapper, StyledNavLink } from './Navigation.style';
 
@@ -70,7 +62,7 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
   const { t } = useTranslation();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
-  const { themeMode, toggleTheme } = useThemeContext();
+  const { themeMode } = useThemeContext();
 
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -111,58 +103,18 @@ const DesktopNavigation = ({ accountInfo }: { accountInfo: AccountInfoQuery['me'
               <Avatar
                 alt={accountInfo?.nickname || t('navigation.avatarAlt')}
                 src={accountInfo?.avatar_url || person}
+                sx={{
+                  border: '2px solid',
+                  borderColor: anchorElUser ? 'primary.main' : 'divider',
+                  transition: 'border-color 0.2s',
+                }}
               />
             </IconButton>
-            <Menu
+            <UserMenu
+              accountInfo={accountInfo}
               anchorEl={anchorElUser}
-              open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
-              slotProps={{
-                paper: {
-                  elevation: 2,
-                  sx: {
-                    mt: 1.5,
-                    width: 160,
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-              disableScrollLock
-            >
-              <MenuItem
-                onClick={() => {
-                  navigate('/profile');
-                  handleCloseUserMenu();
-                }}
-              >
-                <ListItemIcon>
-                  <Person2Icon fontSize="small" />
-                </ListItemIcon>
-                {t('navigation.profile')}
-              </MenuItem>
-              <MenuItem onClick={toggleTheme}>
-                <ListItemIcon>
-                  {themeMode === 'light' ? (
-                    <Brightness4 fontSize="small" />
-                  ) : (
-                    <Brightness7 fontSize="small" />
-                  )}
-                </ListItemIcon>
-                {t(`theme.${themeMode === 'light' ? 'dark' : 'light'}`)}
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  logout();
-                  handleCloseUserMenu();
-                }}
-              >
-                <ListItemIcon>
-                  <LogoutIcon fontSize="small" />
-                </ListItemIcon>
-                {t('navigation.logout')}
-              </MenuItem>
-            </Menu>
+            />
           </Box>
         </Toolbar>
       </Container>

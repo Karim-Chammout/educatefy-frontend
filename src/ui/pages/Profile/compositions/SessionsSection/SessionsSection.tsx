@@ -14,7 +14,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
-import Tooltip from '@mui/material/Tooltip';
 import { formatDistanceToNow } from 'date-fns';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -190,18 +189,15 @@ const SessionsSection = () => {
                   }
                 />
                 {!device.isCurrentDevice && (
-                  <Tooltip title={t('profile.revokeDeviceSessions')}>
-                    <IconButton
-                      color="error"
-                      size="small"
-                      onClick={() => handleRevokeDevice(device.id)}
-                      disabled={revokeLoading}
-                    >
-                      <Typography variant="body2" sx={{ textDecoration: 'underline' }}>
-                        {t('profile.revoke')}
-                      </Typography>
-                    </IconButton>
-                  </Tooltip>
+                  <Button
+                    color="error"
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleRevokeDevice(device.id)}
+                    disabled={revokeLoading}
+                  >
+                    {t('profile.revoke')}
+                  </Button>
                 )}
               </ListItem>
               {index < devices.length - 1 && <Divider />}

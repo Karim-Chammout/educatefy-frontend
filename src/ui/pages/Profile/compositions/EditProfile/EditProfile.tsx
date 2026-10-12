@@ -1,8 +1,9 @@
 import { useMutation } from '@apollo/client/react';
+import Grid from '@mui/material/Grid';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format } from 'date-fns';
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   AutocompleteElement,
   FieldValues,
@@ -15,23 +16,27 @@ import {
 import { DatePickerElement } from 'react-hook-form-mui/date-pickers';
 import { useTranslation } from 'react-i18next';
 
-import { AccountRole, UpdateProfileDocument, UserProfileQuery } from '@/generated/graphql';
+import { UpdateProfileDocument, UserProfileQuery } from '@/generated/graphql';
 import { Button } from '@/ui/components';
 import { RichTextEditor } from '@/ui/compositions';
 import { ToasterContext } from '@/ui/context';
 import { genderOptions } from '@/utils/genderOptions';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 
+type EditProfileMode = 'personal' | 'teacher';
+
 const EditProfile = ({
+  mode,
   userInfo,
   countries,
   subjectOptions,
-  setIsEditModalOpen,
+  onClose,
 }: {
+  mode: EditProfileMode;
   userInfo: UserProfileQuery['me'];
   countries: UserProfileQuery['countries'];
   subjectOptions: UserProfileQuery['subjects'];
-  setIsEditModalOpen: Dispatch<SetStateAction<boolean>>;
+  onClose: () => void;
 }) => {
   const { t } = useTranslation();
   const [descriptionContent, setDescriptionContent] = useState(userInfo.description || null);
@@ -73,23 +78,19 @@ const EditProfile = ({
 
   const [updateProfile] = useMutation(UpdateProfileDocument);
 
-  const onSubmit = async (values: FieldValues) => {
-    const trimmedFirstName = values.firstName.trim();
-    const trimmedLastName = values.lastName.trim();
-    const trimmedNickname = values.nickname.trim();
-    const formatedDateOfBirth = format(new Date(values.dateOfBirth), 'yyyy-MM-dd');
+  const isPersonalValid =
+    firstName?.trim() &&
+    lastName?.trim() &&
+    nickname?.trim() &&
+    gender &&
+    nationality &&
+    country &&
+    dateOfBirth;
+  const isTeacherValid = subjects.length > 0 && bio && hasDescription;
+  const isValid = mode === 'personal' ? isPersonalValid : isTeacherValid;
 
-    if (
-      !trimmedFirstName ||
-      !trimmedLastName ||
-      !trimmedNickname ||
-      !values.gender ||
-      !values.nationality ||
-      !values.country ||
-      !values.dateOfBirth ||
-      (userInfo.accountRole === AccountRole.Teacher &&
-        (!values.subjects.length || !values.bio || !hasDescription))
-    ) {
+  const onSubmit = async (values: FieldValues) => {
+    if (!isValid) {
       setToasterVisibility({
         newDuration: 5000,
         newText: t('profile.fillRequiredFields'),
@@ -99,32 +100,38 @@ const EditProfile = ({
       return;
     }
 
+    const profileDetails =
+      mode === 'personal'
+        ? {
+            firstName: values.firstName.trim(),
+            lastName: values.lastName.trim(),
+            nickname: values.nickname.trim(),
+            nationalityId: values.nationality.id,
+            countryId: values.country.id,
+            gender: values.gender.id,
+            dateOfBirth: format(new Date(values.dateOfBirth), 'yyyy-MM-dd'),
+          }
+        : {
+            teacherBio: values.bio,
+            teacherSpecialties: values.subjects.map((s: { id: string }) => s.id),
+            teacherDescription: descriptionContent,
+          };
+
     const profileResult = await updateProfile({
-      variables: {
-        profileDetails: {
-          firstName: trimmedFirstName,
-          lastName: trimmedLastName,
-          nickname: trimmedNickname,
-          nationalityId: values.nationality.id,
-          countryId: values.country.id,
-          gender: values.gender.id,
-          dateOfBirth: formatedDateOfBirth,
-          teacherBio: values.bio,
-          teacherSpecialties: values.subjects.map((s: { id: string }) => s.id),
-          teacherDescription: descriptionContent,
-        },
-      },
+      variables: { profileDetails },
     });
 
     if (!profileResult.data?.updateProfile?.success) {
       const messages = (profileResult.data?.updateProfile?.errors ?? [])
         .map((errorItem) => errorItem.message)
         .join(' ');
-      const newText = messages.includes('MAX_SUBJECTS_EXCEEDED')
-        ? t('profile.maxSubjectsExceeded')
-        : messages.includes('MIN_SUBJECTS_REQUIRED')
-          ? t('profile.minSubjectsRequired')
-          : t('profile.updateFailed');
+      let newText = t('profile.updateFailed');
+
+      if (messages.includes('MAX_SUBJECTS_EXCEEDED')) {
+        newText = t('profile.maxSubjectsExceeded');
+      } else if (messages.includes('MIN_SUBJECTS_REQUIRED')) {
+        newText = t('profile.minSubjectsRequired');
+      }
 
       setToasterVisibility({
         newDuration: 5000,
@@ -140,7 +147,7 @@ const EditProfile = ({
       newText: t('profile.updateSuccess'),
       newType: 'success',
     });
-    setIsEditModalOpen(false);
+    onClose();
   };
 
   return (
@@ -148,61 +155,92 @@ const EditProfile = ({
       {/* @ts-expect-error FIXME: Check why the onSuccess prop is throwing type error */}
       <FormContainer onSuccess={handleSubmit(onSubmit)}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <TextFieldElement
-            name="firstName"
-            label={t('profile.firstName')}
-            control={control}
-            required
-          />
-          <TextFieldElement
-            name="lastName"
-            label={t('profile.lastName')}
-            control={control}
-            required
-          />
-          <TextFieldElement
-            name="nickname"
-            label={t('profile.nickname')}
-            control={control}
-            required
-          />
-          <AutocompleteElement
-            name="nationality"
-            label={t('profile.nationality')}
-            control={control}
-            options={countries.map((c) => ({
-              id: c.id,
-              label: c.denomination,
-            }))}
-            required
-          />
-          <AutocompleteElement
-            name="country"
-            label={t('profile.country')}
-            control={control}
-            options={countries.map((c) => ({
-              id: c.id,
-              label: c.denomination,
-            }))}
-            required
-          />
-          <AutocompleteElement
-            name="gender"
-            label={t('profile.gender')}
-            control={control}
-            options={genderOptions}
-            required
-          />
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePickerElement
-              name="dateOfBirth"
-              label={t('profile.dateOfBirth')}
-              control={control}
-              disableFuture
-              required
-            />
-          </LocalizationProvider>
-          {userInfo.accountRole === AccountRole.Teacher && (
+          {mode === 'personal' && (
+            <Grid container spacing={3}>
+              <Grid size={{ xxs: 12, sm: 6 }}>
+                <TextFieldElement
+                  name="firstName"
+                  label={t('profile.firstName')}
+                  control={control}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid size={{ xxs: 12, sm: 6 }}>
+                <TextFieldElement
+                  name="lastName"
+                  label={t('profile.lastName')}
+                  control={control}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid size={{ xxs: 12, sm: 6 }}>
+                <TextFieldElement
+                  name="nickname"
+                  label={t('profile.nickname')}
+                  control={control}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid size={{ xxs: 12, sm: 6 }}>
+                <AutocompleteElement
+                  name="gender"
+                  label={t('profile.gender')}
+                  control={control}
+                  options={genderOptions}
+                  autocompleteProps={{
+                    fullWidth: true,
+                  }}
+                  required
+                />
+              </Grid>
+              <Grid size={{ xxs: 12, sm: 6 }}>
+                <AutocompleteElement
+                  name="country"
+                  label={t('profile.country')}
+                  control={control}
+                  options={countries.map((c) => ({
+                    id: c.id,
+                    label: c.denomination,
+                  }))}
+                  autocompleteProps={{
+                    fullWidth: true,
+                  }}
+                  required
+                />
+              </Grid>
+              <Grid size={{ xxs: 12, sm: 6 }}>
+                <AutocompleteElement
+                  name="nationality"
+                  label={t('profile.nationality')}
+                  control={control}
+                  options={countries.map((c) => ({
+                    id: c.id,
+                    label: c.denomination,
+                  }))}
+                  autocompleteProps={{
+                    fullWidth: true,
+                  }}
+                  required
+                />
+              </Grid>
+              <Grid size={{ xxs: 12, sm: 6 }}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePickerElement
+                    name="dateOfBirth"
+                    label={t('profile.dateOfBirth')}
+                    control={control}
+                    sx={{ width: '100%' }}
+                    disableFuture
+                    required
+                  />
+                </LocalizationProvider>
+              </Grid>
+            </Grid>
+          )}
+          {mode === 'teacher' && (
             <>
               <AutocompleteElement
                 name="subjects"
@@ -236,24 +274,10 @@ const EditProfile = ({
           )}
         </div>
         <div style={{ display: 'flex', gap: '16px', marginTop: '32px' }}>
-          <Button variant="outlined" onClick={() => setIsEditModalOpen(false)} fullWidth>
+          <Button variant="outlined" onClick={onClose} fullWidth>
             {t('common.cancel')}
           </Button>
-          <Button
-            type="submit"
-            fullWidth
-            disabled={
-              !firstName ||
-              !lastName ||
-              !nickname ||
-              !gender ||
-              !nationality ||
-              !country ||
-              !dateOfBirth ||
-              (userInfo.accountRole === AccountRole.Teacher &&
-                (!subjects.length || !bio || !hasDescription))
-            }
-          >
+          <Button type="submit" fullWidth disabled={!isValid}>
             {t('profile.save')}
           </Button>
         </div>

@@ -4,13 +4,27 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 
-const InfoSectionSkeleton = ({ children }: { children: React.ReactNode }) => {
+const InfoSectionSkeleton = ({
+  children,
+  withAction = true,
+}: {
+  children: React.ReactNode;
+  withAction?: boolean;
+}) => {
   return (
     <Paper variant="outlined">
       <Box sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 2 }}>
           <Skeleton variant="circular" width={24} height={24} />
           <Skeleton height={24} width={180} />
+          {withAction && (
+            <Skeleton
+              variant="rectangular"
+              width={100}
+              height={36}
+              sx={{ marginInlineStart: 'auto' }}
+            />
+          )}
         </Box>
 
         {children}
@@ -43,7 +57,7 @@ const DeviceRowSkeleton = () => {
           <Skeleton width={190} height={14} sx={{ mt: 0.5 }} />
         </Box>
 
-        <Skeleton variant="circular" width={40} height={40} />
+        <Skeleton variant="rectangular" width={90} height={30} />
       </Box>
 
       <Divider />
@@ -65,23 +79,25 @@ const ProfileSkeleton = () => {
               textAlign: { xxs: 'center', md: 'start' },
             }}
           >
-            <Skeleton variant="circular" width={120} height={120} sx={{ flexShrink: 0 }} />
-
-            <Box sx={{ flex: 1, alignSelf: 'center' }}>
-              <Skeleton variant="text" height={42} width={240} />
-            </Box>
-
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: { xxs: 'row', md: 'column' },
-                gap: 2,
-                alignSelf: 'center',
-                flexWrap: 'wrap',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 1.5,
+                flexShrink: 0,
               }}
             >
-              <Skeleton variant="rectangular" width={160} height={36} />
-              <Skeleton variant="rectangular" width={180} height={36} />
+              <Skeleton variant="circular" width={120} height={120} />
+              <Skeleton variant="rounded" width={150} height={30} />
+            </Box>
+
+            <Box sx={{ flex: 1, alignSelf: 'center' }}>
+              <Skeleton variant="text" height={42} width={240} />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                <Skeleton variant="text" height={24} width={120} />
+                <Skeleton variant="rounded" width={80} height={24} />
+              </Box>
             </Box>
           </Box>
         </Box>
@@ -90,14 +106,8 @@ const ProfileSkeleton = () => {
       <Grid container spacing={3}>
         <Grid size={{ xxs: 12 }}>
           <InfoSectionSkeleton>
-            <Skeleton variant="rectangular" width={300} height={56} />
-          </InfoSectionSkeleton>
-        </Grid>
-
-        <Grid size={{ xxs: 12 }}>
-          <InfoSectionSkeleton>
             <Grid container spacing={3}>
-              {Array.from({ length: 6 }, (_, index) => (
+              {Array.from({ length: 7 }, (_, index) => (
                 <Grid key={`field-${index}`} size={{ xxs: 12, sm: 6 }}>
                   <ProfileFieldSkeleton />
                 </Grid>
@@ -138,6 +148,36 @@ const ProfileSkeleton = () => {
 
         <Grid size={{ xxs: 12 }}>
           <InfoSectionSkeleton>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Skeleton variant="rounded" width={120} height={32} />
+              <Skeleton variant="rounded" width={120} height={32} />
+            </Box>
+          </InfoSectionSkeleton>
+        </Grid>
+
+        <Grid size={{ xxs: 12 }}>
+          <InfoSectionSkeleton withAction={false}>
+            <Skeleton variant="rectangular" width={300} height={56} />
+          </InfoSectionSkeleton>
+        </Grid>
+
+        <Grid size={{ xxs: 12 }}>
+          <InfoSectionSkeleton withAction={false}>
+            {Array.from({ length: 3 }, (_, index) => (
+              <Box
+                key={`notification-${index}`}
+                sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1 }}
+              >
+                <Skeleton width={160} height={20} sx={{ flexGrow: 1 }} />
+                <Skeleton variant="rounded" width={34} height={20} />
+                <Skeleton variant="rounded" width={34} height={20} />
+              </Box>
+            ))}
+          </InfoSectionSkeleton>
+        </Grid>
+
+        <Grid size={{ xxs: 12 }}>
+          <InfoSectionSkeleton withAction={false}>
             <Box
               sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}
             >

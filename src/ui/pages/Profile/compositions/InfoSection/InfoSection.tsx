@@ -30,7 +30,7 @@ const InfoSection = ({
           <Typography variant="h6" color="text.primary" sx={{ fontWeight: 600 }}>
             {title}
           </Typography>
-          {action && <Box sx={{ ml: 'auto' }}>{action}</Box>}
+          {action && <Box sx={{ marginInlineStart: 'auto' }}>{action}</Box>}
         </Box>
         {children}
       </Box>

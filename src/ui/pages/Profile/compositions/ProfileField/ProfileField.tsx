@@ -9,11 +9,9 @@ const ProfileField = ({ label, value }: { label: string; value?: string | null }
       <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }} gutterBottom>
         {label}
       </Typography>
-      {value && (
-        <Typography variant="body1" color="text.primary">
-          {value}
-        </Typography>
-      )}
+      <Typography variant="body1" color={value ? 'text.primary' : 'text.disabled'}>
+        {value || '—'}
+      </Typography>
     </Box>
   </Grid>
 );

@@ -44,6 +44,8 @@
   "profile.pictureRemoveFailed": "فشل في إزالة صورة الملف الشخصي. يرجى المحاولة مرة أخرى لاحقًا!",
   "profile.profileImage": "صورة الملف الشخصي",
   "profile.changePicture": "تغيير الصورة",
+  "profile.currentPicture": "الصورة الحالية",
+  "profile.noPicture": "لا توجد صورة بعد",
   "profile.deletePicture": "حذف الصورة",
   "profile.profileInformation": "معلومات الملف الشخصي",
   "profile.edit": "تعديل",

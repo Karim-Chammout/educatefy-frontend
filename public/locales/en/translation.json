@@ -44,6 +44,8 @@
   "profile.pictureRemoveFailed": "Failed to remove profile picture. Please try again later!",
   "profile.profileImage": "Profile image",
   "profile.changePicture": "Change picture",
+  "profile.currentPicture": "Current picture",
+  "profile.noPicture": "No picture yet",
   "profile.deletePicture": "Delete picture",
   "profile.profileInformation": "Profile Information",
   "profile.edit": "Edit",

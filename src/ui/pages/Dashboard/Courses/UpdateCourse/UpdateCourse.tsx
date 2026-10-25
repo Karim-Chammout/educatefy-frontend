@@ -20,7 +20,7 @@ import { Button, Typography } from '@/ui/components';
 import { ToasterContext } from '@/ui/context';
 import { isValidSlug } from '@/utils/isValidSlug';
 import { getS3FilePathFromUrl } from '@/utils/s3';
-import { ServerErrorType } from '@/utils/ServerErrorType';
+import { ServerErrorType } from '@/types/types';
 
 import {
   BasicInfoSection,

@@ -7,7 +7,7 @@ export async function refreshSession(): Promise<string | null> {
     return refreshPromise;
   }
 
-  refreshPromise = (async () => {
+  const pending = (async () => {
     try {
       const refreshToken = localStorage.getItem('refreshToken');
 
@@ -33,10 +33,16 @@ export async function refreshSession(): Promise<string | null> {
       return response.ok ? 'ok' : null;
     } catch {
       return null;
-    } finally {
-      refreshPromise = null;
     }
   })();
 
-  return refreshPromise;
+  refreshPromise = pending;
+
+  try {
+    return await pending;
+  } finally {
+    if (refreshPromise === pending) {
+      refreshPromise = null;
+    }
+  }
 }

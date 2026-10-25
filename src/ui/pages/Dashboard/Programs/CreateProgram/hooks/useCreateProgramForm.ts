@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 
 import api from '@/api';
 import { CreateProgramDocument } from '@/generated/graphql';
-import { FileResponseType } from '@/types/types';
+import { FileResponseType, ServerErrorType } from '@/types/types';
 import { ToasterContext } from '@/ui/context';
 import {
   MAX_UPLOAD_FILE_SIZE_BYTES,
@@ -16,7 +16,6 @@ import {
 } from '@/utils/fileUpload';
 import { hasRichTextContent } from '@/utils/hasRichTextContent';
 import { isValidSlug } from '@/utils/isValidSlug';
-import { ServerErrorType } from '@/utils/ServerErrorType';
 
 type ObjectiveItem = {
   id: number;

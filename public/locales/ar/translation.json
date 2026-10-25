@@ -3,6 +3,7 @@
   "ui.components.loader.label": "جارٍ التحميل...",
   "errorPlaceholder.title": "حدث خطأ",
   "errorPlaceholder.subtitle": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا أو الاتصال بالدعم.",
+  "errorPlaceholder.retryBtnLabel": "حاول مجددًا",
   "common.catalogBtnLabel": "تصفح الكتالوج",
   "notFound.subtitle": "الصفحة التي تبحث عنها غير موجودة.",
   "notFound.title": "الصفحة غير موجودة",

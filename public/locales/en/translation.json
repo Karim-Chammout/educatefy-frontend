@@ -3,6 +3,7 @@
   "ui.components.loader.label": "Loading...",
   "errorPlaceholder.title": "An Error Occurred",
   "errorPlaceholder.subtitle": "Something went wrong. Please try again later or contact support.",
+  "errorPlaceholder.retryBtnLabel": "Try again",
   "common.catalogBtnLabel": "Go to Catalog",
   "notFound.subtitle": "The page you're looking for doesn't exist.",
   "notFound.title": "Page Not Found",

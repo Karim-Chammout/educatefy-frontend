@@ -8,7 +8,7 @@ import TopContentSkeleton from './TopContentSkeleton';
 const TOP_CONTENT_PAGE_SIZE = 8;
 
 const TopContentContainer = () => {
-  const { loading, error, data, currentPage, pageCount, onPageChange } = usePaginatedQuery(
+  const { loading, error, data, currentPage, pageCount, onPageChange, refetch } = usePaginatedQuery(
     TopContentDocument,
     { pageSize: TOP_CONTENT_PAGE_SIZE, selectTotalCount: (d) => d.topContent.totalCount },
   );
@@ -18,7 +18,7 @@ const TopContentContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   return (

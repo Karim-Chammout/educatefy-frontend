@@ -14,7 +14,7 @@ const CourseContainer = () => {
   const navigate = useNavigate();
   const { slug } = useParams();
 
-  const { loading, error, data } = useQuery(CourseDocument, {
+  const { loading, error, data, refetch } = useQuery(CourseDocument, {
     variables: {
       slug: slug || '',
     },
@@ -25,7 +25,7 @@ const CourseContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   if (!data.course) {

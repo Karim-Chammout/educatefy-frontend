@@ -7,11 +7,20 @@ import Dashboard from './Dashboard';
 import DashboardSkeleton from './DashboardSkeleton';
 
 const DashboardContainer = () => {
-  const { data: userInfo, loading: userLoading } = useQuery(MeDocument, {
+  const {
+    data: userInfo,
+    loading: userLoading,
+    refetch: refetchUserInfo,
+  } = useQuery(MeDocument, {
     fetchPolicy: 'cache-first',
   });
 
-  const { loading, error, data } = useQuery(DashboardDocument, {
+  const {
+    loading,
+    error,
+    data,
+    refetch: refetchDashboard,
+  } = useQuery(DashboardDocument, {
     variables: {
       instructorId: userInfo?.me.id || '',
     },
@@ -23,7 +32,14 @@ const DashboardContainer = () => {
   }
 
   if (!userInfo?.me.id || error || !data || !data.instructor) {
-    return <ErrorPlaceholder />;
+    return (
+      <ErrorPlaceholder
+        onRetry={() => {
+          refetchUserInfo();
+          refetchDashboard();
+        }}
+      />
+    );
   }
 
   return <Dashboard instructor={data.instructor} />;

@@ -52,7 +52,7 @@ const PublicPagesView = () => {
 
 const PrivatePagesView = () => {
   const { changeLanguage } = useLanguageSelection();
-  const { loading, error, data } = useQuery(MeDocument);
+  const { loading, error, data, refetch } = useQuery(MeDocument);
 
   // Update the language based on the preferredLanguage of the user
   useEffect(() => {
@@ -66,7 +66,7 @@ const PrivatePagesView = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   const hasIncompleteAccountData = data.me && hasMissingAccountData(data?.me);

@@ -7,14 +7,14 @@ import Profile from './Profile';
 import ProfileSkeleton from './ProfileSkeleton';
 
 const ProfileContainer = () => {
-  const { loading, error, data } = useQuery(UserProfileDocument);
+  const { loading, error, data, refetch } = useQuery(UserProfileDocument);
 
   if (loading) {
     return <ProfileSkeleton />;
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   const { me, countries, subjects } = data;

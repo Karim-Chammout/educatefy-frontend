@@ -35,7 +35,7 @@ const InstructorContainer = () => {
 
   const contentType = parseContentType(searchParams.get('type'));
 
-  const { loading, error, data, currentPage, pageCount, onPageChange } = usePaginatedQuery(
+  const { loading, error, data, currentPage, pageCount, onPageChange, refetch } = usePaginatedQuery(
     InstructorDocument,
     {
       pageSize: INSTRUCTOR_CONTENT_PAGE_SIZE,
@@ -66,7 +66,7 @@ const InstructorContainer = () => {
   }
 
   if (error || !data || !data.instructor) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   return (

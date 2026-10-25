@@ -12,7 +12,7 @@ const UpdateCourseContainer = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { loading, error, data } = useQuery(EditableCourseDocument, {
+  const { loading, error, data, refetch } = useQuery(EditableCourseDocument, {
     variables: {
       id: id || '',
     },
@@ -23,7 +23,7 @@ const UpdateCourseContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   if (!data.editableCourse) {

@@ -19,7 +19,7 @@ const CourseSectionItemContainer = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { loading, error, data } = useQuery(EditableCourseSectionDocument, {
+  const { loading, error, data, refetch } = useQuery(EditableCourseSectionDocument, {
     variables: {
       id: courseId || '',
     },
@@ -30,7 +30,7 @@ const CourseSectionItemContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   if (!data.editableCourse) {

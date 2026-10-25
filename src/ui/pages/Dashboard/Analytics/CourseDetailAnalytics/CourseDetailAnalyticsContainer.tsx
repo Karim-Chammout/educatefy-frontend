@@ -14,7 +14,7 @@ const CourseDetailAnalyticsContainer = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const [offset, setOffset] = useState(0);
 
-  const { loading, error, data, fetchMore } = useQuery(CourseDetailAnalyticsDocument, {
+  const { loading, error, data, refetch, fetchMore } = useQuery(CourseDetailAnalyticsDocument, {
     variables: {
       courseId: courseId ?? '',
       limit: PAGE_SIZE,
@@ -28,7 +28,7 @@ const CourseDetailAnalyticsContainer = () => {
   }
 
   if (error || !data?.courseDetailAnalytics) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {

@@ -22,7 +22,7 @@ const QuizEditorContainer = ({ mode }: { mode: 'create' | 'edit' }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { loading, error, data } = useQuery(EditableCourseSectionDocument, {
+  const { loading, error, data, refetch } = useQuery(EditableCourseSectionDocument, {
     variables: { id: courseId || '' },
     skip: mode === 'create',
   });
@@ -56,7 +56,7 @@ const QuizEditorContainer = ({ mode }: { mode: 'create' | 'edit' }) => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   if (!data.editableCourse) {

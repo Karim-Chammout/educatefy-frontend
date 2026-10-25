@@ -7,14 +7,14 @@ import Analytics from './Analytics';
 import AnalyticsSkeleton from './AnalyticsSkeleton';
 
 const AnalyticsContainer = () => {
-  const { loading, error, data } = useQuery(AnalyticsDocument);
+  const { loading, error, data, refetch } = useQuery(AnalyticsDocument);
 
   if (loading) {
     return <AnalyticsSkeleton />;
   }
 
   if (error || !data || !data.teacherAnalytics) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   return <Analytics data={data.teacherAnalytics} />;

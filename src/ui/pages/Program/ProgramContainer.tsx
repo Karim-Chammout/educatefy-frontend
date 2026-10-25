@@ -14,7 +14,7 @@ const ProgramContainer = () => {
   const navigate = useNavigate();
   const { programSlug } = useParams();
 
-  const { loading, error, data } = useQuery(ProgramDocument, {
+  const { loading, error, data, refetch } = useQuery(ProgramDocument, {
     variables: {
       slug: programSlug || '',
     },
@@ -25,7 +25,7 @@ const ProgramContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   if (!data.program) {

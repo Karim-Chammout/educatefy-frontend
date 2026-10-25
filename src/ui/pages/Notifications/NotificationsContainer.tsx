@@ -57,7 +57,7 @@ const NotificationsContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   const run = async (action: Promise<unknown>) => {

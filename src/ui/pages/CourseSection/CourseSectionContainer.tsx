@@ -39,7 +39,7 @@ const CourseSectionContainer = () => {
   }
 
   if (error || !data || !data.course) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   const { course } = data;

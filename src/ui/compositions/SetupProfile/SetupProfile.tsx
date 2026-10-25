@@ -38,7 +38,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
   const { currentLanguage } = useLanguageSelection();
   const [descriptionContent, setDescriptionContent] = useState(userInfo.description || '');
   const { setToasterVisibility } = useContext(ToasterContext);
-  const { loading, error, data } = useQuery(SetupProfileDocument);
+  const { loading, error, data, refetch } = useQuery(SetupProfileDocument);
   const [updateAccountInfo, { loading: updateAccountInfoLoading }] =
     useMutation(UpdateAccountInfoDocument);
 
@@ -149,7 +149,7 @@ const SetupProfile = ({ userInfo }: { userInfo: AccountFragment }) => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   const hasDescription = hasRichTextContent(descriptionContent);

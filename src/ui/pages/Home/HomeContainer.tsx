@@ -9,14 +9,14 @@ import { HomeSkeleton } from './composition';
 const HomeContainer = () => {
   // Not trusted from cache: follow/enrollment mutations can happen while Home is
   // unmounted, where Apollo's active-only refetch cannot reach it.
-  const { loading, error, data } = useQuery(HomeDocument, { fetchPolicy: 'network-only' });
+  const { loading, error, data, refetch } = useQuery(HomeDocument, { fetchPolicy: 'network-only' });
 
   if (loading) {
     return <HomeSkeleton />;
   }
 
   if (error || !data || !data.me) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   return (

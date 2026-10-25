@@ -40,7 +40,7 @@ const usePaginatedQuery = <TData, TVariables extends PaginatedVariables>(
   const requestedPage = parsePage(searchParams.get('page'));
   const offset = (requestedPage - 1) * pageSize;
 
-  const { loading, error, data } = useQuery(document, {
+  const { loading, error, data, refetch } = useQuery(document, {
     variables: { ...variables, first: pageSize, offset } as TVariables,
   });
 
@@ -62,6 +62,7 @@ const usePaginatedQuery = <TData, TVariables extends PaginatedVariables>(
   return {
     loading,
     error,
+    refetch,
     currentPage,
     pageCount,
     onPageChange,

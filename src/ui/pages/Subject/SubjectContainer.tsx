@@ -14,7 +14,7 @@ const SubjectContainer = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { loading, error, data } = useQuery(SubjectDocument, {
+  const { loading, error, data, refetch } = useQuery(SubjectDocument, {
     variables: {
       id: id || '',
     },
@@ -25,7 +25,7 @@ const SubjectContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   if (!data.subject) {

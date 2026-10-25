@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client/react';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Skeleton from '@mui/material/Skeleton';
 import Switch from '@mui/material/Switch';
 import { useContext } from 'react';
@@ -56,9 +57,12 @@ const NotificationPreferences = () => {
 
   if (error && !preferenceData) {
     return (
-      <Typography variant="body2" color="error">
-        {t('notificationPreferences.loadFailed')}
-      </Typography>
+      <Box>
+        <Typography variant="body2">{t('notificationPreferences.loadFailed')}</Typography>
+        <Button size="small" variant="outlined" onClick={() => refetch()} sx={{ mt: 1 }}>
+          {t('errorPlaceholder.retryBtnLabel')}
+        </Button>
+      </Box>
     );
   }
 

@@ -126,9 +126,10 @@ const SessionsSection = () => {
   if (error) {
     return (
       <InfoSection icon={<DevicesIcon color="primary" />} title={t('profile.activeSessions')}>
-        <Typography variant="body2" color="text.secondary">
-          {t('common.error')}
-        </Typography>
+        <Typography variant="body2">{t('common.error')}</Typography>
+        <Button size="small" variant="outlined" onClick={() => refetch()} sx={{ mt: 1 }}>
+          {t('errorPlaceholder.retryBtnLabel')}
+        </Button>
       </InfoSection>
     );
   }

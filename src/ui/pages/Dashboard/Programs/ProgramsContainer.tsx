@@ -13,14 +13,14 @@ const ProgramsContainer = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const { loading, error, data } = useQuery(TeacherProgramsDocument);
+  const { loading, error, data, refetch } = useQuery(TeacherProgramsDocument);
 
   if (loading) {
     return <TableSkeleton columns={6} rows={10} />;
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   if (data.teacherPrograms.length === 0) {

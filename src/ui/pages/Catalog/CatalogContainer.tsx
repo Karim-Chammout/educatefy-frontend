@@ -19,7 +19,7 @@ const CatalogContainer = () => {
   const { setToasterVisibility } = useContext(ToasterContext);
   const { t } = useTranslation();
 
-  const { loading, error, data } = useQuery(CatalogDocument, {
+  const { loading, error, data, refetch } = useQuery(CatalogDocument, {
     variables: {
       teachersFirst: TEACHERS_BLOCK_SIZE,
       topContentFirst: TOP_CONTENT_BLOCK_SIZE,
@@ -43,7 +43,7 @@ const CatalogContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   return (

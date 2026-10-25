@@ -8,7 +8,7 @@ import Teachers from './Teachers';
 const TEACHERS_PAGE_SIZE = 8;
 
 const TeachersContainer = () => {
-  const { loading, error, data, currentPage, pageCount, onPageChange } = usePaginatedQuery(
+  const { loading, error, data, currentPage, pageCount, onPageChange, refetch } = usePaginatedQuery(
     TeachersDocument,
     { pageSize: TEACHERS_PAGE_SIZE, selectTotalCount: (d) => d.teachers.totalCount },
   );
@@ -18,7 +18,7 @@ const TeachersContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   return (

@@ -12,7 +12,7 @@ const UpdateProgramContainer = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { loading, error, data } = useQuery(EditableProgramDocument, {
+  const { loading, error, data, refetch } = useQuery(EditableProgramDocument, {
     variables: {
       id: id || '',
     },
@@ -23,7 +23,7 @@ const UpdateProgramContainer = () => {
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   if (!data.editableProgram) {

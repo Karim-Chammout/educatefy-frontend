@@ -6,14 +6,14 @@ import { CrudFormSkeleton, ErrorPlaceholder } from '@/ui/compositions';
 import CreateProgram from './CreateProgram';
 
 const CreateProgramContainer = () => {
-  const { loading, error, data } = useQuery(CreateProgramPageDocument);
+  const { loading, error, data, refetch } = useQuery(CreateProgramPageDocument);
 
   if (loading) {
     return <CrudFormSkeleton variant="program" />;
   }
 
   if (error || !data) {
-    return <ErrorPlaceholder />;
+    return <ErrorPlaceholder onRetry={() => refetch()} />;
   }
 
   return <CreateProgram subjectsList={data.subjects} />;
